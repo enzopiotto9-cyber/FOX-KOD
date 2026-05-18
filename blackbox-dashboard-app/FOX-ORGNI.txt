@@ -369,9 +369,7 @@
                     <input id="timerInput" inputmode="numeric" placeholder="HH:MM:SS" value="00:10:00" />
                     <button class="btn" style="padding:10px 12px" id="timerStart">Start</button>
                     <button class="btn" style="padding:10px 12px" id="timerPause">Pausar</button>
-                    <button class="btn" style="padding:10px 12px" id="timerResume">Despausar</button>
                     <button class="btn" style="padding:10px 12px" id="timerReset">Reset</button>
-
                   </div>
                 </div>
               </div>
@@ -887,25 +885,18 @@
         let remaining = timerDuration;
         if(timerRunning && timerStartTime) remaining -= (now - timerStartTime);
         timerDisplay.textContent = formatHMS(remaining);
-        const startBtn = document.getElementById('timerStart');
-        const pauseBtn = document.getElementById('timerPause');
-        const resumeBtn = document.getElementById('timerResume');
-        const resetBtn = document.getElementById('timerReset');
         if(timerRunning){
           timerHint.textContent = 'Timer rodando';
-          startBtn.disabled = true;
-          pauseBtn.disabled = false;
-          resumeBtn.disabled = true;
-          resetBtn.disabled = false;
+          document.getElementById('timerStart').disabled = true;
+          document.getElementById('timerPause').disabled = false;
+          document.getElementById('timerReset').disabled = false;
         }else{
           timerHint.textContent = 'Timer pausado';
-          startBtn.disabled = false;
-          pauseBtn.disabled = true;
-          resumeBtn.disabled = (remaining<=0);
-          resetBtn.disabled = (remaining===0);
+          document.getElementById('timerStart').disabled = false;
+          document.getElementById('timerPause').disabled = true;
+          document.getElementById('timerReset').disabled = (remaining===0);
         }
       }
-
       function startChrono(){
         if(chronoRunning) return;
         chronoStartTime = Date.now();
@@ -952,16 +943,6 @@
         persistTimers();
         updateTimerUI();
       }
-      function resumeTimer(){
-        if(timerRunning) return;
-        // Retoma a partir do valor atual de timerDuration (que já foi reduzido no pause)
-        if(timerDuration<=0) return;
-        timerStartTime = Date.now();
-        timerRunning = true;
-        persistTimers();
-        updateTimerUI();
-      }
-
       function resetTimer(){
         timerStartTime = null;
         timerDuration = 0;
@@ -974,9 +955,7 @@
       $('#chronoReset')?.addEventListener('click', resetChrono);
       $('#timerStart')?.addEventListener('click', startTimer);
       $('#timerPause')?.addEventListener('click', pauseTimer);
-      $('#timerResume')?.addEventListener('click', resumeTimer);
       $('#timerReset')?.addEventListener('click', resetTimer);
-
       document.addEventListener('keydown', (e)=>{
         if(e.code==='Space' && document.activeElement.tagName!=='INPUT' && document.activeElement.tagName!=='TEXTAREA'){
           if(chronoRunning) pauseChrono(); else startChrono();

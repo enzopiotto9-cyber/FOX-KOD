@@ -1,12 +1,19 @@
-# TODO - Dashboard estilo Canva (BlackboxAI)
+# TODO - blackbox-dashboard-app (BlackboxAI)
 
-- [ ] Inspecionar/atualizar estrutura do projeto (index.html atual).
-- [ ] Implementar base do site: layout dashboard, painel, responsividade e temas de fundo.
-- [ ] Implementar componente Calculadora (memória, histórico e animações).
-- [ ] Implementar componente Organizador de Tarefas (estilo Trello, colunas/carts, CRUD e persistência).
-- [ ] Implementar Timer (contagem regressiva) e Cronômetro (HH:MM:SS), com persistência.
-- [ ] Implementar Bloco de Notas com autosalvamento e busca.
-- [ ] Adicionar animações/efeitos consistentes (microinterações, transições, entrada/saída).
-- [ ] Testar tudo no browser e ajustar UX.
-- [ ] Deixar instruções de execução.
+## Etapa 1 — Diagnóstico e correções (JS/CSS)
+- [x] Verificar variáveis CSS usadas no JS (ex.: `var(--yellow)` e `var(--green)`) e corrigir caso não existam.
+- [x] Validar consistência de IDs/classes usados nos seletores (`#btnNoteSave`, `#noteSearch`, etc.).
+- [x] Conferir `Reset local` e garantir que limpa todas as chaves necessárias.
+
+
+
+
+## Etapa 2 — Melhorias rápidas de UX
+- [x] Ajustar microinterações que dependem de variáveis inexistentes (ex.: status visual do autosave das notas).
+- [ ] Pequenos ajustes para evitar erros silenciosos (se algum elemento não existir, log/guard).
+
+
+## Etapa 3 — Teste
+- [ ] Testar no browser: Calculadora, Timer/Cronômetro, Notas (autosave e snapshots), Trello-like (drag/drop, edição, remoção).
+
 
