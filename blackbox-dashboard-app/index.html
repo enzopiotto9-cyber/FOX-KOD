@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark light" />
+    <title>Blackbox Dashboard</title>
+
+    <style>
+      :root{
+        --bg0:#070A12;
+        --bg1:#0B1630;
+        --card: rgba(255,255,255,.06);
+        --card2: rgba(255,255,255,.09);
+        --stroke: rgba(255,255,255,.14);
+        --stroke2: rgba(255,255,255,.22);
+        --text: rgba(255,255,255,.92);
+        --muted: rgba(255,255,255,.65);
+        --shadow: 0 18px 60px rgba(0,0,0,.55);
+        --shadow2: 0 10px 30px rgba(0,0,0,.35);
+        --radius: 18px;
+        --radius2: 14px;
+        --accentA:#7c3aed;
+        --accentB:#22d3ee;
+        --accentC:#f97316;
+        --good:#34d399;
+        --warn:#fbbf24;
+        --bad:#fb7185;
+        --focus: rgba(34,211,238,.55);
+        --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      }
+
+      *{box-sizing:border-box}
+      html,body{height:100%}
+      body{
+        margin:0;
+        font-family: var(--sans);
+        color: var(--text);
+        background:
+          radial-gradient(1200px 700px at 20% 10%, rgba(124,58,237,.35), transparent 60%),
+          radial-gradient(900px 600px at 85% 20%, rgba(34,211,238,.28), transparent 55%),
+          radial-gradient(700px 500px at 70% 90%, rgba(249,115,22,.18), transparent 60%),
+          linear-gradient(180deg, var(--bg0), var(--bg1));
+        overflow-x:hidden;
+      }
+
+      body[data-theme="aurora"]{
+        background:
+          radial-gradient(1100px 650px at 15% 10%, rgba(16,185,129,.35), transparent 58%),
+          radial-gradient(900px 540px at 90% 18%, rgba(59,130,246,.32), transparent 55%),
+          radial-gradient(700px 460px at 70% 88%, rgba(236,72,153,.18), transparent 62%),
+          linear-gradient(180deg, #050915, #0B1636);
+      }
+      body[data-theme="sunset"]{
+        background:
+          radial-gradient(1100px 650px at 18% 12%, rgba(249,115,22,.32), transparent 58%),
+          radial-gradient(900px 540px at 88% 22%, rgba(124,58,237,.26), transparent 55%),
+          radial-gradient(700px 460px at 60% 88%, rgba(34,211,238,.14), transparent 62%),
+          linear-gradient(180deg, #0B0613, #1C1232);
+      }
+      body[data-theme="midnight"]{
+        background:
+          radial-gradient(1100px 650px at 25% 8%, rgba(99,102,241,.26), transparent 58%),
+          radial-gradient(900px 540px at 85% 20%, rgba(34,211,238,.22), transparent 55%),
+          radial-gradient(700px 460px at 65% 88%, rgba(16,185,129,.16), transparent 62%),
+          linear-gradient(180deg, #040713, #0B1630);
+      }
+      body[data-theme="mono"]{
+        background:
+          radial-gradient(1100px 650px at 15% 10%, rgba(255,255,255,.10), transparent 58%),
+          radial-gradient(900px 540px at 90% 18%, rgba(255,255,255,.08), transparent 55%),
+          radial-gradient(700px 460px at 70% 90%, rgba(255,255,255,.06), transparent 62%),
+          linear-gradient(180deg, #05060A, #0A0B12);
+      }
+
+      .app{min-height:100vh;padding:22px 18px 40px}
+      .topbar{
+        display:flex;align-items:center;justify-content:space-between;gap:14px;
+        max-width:1280px;margin:0 auto 16px;
+      }
+      .brand{display:flex;align-items:center;gap:12px}
+      .logo{
+        width:42px;height:42px;border-radius:14px;
+        background:
+          radial-gradient(18px 18px at 30% 25%, rgba(255,255,255,.35), transparent 60%),
+          linear-gradient(135deg, rgba(124,58,237,.95), rgba(34,211,238,.9));
+        box-shadow:0 14px 40px rgba(124,58,237,.35);
+        border:1px solid rgba(255,255,255,.22);
+        position:relative;overflow:hidden;
+      }
+      .logo:after{
+        content:"";position:absolute;top:-30%;left:-30%;width:120%;height:120%;
+        background:conic-gradient(from 180deg, rgba(255,255,255,.0), rgba(255,255,255,.35), rgba(255,255,255,.0));
+        transform:rotate(12deg);
+        animation:spinGlow 5.5s linear infinite;opacity:.8;
+      }
+      @keyframes spinGlow{to{transform:rotate(372deg)}}
+      .brand h1{margin:0;font-size:15px;letter-spacing:.2px;font-weight:750;line-height:1.1}
+      .brand p{margin:2px 0 0;font-size:12px;color:var(--muted)}
+
+      .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+      .pill{
+        border:1px solid var(--stroke);
+        background:rgba(255,255,255,.05);
+        border-radius:999px;padding:10px 12px;
+        display:flex;gap:10px;align-items:center;
+        box-shadow:var(--shadow2);
+        backdrop-filter:blur(10px);
+      }
+      .pill label{font-size:12px;color:var(--muted)}
+      select{background:transparent;border:none;color:var(--text);outline:none;font-weight:650}
+      option{background:#0b0d16}
+
+      .btn{
+        cursor:pointer;
+        border:1px solid var(--stroke);
+        background:rgba(255,255,255,.05);
+        color:var(--text);
+        padding:10px 12px;
+        border-radius:12px;
+        font-weight:720;
+        transition:transform .15s ease, background .2s ease, border-color .2s ease;
+        backdrop-filter:blur(10px);
+        box-shadow:var(--shadow2);
+        user-select:none;
+      }
+      .btn:hover{transform:translateY(-1px);border-color:var(--stroke2);background:rgba(255,255,255,.08)}
+      .btn:active{transform:translateY(0px) scale(.99)}
+      .btn.primary{border-color:rgba(34,211,238,.35);background:linear-gradient(135deg, rgba(124,58,237,.30), rgba(34,211,238,.20));}
+
+      .grid{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:1.05fr 1fr;gap:14px}
+      @media (max-width:980px){.grid{grid-template-columns:1fr}}
+      .col{display:flex;flex-direction:column;gap:14px}
+
+      .card{
+        border-radius:var(--radius);
+        background:linear-gradient(180deg, rgba(255,255,255,.075), rgba(255,255,255,.035));
+        border:1px solid rgba(255,255,255,.12);
+        box-shadow:var(--shadow);
+        backdrop-filter:blur(14px);
+        overflow:hidden;
+      }
+      .card .hd{
+        padding:14px 16px 10px;
+        display:flex;justify-content:space-between;align-items:flex-start;gap:10px;
+        border-bottom:1px solid rgba(255,255,255,.08);
+        background:rgba(255,255,255,.02);
+      }
+      .card .hd h2{margin:0;font-size:13px;letter-spacing:.25px;text-transform:uppercase;color:rgba(255,255,255,.84)}
+      .card .hd .sub{margin-top:4px;font-size:12px;color:var(--muted)}
+      .card .bd{padding:14px 16px 16px}
+
+      .fadeIn{animation:fadeInUp .55s cubic-bezier(.2,.8,.2,1) both}
+      @keyframes fadeInUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+      .calc{display:grid;grid-template-columns:1fr;gap:12px}
+      .calc-top{padding:12px;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.18)}
+      .calc-display{display:flex;flex-direction:column;gap:6px}
+      .calc-display .expr{font-family:var(--mono);color:var(--muted);font-size:12px;min-height:16px;word-break:break-all}
+      .calc-display .value{font-family:var(--mono);font-size:24px;font-weight:800;letter-spacing:.2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+      .seg{display:flex;gap:8px;flex-wrap:wrap}
+      .tag{font-size:12px;padding:7px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:var(--muted)}
+      .tag strong{color:var(--text)}
+
+      .calc-keys{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+      .key{
+        border-radius:14px;border:1px solid rgba(255,255,255,.14);
+        background:rgba(255,255,255,.05);color:var(--text);
+        padding:13px 10px;text-align:center;
+        font-family:var(--mono);font-weight:800;cursor:pointer;
+        transition:transform .12s ease, background .2s ease, border-color .2s ease;
+        user-select:none;position:relative;overflow:hidden;
+      }
+      .key:before{content:"";position:absolute;inset:-2px;background:radial-gradient(180px 80px at 20% 20%, rgba(34,211,238,.20), transparent 60%);opacity:0;transition:opacity .18s ease}
+      .key:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.26);background:rgba(255,255,255,.08)}
+      .key:hover:before{opacity:1}
+      .key:active{transform:translateY(0px) scale(.99)}
+      .key.op{background:linear-gradient(135deg, rgba(124,58,237,.22), rgba(34,211,238,.10));border-color:rgba(124,58,237,.28)}
+      .key.mem{background:linear-gradient(135deg, rgba(34,211,238,.18), rgba(255,255,255,.05));border-color:rgba(34,211,238,.28)}
+      .key.equals{grid-column:span 2;background:linear-gradient(135deg, rgba(34,211,238,.35), rgba(124,58,237,.22));border-color:rgba(34,211,238,.45)}
+
+      .calc-bot{display:grid;grid-template-columns:1fr;gap:10px}
+      .history{border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.16);padding:10px}
+      .history .row{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:6px 6px;border-radius:12px}
+      .history .row:hover{background:rgba(255,255,255,.06)}
+      .history .expr{font-family:var(--mono);font-size:12px;color:rgba(255,255,255,.78);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+      .history .val{font-family:var(--mono);font-size:12px;color:rgba(255,255,255,.58);flex:0 0 auto}
+
+      .board{display:flex;gap:12px;overflow:auto;padding-bottom:6px}
+      .board::-webkit-scrollbar{height:10px}
+      .board::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:999px}
+
+      .list{min-width:260px;max-width:320px;flex:0 0 auto;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.16);display:flex;flex-direction:column}
+      .list-h{padding:12px 12px 10px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;align-items:center;gap:10px}
+      .list-h .title{font-weight:850;font-size:13px;letter-spacing:.2px}
+      .list-h .count{color:var(--muted);font-size:12px;font-family:var(--mono)}
+      .cards{padding:10px;display:flex;flex-direction:column;gap:10px;min-height:120px}
+
+      .task{border-radius:14px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);padding:10px;cursor:grab;transition:transform .12s ease, background .2s ease, border-color .2s ease;user-select:none}
+      .task:active{cursor:grabbing;transform:scale(.99)}
+      .task:hover{border-color:rgba(255,255,255,.26);background:rgba(255,255,255,.08)}
+      .task .t-title{font-weight:850;font-size:13px;line-height:1.2}
+      .task .t-meta{margin-top:6px;display:flex;align-items:center;justify-content:space-between;gap:10px;color:var(--muted);font-size:12px;font-family:var(--mono)}
+      .badge{padding:4px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05)}
+
+      .addbar{margin:0 10px 12px;padding:10px;border-radius:16px;border:1px dashed rgba(255,255,255,.18);background:rgba(255,255,255,.03);display:flex;flex-direction:column;gap:8px}
+      .addbar input, .addbar textarea{width:100%;background:rgba(0,0,0,.15);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px 10px;color:var(--text);outline:none}
+      textarea{resize:vertical;min-height:64px}
+      .addbar input:focus, .addbar textarea:focus{border-color:rgba(34,211,238,.45);box-shadow:0 0 0 3px rgba(34,211,238,.15)}
+
+      .smallbtn{border-radius:12px;padding:10px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:var(--text);font-weight:820;cursor:pointer;transition:transform .12s ease, background .2s ease, border-color .2s ease}
+      .smallbtn:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.26);background:rgba(255,255,255,.10)}
+      .smallbtn:active{transform:translateY(0px) scale(.99)}
+
+      .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+      @media (max-width:560px){.row2{grid-template-columns:1fr}}
+
+      .clock{border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.16);padding:12px}
+      .timebig{font-family:var(--mono);font-size:32px;font-weight:900;letter-spacing:.5px}
+      .timehint{color:var(--muted);font-size:12px;margin-top:6px}
+      .controls2{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+      .controls2 input{background:rgba(0,0,0,.15);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px;color:var(--text);outline:none;font-family:var(--mono);width:140px}
+      .controls2 input:focus{border-color:rgba(34,211,238,.45);box-shadow:0 0 0 3px rgba(34,211,238,.15)}
+
+      .notes{border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.16);padding:12px;display:flex;flex-direction:column;gap:10px}
+      .notes .top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+      .notes textarea{width:100%;min-height:190px;background:rgba(0,0,0,.15);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:12px;color:var(--text);outline:none}
+      .notes textarea:focus{border-color:rgba(34,211,238,.45);box-shadow:0 0 0 3px rgba(34,211,238,.15)}
+
+      .status{display:flex;gap:10px;align-items:center;color:var(--muted);font-size:12px}
+      .dot{width:9px;height:9px;border-radius:999px;background:rgba(255,255,255,.22);box-shadow:0 0 0 4px rgba(255,255,255,.06)}
+      .dot.good{background:rgba(52,211,153,.95);box-shadow:0 0 0 4px rgba(52,211,153,.12)}
+
+      .note-list{display:flex;flex-direction:column;gap:10px}
+      .note-item{border-radius:14px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);padding:10px}
+      .note-item .head{display:flex;justify-content:space-between;gap:10px;align-items:center}
+      .note-item .head strong{font-size:13px}
+      .note-item .body{margin-top:6px;color:rgba(255,255,255,.78);font-size:12px;line-height:1.35}
+      .mono{font-family:var(--mono)}
+
+      .toast{position:fixed;right:18px;bottom:18px;padding:12px 14px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.18);border-radius:14px;box-shadow:var(--shadow);backdrop-filter:blur(10px);color:var(--text);transform:translateY(12px);opacity:0;pointer-events:none;transition:opacity .2s ease, transform .2s ease;max-width:360px}
+      .toast.show{opacity:1;transform:translateY(0)}
+      .kbd{font-family:var(--mono);font-size:12px;padding:2px 6px;border-radius:8px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05)}
+
+      button:focus,.key:focus,input:focus,textarea:focus,select:focus{outline:none}
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            <h1>Blackbox Dashboard</h1>
+            <p>Calculadora • Trello • Timer/Cronômetro • Notas • Autosave • Temas</p>
+          </div>
+        </div>
+
+        <div class="controls">
+          <div class="pill">
+            <label for="themeSel">Tema de fundo</label>
+            <select id="themeSel" aria-label="Tema de fundo">
+              <option value="aurora">Aurora</option>
+              <option value="sunset">Sunset</option>
+              <option value="midnight">Midnight</option>
+              <option value="mono">Mono</option>
+            </select>
+          </div>
+          <div class="pill">
+            <span style="font-size:12px;color:var(--muted)">Modo</span>
+            <button class="btn primary" id="btnFocus">Foco</button>
+          </div>
+          <button class="btn" id="btnResetAll" title="Apaga dados locais e reinicia">Reset local</button>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="col">
+          <section class="card fadeIn" style="animation-delay:0ms">
+            <div class="hd">
+              <div>
+                <h2>Calculadora Estilosa & Complexa</h2>
+                <div class="sub">Teclado + memória (MC/MR/M+/M-) + histórico.</div>
+              </div>
+              <div class="seg"><div class="tag">M: <strong id="calcMemLabel">0</strong></div></div>
+            </div>
+            <div class="bd">
+              <div class="calc">
+                <div class="calc-top">
+                  <div class="calc-display">
+                    <div class="expr" id="calcExpr"></div>
+                    <div class="value" id="calcValue">0</div>
+                  </div>
+                </div>
+
+                <div class="calc-keys" aria-label="Teclado da calculadora">
+                  <div class="key mem" data-key="MC">MC</div>
+                  <div class="key mem" data-key="MR">MR</div>
+                  <div class="key mem" data-key="M+">M+</div>
+                  <div class="key mem" data-key="M-">M-</div>
+
+                  <div class="key" data-key="7">7</div>
+                  <div class="key" data-key="8">8</div>
+                  <div class="key" data-key="9">9</div>
+                  <div class="key op" data-key="/">÷</div>
+
+                  <div class="key" data-key="4">4</div>
+                  <div class="key" data-key="5">5</div>
+                  <div class="key" data-key="6">6</div>
+                  <div class="key op" data-key="*">×</div>
+
+                  <div class="key" data-key="1">1</div>
+                  <div class="key" data-key="2">2</div>
+                  <div class="key" data-key="3">3</div>
+                  <div class="key op" data-key="-">−</div>
+
+                  <div class="key" data-key="0">0</div>
+                  <div class="key" data-key=".">.</div>
+                  <div class="key op" data-key="+">+</div>
+                  <div class="key op" data-key="C">C</div>
+
+                  <div class="key equals" data-key="=">=</div>
+                  <div class="key" data-key="BS">⌫</div>
+                </div>
+
+                <div class="calc-bot">
+                  <div class="history">
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px">
+                      <div style="font-weight:900;font-size:13px">Histórico</div>
+                      <div style="color:var(--muted);font-size:12px">Clique para repetir</div>
+                    </div>
+                    <div id="calcHistory"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="card fadeIn" style="animation-delay:60ms">
+            <div class="hd">
+              <div>
+                <h2>Timer & Cronômetro</h2>
+                <div class="sub">HH:MM:SS • Persistência local • Alarmes visuais.</div>
+              </div>
+              <div class="seg"><div class="tag">Dica: <span class="kbd">Espaço</span> pausa/recomeça cronômetro</div></div>
+            </div>
+            <div class="bd">
+              <div class="row2">
+                <div class="clock">
+                  <div class="timebig mono" id="chronoDisplay">00:00:00</div>
+                  <div class="timehint" id="chronoHint">Cronômetro rodando</div>
+                  <div class="controls2">
+                    <button class="btn" style="padding:10px 12px" id="chronoStart">Iniciar</button>
+                    <button class="btn" style="padding:10px 12px" id="chronoPause">Pausar</button>
+                    <button class="btn" style="padding:10px 12px" id="chronoReset">Reset</button>
+                  </div>
+                </div>
+
+                <div class="clock">
+                  <div class="timebig mono" id="timerDisplay">00:10:00</div>
+                  <div class="timehint" id="timerHint">Defina o tempo regressivo e dê start.</div>
+                  <div class="controls2">
+                    <input id="timerInput" inputmode="numeric" placeholder="HH:MM:SS" value="00:10:00" />
+                    <button class="btn" style="padding:10px 12px" id="timerStart">Start</button>
+                    <button class="btn" style="padding:10px 12px" id="timerPause">Pausar</button>
+                    <button class="btn" style="padding:10px 12px" id="timerReset">Reset</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="card fadeIn" style="animation-delay:120ms">
+            <div class="hd">
+              <div>
+                <h2>Bloco de Notas</h2>
+                <div class="sub">Autosalvamento • Busca • Historial local (últimos 12).</div>
+              </div>
+              <div class="seg"><div class="tag">Status: <strong id="noteStatus">Pronto</strong></div></div>
+            </div>
+            <div class="bd">
+              <div class="notes">
+                <div class="top">
+                  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                    <div class="status"><span class="dot" id="noteDot"></span><span id="noteStatusText">Aguardando digitação…</span></div>
+                    <input id="noteSearch" placeholder="Buscar dentro das notas…" style="background:rgba(0,0,0,.15);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px;color:var(--text);outline:none;width:240px"/>
+                  </div>
+                  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                    <button class="btn" id="btnNoteClear">Limpar</button>
+                    <button class="btn" id="btnNoteSave">Salvar snapshot</button>
+                  </div>
+                </div>
+
+                <textarea id="noteArea" placeholder="Escreva aqui… (autosave funciona automaticamente)"></textarea>
+
+                <div class="note-list" id="noteSnapshots"></div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div class="col">
+          <section class="card fadeIn" style="animation-delay:30ms">
+            <div class="hd">
+              <div>
+                <h2>Organizador de Tarefas (estilo Trello)</h2>
+                <div class="sub">Drag & drop • cartões • marcação/edição • persistência.</div>
+              </div>
+              <div class="seg"><div class="tag">Hoje: <strong id="todayLabel"></strong></div></div>
+            </div>
+            <div class="bd">
+              <div class="board" id="board">
+                <div class="list" data-list="todo">
+                  <div class="list-h">
+                    <div><div class="title">A Fazer</div><div class="sub" style="margin-top:4px">Planeje</div></div>
+                    <div class="count" data-count="todo">0</div>
+                  </div>
+                  <div class="cards" data-cards="todo"></div>
+                  <div class="addbar">
+                    <input type="text" data-new-title="todo" placeholder="Nova tarefa…" maxlength="80" />
+                    <button class="smallbtn" data-add="todo">Adicionar</button>
+                  </div>
+                </div>
+
+                <div class="list" data-list="doing">
+                  <div class="list-h">
+                    <div><div class="title">Em Progresso</div><div class="sub" style="margin-top:4px">Executar</div></div>
+                    <div class="count" data-count="doing">0</div>
+                  </div>
+                  <div class="cards" data-cards="doing"></div>
+                  <div class="addbar">
+                    <input type="text" data-new-title="doing" placeholder="Nova tarefa…" maxlength="80" />
+                    <button class="smallbtn" data-add="doing">Adicionar</button>
+                  </div>
+                </div>
+
+                <div class="list" data-list="done">
+                  <div class="list-h">
+                    <div><div class="title">Concluído</div><div class="sub" style="margin-top:4px">Finalizado</div></div>
+                    <div class="count" data-count="done">0</div>
+                  </div>
+                  <div class="cards" data-cards="done"></div>
+                  <div class="addbar">
+                    <input type="text" data-new-title="done" placeholder="Nova tarefa…" maxlength="80" />
+                    <button class="smallbtn" data-add="done">Adicionar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="card fadeIn" style="animation-delay:180ms">
+            <div class="hd">
+              <div>
+                <h2>Extras Úteis</h2>
+                <div class="sub">Checklist • Lembretes rápidos • Mini foco.</div>
+              </div>
+              <div class="seg"><div class="tag">Tudo local</div></div>
+            </div>
+            <div class="bd">
+              <div class="row2">
+                <div class="clock">
+                  <div style="font-weight:900;font-size:13px;margin-bottom:10px">Checklist rápido</div>
+                  <div style="display:flex;flex-direction:column;gap:10px" id="quickCheck"></div>
+                  <div style="display:flex;gap:10px;margin-top:12px">
+                    <input id="checkNew" placeholder="ex.: estudar 30min" style="background:rgba(0,0,0,.15);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px;color:var(--text);outline:none;flex:1"/>
+                    <button class="btn" style="padding:10px 12px" id="btnCheckAdd">Adicionar</button>
+                  </div>
+                </div>
+
+                <div class="clock">
+                  <div style="font-weight:900;font-size:13px;margin-bottom:10px">Lembretes rápidos</div>
+                  <div style="display:flex;gap:10px;margin-bottom:10px">
+                    <button class="btn" style="padding:10px 12px" data-rem="pomodoro">Pomodoro (25m)</button>
+                    <button class="btn" style="padding:10px 12px" data-rem="break">Pausa (5m)</button>
+                  </div>
+                  <div style="color:var(--muted);font-size:12px;line-height:1.35">Usa um timer rápido sem precisar digitar.</div>
+                  <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
+                    <button class="btn" style="padding:10px 12px" id="btnRemUrgent">Urgente agora</button>
+                    <button class="btn" style="padding:10px 12px" id="btnRemClear">Limpar lembretes</button>
+                  </div>
+                  <div style="margin-top:14px" id="reminders"></div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <div class="toast" id="toast"></div>
+    </div>
+
+    <script>
+      const $ = (sel, root=document) => root.querySelector(sel);
+      const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+      function pad2(n){return String(n).padStart(2,'0')}
+      function formatHMS(ms){
+        const total = Math.max(0, Math.floor(ms/1000));
+        const h = Math.floor(total/3600);
+        const m = Math.floor((total%3600)/60);
+        const s = total%60;
+        return `${pad2(h)}:${pad2(m)}:${pad2(s)}`;
+      }
+      function parseHMS(str){
+        const m = String(str||'').trim().match(/^(\d{1,2}):(\d{1,2}):(\d{1,2})$/);
+        if(!m) return null;
+        const h = Number(m[1]);
+        const mi = Number(m[2]);
+        const s = Number(m[3]);
+        if(mi>59 || s>59) return null;
+        return (h*3600 + mi*60 + s)*1000;
+      }
+      function safeNumber(x){
+        const n = Number(x);
+        return Number.isFinite(n) ? n : null;
+      }
+      function toast(msg, ms=1800){
+        const el = $('#toast');
+        el.textContent = msg;
+        el.classList.add('show');
+        clearTimeout(toast._t);
+        toast._t = setTimeout(()=>el.classList.remove('show'), ms);
+      }
+      
+      // Themes
+      const themeSel = $('#themeSel');
+      function applyTheme(theme){
+        document.body.dataset.theme = theme;
+        try{ localStorage.setItem('bb_theme', theme); }catch{}
+      }
+      (function initTheme(){
+        let t = 'aurora';
+        try{ t = localStorage.getItem('bb_theme') || 'aurora'; }catch{}
+        if(themeSel) themeSel.value = t;
+        applyTheme(t);
+      })();
+      themeSel?.addEventListener('change', (e)=> applyTheme(e.target.value));
+
+      // Reset local
+      $('#btnResetAll')?.addEventListener('click', ()=>{
+        const ok = confirm('Resetar dados locais do site?');
+        if(!ok) return;
+        const keys = ['bb_calc_history','bb_calc_mem','bb_trello','bb_timer','bb_chrono','bb_notes','bb_note_snapshots','bb_quick_checks','bb_reminders','bb_focus'];
+        keys.forEach(k=>{ try{ localStorage.removeItem(k);}catch{} });
+        location.reload();
+      });
+
+      // Focus mode
+      $('#btnFocus')?.addEventListener('click', ()=>{
+        const on = !document.body.classList.contains('bb-focus');
+        document.body.classList.toggle('bb-focus', on);
+        try{ localStorage.setItem('bb_focus', on?'1':'0'); }catch{}
+        const right = document.querySelector('.grid')?.children?.[1];
+        if(right){ right.style.opacity = on ? '0.15' : '1'; right.style.filter = on ? 'blur(2px)' : ''; }
+        toast(on ? 'Modo Foco ativado.' : 'Modo Foco desativado.');
+      });
+      try{
+        if(localStorage.getItem('bb_focus')==='1') $('#btnFocus')?.click();
+      }catch{}
+
+      // ---------- Calculadora ----------
+      const calcExpr = $('#calcExpr');
+      const calcValue = $('#calcValue');
+      const calcMemLabel = $('#calcMemLabel');
+      const calcHistoryEl = $('#calcHistory');
+
+      const calcState = { expr:'', value:'0', mem:0, history:[] };
+      function persistCalc(){
+        try{
+          localStorage.setItem('bb_calc_mem', String(calcState.mem));
+          localStorage.setItem('bb_calc_history', JSON.stringify(calcState.history.slice(0,30)));
+        }catch{}
+      }
+      function loadCalc(){
+        try{
+          const m = localStorage.getItem('bb_calc_mem');
+          if(m!==null) calcState.mem = Number(m) || 0;
+          const h = localStorage.getItem('bb_calc_history');
+          if(h) calcState.history = JSON.parse(h);
+        }catch{}
+      }
+      function updateCalcUI(){
+        calcExpr.textContent = calcState.expr;
+        calcValue.textContent = calcState.value;
+        calcMemLabel.textContent = String(calcState.mem);
+        renderCalcHistory();
+      }
+      function normalizeOperator(op){
+        return op==='*' || op==='/' || op==='+' || op==='-' ? op : op;
+      }
+      function evaluateExpression(expr){
+        if(!/^[0-9+\-*/.\s]+$/.test(expr)) return null;
+        try{
+          const res = Function('"use strict"; return ('+expr+');')();
+          if(!Number.isFinite(res)) return null;
+          return res;
+        }catch{ return null; }
+      }
+      function setValueFromNumber(n){
+        calcState.value = (Math.abs(n) >= 1e12) ? n.toExponential(6) : String(n);
+      }
+      function appendToken(tok){
+        if(tok==='.'){
+          const parts = calcState.expr.split(/([+\-*/])/).filter(Boolean);
+          const last = parts[parts.length-1] ?? '';
+          if(last.includes('.')) return;
+        }
+        calcState.expr += tok;
+      }
+      function onKey(tok){
+        if(tok==='C'){
+          calcState.expr='';
+          calcState.value='0';
+          updateCalcUI();
+          return;
+        }
+        if(tok==='BS'){
+          calcState.expr = calcState.expr.slice(0,-1);
+          const tryRes = evaluateExpression(calcState.expr || '0');
+          if(tryRes===null) calcState.value='0'; else setValueFromNumber(tryRes);
+          updateCalcUI();
+          return;
+        }
+        if(tok==='='){
+          const expr = (calcState.expr || '0').trim();
+          const res = evaluateExpression(expr);
+          if(res===null){ toast('Expressão inválida.'); return; }
+          const pretty = expr.replace(/\s+/g,' ');
+          calcState.history.unshift({expr: pretty, val: String(res)});
+          calcState.history = calcState.history.slice(0,20);
+          setValueFromNumber(res);
+          calcState.expr='';
+          persistCalc();
+          updateCalcUI();
+          return;
+        }
+        if(tok==='MC'){ calcState.mem=0; persistCalc(); updateCalcUI(); return; }
+        if(tok==='MR'){ calcState.expr += String(calcState.mem); updateCalcUI(); return; }
+        if(tok==='M+'){ const n=safeNumber(calcState.value); if(n===null) return; calcState.mem += n; persistCalc(); updateCalcUI(); return; }
+        if(tok==='M-'){ const n=safeNumber(calcState.value); if(n===null) return; calcState.mem -= n; persistCalc(); updateCalcUI(); return; }
+
+        if(['+','-','*','/'].includes(tok)){
+          calcState.expr = calcState.expr.replace(/[+\-*/]\s*$/,'');
+          calcState.expr += normalizeOperator(tok);
+          updateCalcUI();
+          return;
+        }
+
+        appendToken(tok);
+        const res = evaluateExpression(calcState.expr);
+        if(res!==null) setValueFromNumber(res);
+        updateCalcUI();
+      }
+      function renderCalcHistory(){
+        if(!calcHistoryEl) return;
+        calcHistoryEl.innerHTML='';
+        if(calcState.history.length===0){
+          const empty = document.createElement('div');
+          empty.style.color='var(--muted)';
+          empty.style.fontSize='12px';
+          empty.textContent='Sem histórico ainda.';
+          calcHistoryEl.appendChild(empty);
+          return;
+        }
+        calcState.history.forEach(h=>{
+          const row = document.createElement('div');
+          row.className='row';
+          const expr = document.createElement('div');
+          expr.className='expr';
+          expr.textContent = h.expr;
+          const val = document.createElement('div');
+          val.className='val';
+          val.textContent = `= ${h.val}`;
+          row.appendChild(expr);
+          row.appendChild(val);
+          row.title='Clique para repetir';
+          row.addEventListener('click', ()=>{
+            calcState.expr = h.expr;
+            const res = evaluateExpression(h.expr);
+            if(res!==null) setValueFromNumber(res);
+            persistCalc();
+            updateCalcUI();
+          });
+          calcHistoryEl.appendChild(row);
+        });
+      }
+      $$('.key[data-key]').forEach(k=>{
+        k.tabIndex=0;
+        k.addEventListener('click', ()=> onKey(k.dataset.key));
+      });
+      document.addEventListener('keydown', (e)=>{
+        const key=e.key;
+        const isTyping = document.activeElement && ['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName);
+        if(isTyping) return;
+        if((key>='0'&&key<='9') || key==='.') { onKey(key); return; }
+        if(['+','-','*','/'].includes(key)) { onKey(key); return; }
+        if(key==='Enter' || key==='=') { onKey('='); return; }
+        if(key==='Backspace') { onKey('BS'); e.preventDefault(); return; }
+        if(key==='Escape') { onKey('C'); return; }
+      });
+
+      loadCalc();
+      updateCalcUI();
+
+      // ---------- Trello ----------
+      const lists = ['todo','doing','done'];
+      const boardStateKey='bb_trello';
+      const boardState={tasks:[]};
+      const uid = ()=> Math.random().toString(16).slice(2) + Date.now().toString(16);
+      function persistBoard(){
+        try{ localStorage.setItem(boardStateKey, JSON.stringify(boardState.tasks)); }catch{}
+      }
+      function loadBoard(){
+        try{
+          const t = localStorage.getItem(boardStateKey);
+          if(t) boardState.tasks = JSON.parse(t);
+        }catch{}
+      }
+      function countFor(list){ return boardState.tasks.filter(x=>x.list===list).length; }
+      function renderBoard(){
+        lists.forEach(list=>{
+          const container = $(`[data-cards="${list}"]`);
+          if(!container) return;
+          container.innerHTML='';
+          const tasks = boardState.tasks.filter(x=>x.list===list);
+          tasks.forEach(task=>{
+            const el=document.createElement('div');
+            el.className='task';
+            el.draggable=true;
+            el.dataset.id=task.id;
+            el.innerHTML=`
+              <div class="t-title"></div>
+              <div class="t-meta">
+                <span class="badge">${escapeHtml(task.tag||'')}</span>
+                <span>${task.done ? '✓' : new Date(task.createdAt).toLocaleDateString('pt-BR')}</span>
+              </div>
+            `;
+            el.querySelector('.t-title').textContent = task.title;
+
+            el.addEventListener('dragstart', (e)=>{
+              e.dataTransfer.setData('text/plain', task.id);
+              e.dataTransfer.effectAllowed='move';
+              el.style.opacity='0.6';
+            });
+            el.addEventListener('dragend', ()=>{ el.style.opacity='1'; });
+            el.addEventListener('dblclick', ()=>{
+              task.list = (task.list==='done') ? 'todo' : 'done';
+              persistBoard();
+              renderBoard();
+              toast('Tarefa movida.');
+            });
+            el.addEventListener('contextmenu', (e)=>{
+              e.preventDefault();
+              const next = prompt('Editar título:', task.title);
+              if(next===null) return;
+              const trimmed=next.trim();
+              if(!trimmed){
+                const ok=confirm('Remover tarefa?');
+                if(ok){
+                  boardState.tasks = boardState.tasks.filter(t=>t.id!==task.id);
+                  persistBoard();
+                  renderBoard();
+                  toast('Tarefa removida.');
+                }
+                return;
+              }
+              task.title = trimmed;
+              persistBoard();
+              renderBoard();
+              toast('Tarefa editada.');
+            });
+            container.appendChild(el);
+          });
+          const countEl = document.querySelector(`[data-count="${list}"]`);
+          if(countEl) countEl.textContent = String(countFor(list));
+        });
+      }
+      $$('.list').forEach(listEl=>{
+        listEl.addEventListener('dragover', (e)=>{
+          e.preventDefault();
+          e.dataTransfer.dropEffect='move';
+        });
+        listEl.addEventListener('drop', (e)=>{
+          e.preventDefault();
+          const id = e.dataTransfer.getData('text/plain');
+          const task = boardState.tasks.find(t=>t.id===id);
+          if(!task) return;
+          const newList = listEl.dataset.list;
+          if(task.list === newList) return;
+          task.list = newList;
+          persistBoard();
+          renderBoard();
+          toast('Tarefa movida.');
+        });
+      });
+      $$('.addbar button[data-add]').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const list = btn.dataset.add;
+          const input = document.querySelector(`input[data-new-title="${list}"]`);
+          if(!input) return;
+          const title = input.value.trim();
+          if(!title) return;
+          const newTask = { id: uid(), title, list, createdAt: Date.now(), done: false };
+          boardState.tasks.push(newTask);
+          persistBoard();
+          renderBoard();
+          input.value='';
+          toast('Tarefa adicionada.');
+        });
+      });
+      loadBoard();
+      renderBoard();
+
+      // ---------- Timer & Cronômetro ----------
+      const chronoDisplay = $('#chronoDisplay');
+      const chronoHint = $('#chronoHint');
+      const timerDisplay = $('#timerDisplay');
+      const timerHint = $('#timerHint');
+      let chronoStartTime = null;
+      let chronoElapsed = 0;
+      let chronoRunning = false;
+      let timerStartTime = null;
+      let timerDuration = 0;
+      let timerRunning = false;
+      function persistTimers(){
+        try{
+          const data = {
+            chronoStartTime,
+            chronoElapsed,
+            chronoRunning,
+            timerStartTime,
+            timerDuration,
+            timerRunning
+          };
+          localStorage.setItem('bb_chrono', JSON.stringify(data));
+        }catch{}
+      }
+      function loadTimers(){
+        try{
+          const t = localStorage.getItem('bb_chrono');
+          if(t){
+            const data = JSON.parse(t);
+            chronoStartTime = data.chronoStartTime;
+            chronoElapsed = data.chronoElapsed;
+            chronoRunning = data.chronoRunning;
+            timerStartTime = data.timerStartTime;
+            timerDuration = data.timerDuration;
+            timerRunning = data.timerRunning;
+          }
+        }catch{}
+      }
+      function updateChronoUI(){
+        const now = Date.now();
+        let displayTime = chronoElapsed;
+        if(chronoRunning && chronoStartTime) displayTime += (now - chronoStartTime);
+        chronoDisplay.textContent = formatHMS(displayTime);
+        if(chronoRunning){
+          chronoHint.textContent = 'Cronômetro rodando';
+          document.getElementById('chronoStart').disabled = true;
+          document.getElementById('chronoPause').disabled = false;
+          document.getElementById('chronoReset').disabled = false;
+        }else{
+          chronoHint.textContent = 'Cronômetro pausado';
+          document.getElementById('chronoStart').disabled = false;
+          document.getElementById('chronoPause').disabled = true;
+          document.getElementById('chronoReset').disabled = (chronoElapsed===0);
+        }
+      }
+      function updateTimerUI(){
+        const now = Date.now();
+        let remaining = timerDuration;
+        if(timerRunning && timerStartTime) remaining -= (now - timerStartTime);
+        timerDisplay.textContent = formatHMS(remaining);
+        if(timerRunning){
+          timerHint.textContent = 'Timer rodando';
+          document.getElementById('timerStart').disabled = true;
+          document.getElementById('timerPause').disabled = false;
+          document.getElementById('timerReset').disabled = false;
+        }else{
+          timerHint.textContent = 'Timer pausado';
+          document.getElementById('timerStart').disabled = false;
+          document.getElementById('timerPause').disabled = true;
+          document.getElementById('timerReset').disabled = (remaining===0);
+        }
+      }
+      function startChrono(){
+        if(chronoRunning) return;
+        chronoStartTime = Date.now();
+        chronoRunning = true;
+        persistTimers();
+        updateChronoUI();
+      }
+      function pauseChrono(){
+        if(!chronoRunning) return;
+        const now = Date.now();
+        chronoElapsed += (now - chronoStartTime);
+        chronoStartTime = null;
+        chronoRunning = false;
+        persistTimers();
+        updateChronoUI();
+      }
+      function resetChrono(){
+        chronoStartTime = null;
+        chronoElapsed = 0;
+        chronoRunning = false;
+        persistTimers();
+        updateChronoUI();
+      }
+      function startTimer(){
+        if(timerRunning) return;
+        const input = $('#timerInput');
+        const dur = parseHMS(input.value);
+        if(dur===null){
+          toast('Formato inválido. Use HH:MM:SS');
+          return;
+        }
+        timerDuration = dur;
+        timerStartTime = Date.now();
+        timerRunning = true;
+        persistTimers();
+        updateTimerUI();
+      }
+      function pauseTimer(){
+        if(!timerRunning) return;
+        const now = Date.now();
+        timerDuration -= (now - timerStartTime);
+        timerStartTime = null;
+        timerRunning = false;
+        persistTimers();
+        updateTimerUI();
+      }
+      function resetTimer(){
+        timerStartTime = null;
+        timerDuration = 0;
+        timerRunning = false;
+        persistTimers();
+        updateTimerUI();
+      }
+      $('#chronoStart')?.addEventListener('click', startChrono);
+      $('#chronoPause')?.addEventListener('click', pauseChrono);
+      $('#chronoReset')?.addEventListener('click', resetChrono);
+      $('#timerStart')?.addEventListener('click', startTimer);
+      $('#timerPause')?.addEventListener('click', pauseTimer);
+      $('#timerReset')?.addEventListener('click', resetTimer);
+      document.addEventListener('keydown', (e)=>{
+        if(e.code==='Space' && document.activeElement.tagName!=='INPUT' && document.activeElement.tagName!=='TEXTAREA'){
+          if(chronoRunning) pauseChrono(); else startChrono();
+          e.preventDefault();
+        }
+      });
+      loadTimers();
+      updateChronoUI();
+      updateTimerUI();
+
+      // ---------- Notas ----------
+      const noteArea = $('#noteArea');
+      const noteStatus = $('#noteStatus');  
+      const noteDot = $('#noteDot');
+      const noteSearch = $('#noteSearch');
+      const noteSnapshots = $('#noteSnapshots');
+      const noteStateKey = 'bb_notes';
+      const noteSnapshotKey = 'bb_note_snapshots';
+      const noteState = { content:'', snapshots:[] };
+      let noteAutosaveTimer = null;
+      function persistNotes(){
+        try{
+          localStorage.setItem(noteStateKey, noteState.content);
+          localStorage.setItem(noteSnapshotKey, JSON.stringify(noteState.snapshots.slice(0,12)));
+        }catch{}
+      }
+      function loadNotes(){
+        try{
+          const c = localStorage.getItem(noteStateKey);
+          if(c!==null) noteState.content = c;
+          const s = localStorage.getItem(noteSnapshotKey);
+          if(s) noteState.snapshots = JSON.parse(s);
+        }catch{}
+      }
+      function updateNotesUI(){
+        noteArea.value = noteState.content;
+        renderNoteSnapshots();
+      }
+      function renderNoteSnapshots(filter=''){
+        if(!noteSnapshots) return;
+        noteSnapshots.innerHTML='';
+        const filtered = noteState.snapshots.filter(s=>s.content.toLowerCase().includes(filter.toLowerCase()));
+        if(filtered.length===0){
+          const empty = document.createElement('div');
+          empty.style.color='var(--muted)';
+          empty.style.fontSize='12px';
+          empty.textContent='Sem snapshots encontrados.';
+          noteSnapshots.appendChild(empty);
+          return;
+        }
+        filtered.forEach(s=>{
+          const el = document.createElement('div');
+          el.className='snapshot';
+          el.innerHTML=`
+            <div class="s-meta">
+              <span>${new Date(s.createdAt).toLocaleString()}</span>
+              <button class="smallbtn" title="Restaurar este snapshot">Restaurar</button>
+            </div>
+            <div class="s-content"></div>
+          `;
+          el.querySelector('.s-content').textContent = s.content.length > 100 ? s.content.slice(0,100)+'...' : s.content;
+          el.querySelector('button').addEventListener('click', ()=>{
+            const ok = confirm('Restaurar este snapshot? O conteúdo atual será perdido.');
+            if(!ok) return;
+            noteState.content = s.content;
+            persistNotes();
+            updateNotesUI();
+            toast('Snapshot restaurado.');
+          });
+          noteSnapshots.appendChild(el);
+        });
+      }
+      noteArea.addEventListener('input', ()=>{
+        noteState.content = noteArea.value;
+        noteStatus.textContent = 'Digitando...';
+        noteDot.style.backgroundColor = 'var(--yellow)';
+        clearTimeout(noteAutosaveTimer);
+        noteAutosaveTimer = setTimeout(()=>{
+          persistNotes();
+          noteStatus.textContent = 'Salvo';
+          noteDot.style.backgroundColor = 'var(--green)';
+          setTimeout(()=>{
+            noteStatus.textContent = 'Pronto';
+            noteDot.style.backgroundColor = 'var(--muted)';
+          }, 1500);
+        }, 1000);
+      });
+      $('#btnNoteSave')?.addEventListener('click', ()=>{
+        if(!noteState.content.trim()){
+          toast('Não é possível salvar um snapshot vazio.');
+          return;
+        }
+        noteState.snapshots.unshift({ content: noteState.content, createdAt: Date.now() });
+        noteState.snapshots = noteState.snapshots.slice(0,12);
+        persistNotes();
+        renderNoteSnapshots(noteSearch.value);
+        toast('Snapshot salvo.');
+      });
+      $('#btnNoteClear')?.addEventListener('click', ()=>{
+        const ok = confirm('Limpar todo o conteúdo da nota? Esta ação não pode ser desfeita.');
+        if(!ok) return;
+        noteState.content = '';
+        persistNotes();
+        updateNotesUI();
+        toast('Nota limpa.');
+      });
+      noteSearch.addEventListener('input', ()=>{
+        renderNoteSnapshots(noteSearch.value);
+      }); 
+      loadNotes();
+      updateNotesUI();
+   
+      object.keys(localStorage).forEach(k=>{
+        if(k.startsWith('bb_')) console.log(k, localStorage.getItem(k));
+      });
+
+      // Organizador de Tarefas (estilo Trello)
+      const todayLabel = $('#todayLabel');
+      function updateTodayLabel(){
+        if(!todayLabel) return;
+        const now = new Date();
+        todayLabel.textContent = now.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'short' });
+      }
+      updateTodayLabel();
+    </script>
+  </body>
+</html>
