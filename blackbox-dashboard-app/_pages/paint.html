@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark light" />
+    <title>OrbiDesk • Paint</title>
+
+    <style>
+      :root{
+        --bg0:#070A12;
+        --bg1:#0B1630;
+        --text: rgba(255,255,255,.92);
+        --muted: rgba(255,255,255,.65);
+        --shadow: 0 18px 60px rgba(0,0,0,.55);
+        --shadow2: 0 10px 30px rgba(0,0,0,.35);
+        --radius:18px;
+        --stroke: rgba(255,255,255,.14);
+        --stroke2: rgba(255,255,255,.22);
+        --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      }
+      *{box-sizing:border-box}
+      html,body{height:100%}
+      body{
+        margin:0;
+        font-family: var(--sans);
+        color: var(--text);
+        background:
+          radial-gradient(1200px 700px at 20% 10%, rgba(124,58,237,.35), transparent 60%),
+          radial-gradient(900px 600px at 85% 20%, rgba(34,211,238,.28), transparent 55%),
+          radial-gradient(700px 500px at 70% 90%, rgba(249,115,22,.18), transparent 60%),
+          linear-gradient(180deg, var(--bg0), var(--bg1));
+        overflow-x:hidden;
+      }
+      body[data-theme="mono"]{
+        background:
+          radial-gradient(1100px 650px at 15% 10%, rgba(255,255,255,.10), transparent 58%),
+          radial-gradient(900px 540px at 90% 18%, rgba(255,255,255,.08), transparent 55%),
+          radial-gradient(700px 460px at 70% 90%, rgba(255,255,255,.06), transparent 62%),
+          linear-gradient(180deg, #05060A, #0A0B12);
+      }
+
+      .app{min-height:100vh;padding:22px 18px 40px}
+      .topbar{max-width:1280px;margin:0 auto 16px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+      .brand{display:flex;align-items:center;gap:12px}
+      .logo{
+        width:46px;height:46px;border-radius:16px;
+        position:relative;overflow:hidden;
+        background:
+          radial-gradient(16px 16px at 30% 25%, rgba(255,255,255,.35), transparent 60%),
+          linear-gradient(135deg, rgba(124,58,237,.95), rgba(34,211,238,.9));
+        box-shadow:0 14px 40px rgba(124,58,237,.35);
+        border:1px solid rgba(255,255,255,.22);
+      }
+      .logo:after{
+        content:"";position:absolute;top:-40%;left:-40%;width:140%;height:140%;
+        background:conic-gradient(from 180deg, rgba(255,255,255,.0), rgba(255,255,255,.35), rgba(255,255,255,.0));
+        transform:rotate(12deg);
+        animation:spinGlow 5.5s linear infinite;opacity:.85;
+      }
+      @keyframes spinGlow{to{transform:rotate(372deg)}}
+
+      .brand h1{margin:0;font-size:16px;letter-spacing:.2px;font-weight:900}
+      .brand p{margin:2px 0 0;font-size:12px;color:var(--muted)}
+
+      .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+      .pill{border:1px solid var(--stroke);background:rgba(255,255,255,.05);border-radius:999px;padding:10px 12px;box-shadow:var(--shadow2);backdrop-filter:blur(10px);display:flex;gap:10px;align-items:center}
+      .pill label{font-size:12px;color:var(--muted)}
+      select{background:transparent;border:none;color:var(--text);outline:none;font-weight:650}
+      option{background:#0b0d16}
+
+      .card{max-width:980px;margin:0 auto;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);box-shadow:var(--shadow);backdrop-filter:blur(14px);overflow:hidden}
+      .cardHd{padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02)}
+      .cardHd h2{margin:0;font-size:13px;letter-spacing:.25px;text-transform:uppercase;color:rgba(255,255,255,.84)}
+      .cardBd{padding:14px 16px 16px}
+
+      .btn{cursor:pointer;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:var(--text);padding:10px 12px;border-radius:12px;font-weight:900;transition:transform .12s ease, background .2s ease, border-color .2s ease;user-select:none}
+      .btn:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.26);background:rgba(255,255,255,.10)}
+      .btn:active{transform:translateY(0) scale(.99)}
+
+      .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+      input[type="color"]{padding:0;border:none;background:transparent;cursor:pointer}
+      input[type="range"]{width:160px}
+
+      canvas{display:block;width:100%;height:520px;touch-action:none}
+
+      .toast{position:fixed;right:18px;bottom:18px;padding:12px 14px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.18);border-radius:14px;box-shadow:var(--shadow);backdrop-filter:blur(10px);color:var(--text);transform:translateY(12px);opacity:0;pointer-events:none;transition:opacity .2s ease, transform .2s ease;max-width:360px}
+      .toast.show{opacity:1;transform:translateY(0)}
+
+      .hint{max-width:980px;margin:10px auto 0;color:rgba(255,255,255,.62);font-size:12px;line-height:1.45}
+
+      .linkBack{margin-left:auto}
+    </style>
+  </head>
+
+  <body>
+    <div class="app">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            <h1>OrbiDesk</h1>
+            <p>Canvas • Paint</p>
+          </div>
+        </div>
+
+        <div class="controls">
+          <div class="pill">
+            <label for="themeSel">Tema</label>
+            <select id="themeSel" aria-label="Tema de fundo">
+              <option value="aurora">Aurora</option>
+              <option value="sunset">Sunset</option>
+              <option value="midnight">Midnight</option>
+              <option value="mono">Mono</option>
+            </select>
+          </div>
+          <button class="btn" id="btnGoHome" title="Voltar">🏠 Início</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="cardHd"><h2>Desenho (sem salvar automaticamente)</h2></div>
+        <div class="cardBd">
+          <div class="row">
+            <label style="font-size:12px;color:var(--muted);font-weight:700;letter-spacing:.2px">Cor</label>
+            <input id="paintColor" type="color" value="#ffffff" />
+
+            <label style="font-size:12px;color:var(--muted);font-weight:700;letter-spacing:.2px;margin-left:6px">Tamanho</label>
+            <input id="paintSize" type="range" min="1" max="18" value="6" />
+
+            <button class="btn" id="paintClear" title="Limpar">Limpar</button>
+            <button class="btn" id="paintUndo" title="Desfazer">Desfazer</button>
+          </div>
+
+          <div style="border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.10);background:rgba(0,0,0,.25);">
+            <canvas id="paintCanvas" width="900" height="520"></canvas>
+          </div>
+
+          <div class="hint" style="margin-top:10px;max-width:unset">
+            Desenhe com mouse ou toque. O conteúdo não é salvo automaticamente.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+      const $ = (sel, root=document) => root.querySelector(sel);
+      const toastEl = $('#toast');
+      function toast(msg, ms=1800){
+        if(!toastEl) return;
+        toastEl.textContent = msg;
+        toastEl.classList.add('show');
+        clearTimeout(toastEl._t);
+        toastEl._t = setTimeout(()=>toastEl.classList.remove('show'), ms);
+      }
+
+      $('#btnGoHome')?.addEventListener('click', ()=>{
+        location.href = '../index.html';
+      });
+
+      // theme
+      const themeSel = $('#themeSel');
+      function applyTheme(theme){
+        document.body.dataset.theme = theme;
+        try{ localStorage.setItem('bb_theme', theme); }catch{}
+      }
+      (function initTheme(){
+        let t='aurora';
+        try{ t = localStorage.getItem('bb_theme') || 'aurora'; }catch{}
+        if(themeSel) themeSel.value = t;
+        applyTheme(t);
+      })();
+      themeSel?.addEventListener('change', (e)=> applyTheme(e.target.value));
+
+      // Paint
+      (function initPaint(){
+        const canvas = $('#paintCanvas');
+        if(!canvas) return;
+        const ctx = canvas.getContext('2d');
+
+        const colorEl = $('#paintColor');
+        const sizeEl = $('#paintSize');
+        const clearBtn = $('#paintClear');
+        const undoBtn = $('#paintUndo');
+
+        let drawing=false;
+        let last=null;
+        let stroke = { color: (colorEl?.value || '#fff'), size: Number(sizeEl?.value || 6) };
+
+        const history=[];
+        const pushHistory = ()=>{
+          try{ history.push(ctx.getImageData(0,0,canvas.width,canvas.height)); }
+          catch{ /* ignore */ }
+        };
+
+        const toPoint = (ev)=>{
+          const rect = canvas.getBoundingClientRect();
+          const x = (ev.clientX - rect.left) * (canvas.width / rect.width);
+          const y = (ev.clientY - rect.top) * (canvas.height / rect.height);
+          return { x, y };
+        };
+
+        const begin = (ev)=>{
+          drawing=true;
+          stroke.color = colorEl?.value || '#fff';
+          stroke.size = Number(sizeEl?.value || 6);
+          pushHistory();
+          last = toPoint(ev);
+        };
+
+        const move = (ev)=>{
+          if(!drawing || !last) return;
+          const p = toPoint(ev);
+
+          ctx.lineCap='round';
+          ctx.lineJoin='round';
+          ctx.strokeStyle = stroke.color;
+          ctx.lineWidth = stroke.size;
+
+          ctx.beginPath();
+          ctx.moveTo(last.x,last.y);
+          ctx.lineTo(p.x,p.y);
+          ctx.stroke();
+
+          last = p;
+        };
+
+        const end = ()=>{ drawing=false; last=null; };
+
+        canvas.addEventListener('pointerdown', (e)=>{ canvas.setPointerCapture(e.pointerId); begin(e); });
+        canvas.addEventListener('pointermove', (e)=> move(e));
+        canvas.addEventListener('pointerup', end);
+        canvas.addEventListener('pointercancel', end);
+        canvas.addEventListener('pointerleave', end);
+
+        clearBtn?.addEventListener('click', ()=>{
+          pushHistory();
+          ctx.clearRect(0,0,canvas.width,canvas.height);
+          toast('Canvas limpo');
+        });
+
+        undoBtn?.addEventListener('click', ()=>{
+          const prev = history.pop();
+          if(!prev) return;
+          try{ ctx.putImageData(prev, 0, 0); toast('Desfeito'); }catch{ /* ignore */ }
+        });
+      })();
+    </script>
+  </body>
+</html>
+

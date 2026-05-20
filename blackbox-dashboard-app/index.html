@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
@@ -34,6 +34,27 @@
           linear-gradient(180deg, var(--bg0), var(--bg1));
         overflow-x:hidden;
       }
+      body[data-theme="aurora"]{
+        background:
+          radial-gradient(1100px 650px at 15% 10%, rgba(16,185,129,.35), transparent 58%),
+          radial-gradient(900px 540px at 90% 18%, rgba(59,130,246,.32), transparent 55%),
+          radial-gradient(700px 460px at 70% 88%, rgba(236,72,153,.18), transparent 62%),
+          linear-gradient(180deg, #050915, #0B1636);
+      }
+      body[data-theme="sunset"]{
+        background:
+          radial-gradient(1100px 650px at 18% 12%, rgba(249,115,22,.32), transparent 58%),
+          radial-gradient(900px 540px at 88% 22%, rgba(124,58,237,.26), transparent 55%),
+          radial-gradient(700px 460px at 60% 88%, rgba(34,211,238,.14), transparent 62%),
+          linear-gradient(180deg, #0B0613, #1C1232);
+      }
+      body[data-theme="midnight"]{
+        background:
+          radial-gradient(1100px 650px at 25% 8%, rgba(99,102,241,.26), transparent 58%),
+          radial-gradient(900px 540px at 85% 20%, rgba(34,211,238,.22), transparent 55%),
+          radial-gradient(700px 460px at 65% 88%, rgba(16,185,129,.16), transparent 62%),
+          linear-gradient(180deg, #040713, #0B1630);
+      }
       body[data-theme="mono"]{
         background:
           radial-gradient(1100px 650px at 15% 10%, rgba(255,255,255,.10), transparent 58%),
@@ -44,23 +65,20 @@
 
       .app{min-height:100vh;padding:22px 18px 40px}
       .topbar{max-width:1280px;margin:0 auto 16px;display:flex;align-items:center;justify-content:space-between;gap:14px}
-      .brand{display:flex;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:12px}
       .logo{
         width:46px;height:46px;border-radius:16px;
         position:relative;overflow:hidden;
-        background:
-          radial-gradient(16px 16px at 30% 25%, rgba(255,255,255,.35), transparent 60%),
-          linear-gradient(135deg, rgba(124,58,237,.95), rgba(34,211,238,.9));
-        box-shadow:0 14px 40px rgba(124,58,237,.35);
+        background: transparent;
+        box-shadow: none;
         border:1px solid rgba(255,255,255,.22);
         transform: translateZ(0);
+        display:flex;
+        align-items:center;
+        justify-content:center;
       }
-      .logo:after{
-        content:"";position:absolute;top:-40%;left:-40%;width:140%;height:140%;
-        background:conic-gradient(from 180deg, rgba(255,255,255,.0), rgba(255,255,255,.35), rgba(255,255,255,.0));
-        transform:rotate(12deg);
-        animation:spinGlow 5.5s linear infinite;opacity:.8;
-      }
+      .logo svg{display:block;}
+.logo:after{display:none;}
       @keyframes spinGlow{to{transform:rotate(372deg)}}
 
       .brand h1{margin:0;font-size:16px;letter-spacing:.2px;font-weight:900}
@@ -75,8 +93,8 @@
       .navGrid{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:1.1fr .9fr;gap:14px}
       @media (max-width:980px){.navGrid{grid-template-columns:1fr}}
 
-      .card{border-radius:var(--radius);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);box-shadow:var(--shadow);backdrop-filter:blur(14px);overflow:hidden}
-      .card .hd{padding:14px 16px 10px;border-bottom:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02)}
+      .card{border-radius:var(--radius);background:transparent;border:none;box-shadow:none;backdrop-filter:none;overflow:hidden}
+      .card .hd{padding:14px 16px 10px;border-bottom:1px solid rgba(255,255,255,.08);background:transparent}
       .card .hd h2{margin:0;font-size:13px;letter-spacing:.25px;text-transform:uppercase;color:rgba(255,255,255,.84)}
       .card .bd{padding:14px 16px 16px}
 
@@ -130,7 +148,20 @@
     <div class="app">
       <div class="topbar">
         <div class="brand">
-          <div class="logo" aria-hidden="true"></div>
+          <div class="logo" aria-hidden="true">
+            <svg viewBox="0 0 64 64" width="46" height="46" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <defs>
+                <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="rgba(124,58,237,.95)" />
+                  <stop offset="1" stop-color="rgba(34,211,238,.95)" />
+                </linearGradient>
+              </defs>
+              <path fill="url(#g)" d="M32 6c7.5 0 14.3 3.1 19.2 8.1 1.1 1.1 1.1 2.9 0 4s-2.9 1.1-4 0A22.3 22.3 0 0 0 32 11c-12.7 0-23 10.3-23 23s10.3 23 23 23 23-10.3 23-23c0-4.6-1.3-9-3.8-12.7-.9-1.3-.6-3.1.7-4s3.1-.6 4 .7A26.2 26.2 0 0 1 60 34c0 15.5-12.5 28-28 28S4 49.5 4 34 16.5 6 32 6z"/>
+              <path fill="rgba(255,255,255,.9)" d="M22 34c0-5.5 4.5-10 10-10s10 4.5 10 10c0 5.4-4.4 9.8-9.8 10H32c-5.5 0-10-4.5-10-10zm10 4.2a4.2 4.2 0 1 0 0-8.4 4.2 4.2 0 0 0 0 8.4z"/>
+              <path fill="rgba(34,211,238,.95)" d="M45.2 18.8c.7-.7 1.8-.9 2.7-.4l.3.2c1.1.8 1.3 2.4.4 3.5l-3.5 4.2c-.9 1.1-2.5 1.3-3.6.4-1.1-.9-1.3-2.5-.4-3.6l4.1-4.3z"/>
+            </svg>
+          </div>
+
           <div>
             <h1>OrbiDesk</h1>
             <p>Calculadora • Tarefas • Timer • Notas</p>
@@ -151,12 +182,12 @@
       </div>
 
       <div class="navGrid">
-        <div class="card">
+          <div class="card">
           <div class="hd"><h2>Boas-vindas</h2></div>
           <div class="bd welcome">
             <div class="hero">Bem-vindo ao OrbiDesk</div>
             <div style="color:var(--muted);font-size:13px;line-height:1.45">
-              Use os botões abaixo para navegar por função (páginas separadas). Seus dados são salvos no navegador.
+              Use os botões abaixo para navegar por função (páginas separadas). As páginas separam os dados por conta (local).
             </div>
             <div class="quickLinks" style="margin-top:14px">
               <a class="linkBtn" href="./_pages/tarefas.html">
@@ -179,29 +210,21 @@
                 <div class="ico" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.20)">💬</div>
                 <div class="linkTxt"><b>Chat</b><span>Assistente local</span></div>
               </a>
+              <a class="linkBtn" href="./_pages/paint.html">
+                <div class="ico" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.20)">🎨</div>
+                <div class="linkTxt"><b>Paint</b><span>Canvas para desenhar</span></div>
+              </a>
             </div>
           </div>
         </div>
 
-        <div class="card">
-          <div class="hd"><h2>Conta (Privacidade)</h2></div>
-          <div class="bd userBox">
-            <div style="color:var(--muted);font-size:13px;line-height:1.45">
-              Para privacidade, selecione uma conta. As páginas devem usar esse valor para namespace/localStorage (próximo passo).
-            </div>
-            <div class="row">
-              <input id="accountName" type="text" placeholder="Nome da conta" maxlength="40" />
-            </div>
-            <div class="row">
-              <button class="btn" id="btnLogin">Entrar</button>
-              <button class="btn" id="btnLogout">Sair</button>
-            </div>
-            <div style="font-size:12px;color:var(--muted)" id="accountStatus">Conta: anônimo</div>
-          </div>
-        </div>
+        <!-- Removido: Conta (Privacidade) -->
       </div>
 
+
+
     </div>
+
 
     <div class="toast" id="toast"></div>
 
@@ -216,6 +239,9 @@
         toastEl._t = setTimeout(()=>toastEl.classList.remove('show'), ms);
       }
 
+
+      // existing app scripts
+
       const themeSel = $('#themeSel');
       function applyTheme(theme){
         document.body.dataset.theme = theme;
@@ -229,40 +255,16 @@
       })();
       themeSel?.addEventListener('change', (e)=> applyTheme(e.target.value));
 
-      const accountKey = 'bb_account';
-      function getAccount(){
-        try{ return localStorage.getItem(accountKey) || 'anon'; }catch{ return 'anon'; }
-      }
-      function setAccount(v){
-        try{ localStorage.setItem(accountKey, v); }catch{}
-      }
-      const accountStatus = $('#accountStatus');
-      function renderStatus(){
-        const a = getAccount();
-        if(accountStatus) accountStatus.textContent = 'Conta: ' + (a==='anon' ? 'anônimo' : a);
-      }
-      renderStatus();
+      // Removido: lógica de Conta (Privacidade)
 
-      $('#btnLogin')?.addEventListener('click', ()=>{
-        const v = ($('#accountName')?.value || '').trim().slice(0,40);
-        if(!v){ toast('Informe um nome de conta.'); return; }
-        const safe = v.replace(/[^a-zA-Z0-9_-]/g,'');
-        setAccount('acct:' + safe);
-        renderStatus();
-        toast('Conta ativa.');
-      });
-      $('#btnLogout')?.addEventListener('click', ()=>{
-        setAccount('anon');
-        if($('#accountName')) $('#accountName').value='';
-        renderStatus();
-        toast('Saiu da conta.');
-      });
-
+      // Reset all (mantido)
       $('#btnResetAll')?.addEventListener('click', ()=>{
-        const ok = confirm('Resetar dados locais (inclui conta)?');
+        const ok = confirm('Resetar dados locais?');
         if(!ok) return;
         Object.keys(localStorage).forEach(k=>{
-          if(k.startsWith('bb_')){ try{ localStorage.removeItem(k);}catch{} }
+          if(k.startsWith('bb_')){
+            try{ localStorage.removeItem(k);}catch{}
+          }
         });
         toast('Reset completo.');
         setTimeout(()=>location.reload(), 700);
@@ -270,4 +272,5 @@
     </script>
   </body>
 </html>
+
 

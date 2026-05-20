@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+t<!DOCTYPE html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
@@ -344,7 +344,7 @@
     <div class="app">
       <div class="topbar">
         <div class="brand">
-          <div class="logo" aria-hidden="true"></div>
+<svg viewBox="0 0 64 64" width="40" height="40" aria-hidden="true" style="overflow:visible"><text x="32" y="46" text-anchor="middle" font-size="42">🗂️</text></svg>
           <div>
             <h1>OrbiDesk</h1>
             <p>Tarefas • Trello-like</p>
@@ -450,9 +450,16 @@
       themeSel?.addEventListener('change', (e)=> applyTheme(e.target.value));
 
       $('#btnGoHome')?.addEventListener('click', ()=>{
+        // Keep current account in localStorage (bb_account) and go home
         location.href = '../index.html';
       });
 
+      // Hard privacy: always reload board when account changes (even if storage event doesn't fire in your scenario).\r\n      window.addEventListener('focus', ()=>{\r\n        // If the account changed since this page was loaded, reload from the right namespace.\r\n        const aNow = getAccount();\r\n        if(window.__bb_kanban_acct__ && window.__bb_kanban_acct__ !== aNow){\r\n          location.reload();\r\n        }\r\n        window.__bb_kanban_acct__ = aNow;\r\n      });\r\n      window.__bb_kanban_acct__ = getAccount();\r\n\r\n      window.addEventListener('storage', (e)=>{\r\n        if(e.key === 'bb_account'){\r\n          location.reload();\r\n        }\r\n      });
+
+      // single user (account privacy removed)
+      function nsKey(s){
+        return `bb_kanban__${s}`;
+      }
       // account namespace
       const accountKey = 'bb_account';
       function getAccount(){

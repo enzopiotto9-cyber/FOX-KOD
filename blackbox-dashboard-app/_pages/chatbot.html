@@ -141,7 +141,7 @@
     <div class="app">
       <div class="topbar">
         <div class="brand">
-          <div class="logo" aria-hidden="true"></div>
+<svg viewBox="0 0 64 64" width="40" height="40" aria-hidden="true" style="overflow:visible"><text x="32" y="46" text-anchor="middle" font-size="42">💬</text></svg>
           <div>
             <h1>OrbiDesk</h1>
             <p>Chatbot local</p>
@@ -226,15 +226,8 @@
         return d.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
       }
 
-      const accountKey = 'bb_account';
-      function getAccount(){
-        try{ return localStorage.getItem(accountKey) || 'anon'; }catch{ return 'anon'; }
-      }
-
-      const chatStoreKey = () => {
-        const a = getAccount();
-        return `bb_chat:${a}`;
-      };
+      // single user (account privacy removed)
+      const chatStoreKey = () => 'bb_chat';
 
       const state = { messages: [] };
 

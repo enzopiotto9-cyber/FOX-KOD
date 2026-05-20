@@ -204,7 +204,7 @@
     <div class="app">
       <div class="topbar">
         <div class="brand">
-          <div class="logo" aria-hidden="true"></div>
+<svg viewBox="0 0 64 64" width="40" height="40" aria-hidden="true" style="overflow:visible"><text x="32" y="46" text-anchor="middle" font-size="42">🧮</text></svg>
           <div>
             <h1>Blackbox Dashboard</h1>
             <p>Calculadora</p>
@@ -328,18 +328,24 @@
       const calcMemLabel = $('#calcMemLabel');
       const calcHistoryEl = $('#calcHistory');
 
+      // single user (account privacy removed)
+      function nsKey(s){
+        return `bb_calc__${s}`;
+      }
+
       const calcState = { expr:'', value:'0', mem:0, history:[] };
+
       function persistCalc(){
         try{
-          localStorage.setItem('bb_calc_mem', String(calcState.mem));
-          localStorage.setItem('bb_calc_history', JSON.stringify(calcState.history.slice(0,30)));
+          localStorage.setItem(nsKey('mem'), String(calcState.mem));
+          localStorage.setItem(nsKey('history'), JSON.stringify(calcState.history.slice(0,30)));
         }catch{}
       }
       function loadCalc(){
         try{
-          const m = localStorage.getItem('bb_calc_mem');
+          const m = localStorage.getItem(nsKey('mem'));
           if(m!==null) calcState.mem = Number(m) || 0;
-          const h = localStorage.getItem('bb_calc_history');
+          const h = localStorage.getItem(nsKey('history'));
           if(h) calcState.history = JSON.parse(h);
         }catch{}
       }

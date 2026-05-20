@@ -172,7 +172,7 @@
     <div class="app">
       <div class="topbar">
         <div class="brand">
-          <div class="logo" aria-hidden="true"></div>
+<svg viewBox="0 0 64 64" width="40" height="40" aria-hidden="true" style="overflow:visible"><text x="32" y="46" text-anchor="middle" font-size="42">⏱️</text></svg>
           <div>
             <h1>Blackbox Dashboard</h1>
             <p>Timer/Cronômetro</p>
@@ -294,9 +294,17 @@
       let timerDuration = 0;
       let timerRunning = false;
 
+      // single user (account privacy removed)
+      function nsKey(s){
+        return `bb_chrono__${s}`;
+      }
+
+
+      const timerStoreKey = nsKey('timers');
+
       function persistTimers(){
         try{
-          localStorage.setItem('bb_chrono', JSON.stringify({
+          localStorage.setItem(timerStoreKey, JSON.stringify({
             chronoStartTime, chronoElapsed, chronoRunning,
             timerStartTime, timerDuration, timerRunning
           }));
@@ -304,7 +312,7 @@
       }
       function loadTimers(){
         try{
-          const t = localStorage.getItem('bb_chrono');
+          const t = localStorage.getItem(timerStoreKey);
           if(!t) return;
           const data = JSON.parse(t);
           chronoStartTime = data.chronoStartTime;

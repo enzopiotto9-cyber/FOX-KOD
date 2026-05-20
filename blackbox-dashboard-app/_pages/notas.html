@@ -179,7 +179,7 @@
     <div class="app">
       <div class="topbar">
         <div class="brand">
-          <div class="logo" aria-hidden="true"></div>
+<svg viewBox="0 0 64 64" width="40" height="40" aria-hidden="true" style="overflow:visible"><text x="32" y="46" text-anchor="middle" font-size="42">📝</text></svg>
           <div>
             <h1>Blackbox Dashboard</h1>
             <p>Bloco de Notas</p>
@@ -269,8 +269,13 @@
       const noteSearch = $('#noteSearch');
       const noteSnapshots = $('#noteSnapshots');
 
-      const noteStateKey = 'bb_notes';
-      const noteSnapshotKey = 'bb_note_snapshots';
+      // single user (account privacy removed)
+      function nsKey(s){
+        return `bb_notes__${s}`;
+      }
+
+      const noteStateKey = nsKey('notes');
+      const noteSnapshotKey = nsKey('note_snapshots');
       const noteState = { content:'', snapshots:[] };
       let noteAutosaveTimer = null;
 
