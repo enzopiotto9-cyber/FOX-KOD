@@ -4,53 +4,58 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="dark light" />
-    <title>Painel • Tarefas</title>
+    <title>OrbiDesk • Tarefas</title>
 
     <style>
       :root{
         --bg0:#070A12;
         --bg1:#0B1630;
-        --stroke: rgba(255,255,255,.14);
-        --stroke2: rgba(255,255,255,.22);
         --text: rgba(255,255,255,.92);
         --muted: rgba(255,255,255,.65);
+        --stroke: rgba(255,255,255,.14);
+        --stroke2: rgba(255,255,255,.22);
         --shadow: 0 18px 60px rgba(0,0,0,.55);
         --shadow2: 0 10px 30px rgba(0,0,0,.35);
-        --radius: 18px;
-        --radius2: 14px;
+
+        --radius: 16px;
+        --radius2: 12px;
+
+        --accent1: rgba(124,58,237,.95);
+        --accent2: rgba(34,211,238,.95);
+        --accent3: rgba(249,115,22,.85);
+
+        --col-bg: rgba(255,255,255,.03);
+        --col-hd-bg: rgba(255,255,255,.02);
+
+        --card-bg: rgba(255,255,255,.04);
+        --card-border: rgba(255,255,255,.12);
+
+        --danger: #fb7185;
+        --good: #34d399;
+        --warn: #fbbf24;
+
+        --focus: rgba(34,211,238,.7);
+
+        --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial,
+          "Apple Color Emoji","Segoe UI Emoji";
         --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-        --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
       }
-      *{box-sizing:border-box}
+
       html,body{height:100%}
+      *{box-sizing:border-box}
+
       body{
         margin:0;
         font-family: var(--sans);
         color: var(--text);
-        background: linear-gradient(180deg, var(--bg0), var(--bg1));
+        background:
+          radial-gradient(1200px 700px at 20% 10%, rgba(124,58,237,.35), transparent 60%),
+          radial-gradient(900px 600px at 85% 20%, rgba(34,211,238,.28), transparent 55%),
+          radial-gradient(700px 500px at 70% 90%, rgba(249,115,22,.18), transparent 60%),
+          linear-gradient(180deg, var(--bg0), var(--bg1));
         overflow-x:hidden;
       }
-      body[data-theme="aurora"]{
-        background:
-          radial-gradient(1100px 650px at 15% 10%, rgba(16,185,129,.35), transparent 58%),
-          radial-gradient(900px 540px at 90% 18%, rgba(59,130,246,.32), transparent 55%),
-          radial-gradient(700px 460px at 70% 88%, rgba(236,72,153,.18), transparent 62%),
-          linear-gradient(180deg, #050915, #0B1636);
-      }
-      body[data-theme="sunset"]{
-        background:
-          radial-gradient(1100px 650px at 18% 12%, rgba(249,115,22,.32), transparent 58%),
-          radial-gradient(900px 540px at 88% 22%, rgba(124,58,237,.26), transparent 55%),
-          radial-gradient(700px 460px at 60% 88%, rgba(34,211,238,.14), transparent 62%),
-          linear-gradient(180deg, #0B0613, #1C1232);
-      }
-      body[data-theme="midnight"]{
-        background:
-          radial-gradient(1100px 650px at 25% 8%, rgba(99,102,241,.26), transparent 58%),
-          radial-gradient(900px 540px at 85% 20%, rgba(34,211,238,.22), transparent 55%),
-          radial-gradient(700px 460px at 65% 88%, rgba(16,185,129,.16), transparent 62%),
-          linear-gradient(180deg, #040713, #0B1630);
-      }
+
       body[data-theme="mono"]{
         background:
           radial-gradient(1100px 650px at 15% 10%, rgba(255,255,255,.10), transparent 58%),
@@ -59,138 +64,279 @@
           linear-gradient(180deg, #05060A, #0A0B12);
       }
 
-      .app{min-height:100vh;padding:22px 18px 40px}
+      a{color:inherit}
+
+      .app{min-height:100vh; padding:18px 16px 28px}
       .topbar{
-        display:flex;align-items:center;justify-content:space-between;gap:14px;
-        max-width:1280px;margin:0 auto 16px;
+        max-width:1320px;
+        margin:0 auto 14px;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:12px;
+        flex-wrap:wrap;
       }
+
       .brand{display:flex;align-items:center;gap:12px}
       .logo{
-        width:42px;height:42px;border-radius:14px;
+        width:42px;height:42px;border-radius:16px;
+        position:relative;overflow:hidden;
         background:
-          radial-gradient(18px 18px at 30% 25%, rgba(255,255,255,.35), transparent 60%),
+          radial-gradient(16px 16px at 30% 25%, rgba(255,255,255,.35), transparent 60%),
           linear-gradient(135deg, rgba(124,58,237,.95), rgba(34,211,238,.9));
         box-shadow:0 14px 40px rgba(124,58,237,.35);
         border:1px solid rgba(255,255,255,.22);
-        position:relative;overflow:hidden;
       }
       .logo:after{
-        content:"";position:absolute;top:-30%;left:-30%;width:120%;height:120%;
+        content:"";position:absolute;top:-40%;left:-40%;width:140%;height:140%;
         background:conic-gradient(from 180deg, rgba(255,255,255,.0), rgba(255,255,255,.35), rgba(255,255,255,.0));
         transform:rotate(12deg);
-        animation:spinGlow 5.5s linear infinite;opacity:.8;
+        animation:spinGlow 5.5s linear infinite;opacity:.85;
       }
       @keyframes spinGlow{to{transform:rotate(372deg)}}
-      .brand h1{margin:0;font-size:15px;letter-spacing:.2px;font-weight:750;line-height:1.1}
+
+      .brand h1{margin:0;font-size:15px;letter-spacing:.2px;font-weight:950}
       .brand p{margin:2px 0 0;font-size:12px;color:var(--muted)}
 
-      .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+      .topActions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+
       .pill{
         border:1px solid var(--stroke);
         background:rgba(255,255,255,.05);
-        border-radius:999px;padding:10px 12px;
-        display:flex;gap:10px;align-items:center;
+        border-radius:999px;
+        padding:10px 12px;
         box-shadow:var(--shadow2);
         backdrop-filter:blur(10px);
+        display:flex;gap:10px;align-items:center;
       }
-      .pill label{font-size:12px;color:var(--muted)}
+      .pill label{font-size:12px;color:var(--muted);white-space:nowrap}
       select{background:transparent;border:none;color:var(--text);outline:none;font-weight:650}
-      option{background:#0b0d16}
 
       .btn{
         cursor:pointer;
-        border:1px solid var(--stroke);
-        background:rgba(255,255,255,.05);
+        border:1px solid rgba(255,255,255,.14);
+        background:rgba(255,255,255,.06);
         color:var(--text);
         padding:10px 12px;
         border-radius:12px;
-        font-weight:720;
-        transition:transform .15s ease, background .2s ease, border-color .2s ease;
-        backdrop-filter:blur(10px);
-        box-shadow:var(--shadow2);
-        user-select:none;
-      }
-      .btn:hover{transform:translateY(-1px);border-color:var(--stroke2);background:rgba(255,255,255,.08)}
-      .btn:active{transform:translateY(0px) scale(.99)}
-
-      .navTop{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-      .navLink{
-        text-decoration:none;
-        color:var(--muted);
-        border:1px solid rgba(255,255,255,.12);
-        background:rgba(255,255,255,.03);
-        padding:8px 10px;
-        border-radius:12px;
-        font-weight:700;
-      }
-      .navLink.active{color:var(--text);border-color:rgba(34,211,238,.35);background:rgba(34,211,238,.10)}
-
-      .grid{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:14px}
-      .col{display:flex;flex-direction:column;gap:14px}
-
-      .card{
-        border-radius:var(--radius);
-        background:linear-gradient(180deg, rgba(255,255,255,.075), rgba(255,255,255,.035));
-        border:1px solid rgba(255,255,255,.12);
-        box-shadow:var(--shadow);
-        backdrop-filter:blur(14px);
-        overflow:hidden;
-      }
-      .card .hd{
-        padding:14px 16px 10px;
-        display:flex;justify-content:space-between;align-items:flex-start;gap:10px;
-        border-bottom:1px solid rgba(255,255,255,.08);
-        background:rgba(255,255,255,.02);
-      }
-      .card .hd h2{margin:0;font-size:13px;letter-spacing:.25px;text-transform:uppercase;color:rgba(255,255,255,.84)}
-      .card .hd .sub{margin-top:4px;font-size:12px;color:var(--muted)}
-      .card .bd{padding:14px 16px 16px}
-
-      .fadeIn{animation:fadeInUp .55s cubic-bezier(.2,.8,.2,1) both}
-      @keyframes fadeInUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-
-      .board{display:flex;gap:12px;overflow:auto;padding-bottom:6px}
-      .board::-webkit-scrollbar{height:10px}
-      .board::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:999px}
-
-      .list{min-width:260px;max-width:320px;flex:0 0 auto;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.16);display:flex;flex-direction:column}
-      .list-h{padding:12px 12px 10px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;align-items:center;gap:10px}
-      .list-h .title{font-weight:850;font-size:13px;letter-spacing:.2px}
-      .list-h .count{color:var(--muted);font-size:12px;font-family:var(--mono)}
-      .cards{padding:10px;display:flex;flex-direction:column;gap:10px;min-height:120px}
-
-      .task{border-radius:14px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);padding:10px;cursor:grab;transition:transform .12s ease, background .2s ease, border-color .2s ease;user-select:none}
-      .task:active{cursor:grabbing;transform:scale(.99)}
-      .task:hover{border-color:rgba(255,255,255,.26);background:rgba(255,255,255,.08)}
-      .task .t-title{font-weight:850;font-size:13px;line-height:1.2}
-      .task .t-meta{margin-top:6px;display:flex;align-items:center;justify-content:space-between;gap:10px;color:var(--muted);font-size:12px;font-family:var(--mono)}
-      .task .t-actions{display:flex;justify-content:flex-end;margin-top:10px}
-      .task .delbtn{
-        border-radius:12px;
-        padding:6px 10px;
-        border:1px solid rgba(255,255,255,.14);
-        background:rgba(251,113,133,.10);
-        color:rgba(255,255,255,.92);
-        font-weight:850;
-        cursor:pointer;
+        font-weight:950;
         transition:transform .12s ease, background .2s ease, border-color .2s ease;
         user-select:none;
       }
-      .task .delbtn:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.26);background:rgba(251,113,133,.18)}
-      .task .delbtn:active{transform:translateY(0px) scale(.99)}
-      .badge{padding:4px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05)}
+      .btn:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.26);background:rgba(255,255,255,.10)}
+      .btn:active{transform:translateY(0) scale(.99)}
+      .btn.danger{border-color:rgba(251,113,133,.35);background:rgba(251,113,133,.10)}
+      .btn.ghost{background:transparent}
 
-      .addbar{margin:0 10px 12px;padding:10px;border-radius:16px;border:1px dashed rgba(255,255,255,.18);background:rgba(255,255,255,.03);display:flex;flex-direction:column;gap:8px}
-      .addbar input{width:100%;background:rgba(0,0,0,.15);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px 10px;color:var(--text);outline:none}
-      .addbar input:focus{border-color:rgba(34,211,238,.45);box-shadow:0 0 0 3px rgba(34,211,238,.15)}
+      .kbd{
+        font-family:var(--mono);
+        font-size:11px;
+        color:rgba(255,255,255,.75);
+        background:rgba(255,255,255,.06);
+        border:1px solid rgba(255,255,255,.14);
+        padding:4px 7px;
+        border-radius:10px;
+      }
 
-      .smallbtn{border-radius:12px;padding:10px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:var(--text);font-weight:820;cursor:pointer;transition:transform .12s ease, background .2s ease, border-color .2s ease}
-      .smallbtn:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.26);background:rgba(255,255,255,.10)}
-      .smallbtn:active{transform:translateY(0px) scale(.99)}
+      /* Board */
+      .boardWrap{
+        max-width:1320px;
+        margin:0 auto;
+      }
 
-      .toast{position:fixed;right:18px;bottom:18px;padding:12px 14px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.18);border-radius:14px;box-shadow:var(--shadow);backdrop-filter:blur(10px);color:var(--text);transform:translateY(12px);opacity:0;pointer-events:none;transition:opacity .2s ease, transform .2s ease;max-width:360px}
-      .toast.show{opacity:1;transform:translateY(0)}
-      button:focus,input:focus,select:focus{outline:none}
+      .board{
+        display:flex;
+        gap:12px;
+        align-items:flex-start;
+        padding:10px 2px;
+        overflow-x:auto;
+        scroll-snap-type:x proximity;
+      }
+
+      .col{
+        width:340px;
+        min-width:340px;
+        max-width:340px;
+        scroll-snap-align:start;
+        border-radius:var(--radius);
+        background:var(--col-bg);
+        border:1px solid rgba(255,255,255,.10);
+        box-shadow:var(--shadow2);
+        backdrop-filter:blur(14px);
+        overflow:hidden;
+      }
+
+      .colHd{
+        background:var(--col-hd-bg);
+        border-bottom:1px solid rgba(255,255,255,.08);
+        padding:12px 12px 10px;
+        display:flex;
+        align-items:flex-start;
+        justify-content:space-between;
+        gap:8px;
+      }
+
+      .colTitle{
+        display:flex;
+        flex-direction:column;
+        gap:6px;
+        min-width:0;
+      }
+      .colTitleRow{display:flex;align-items:center;gap:8px;min-width:0}
+
+      .colTitleText{
+        font-weight:1000;
+        font-size:13px;
+        letter-spacing:.22px;
+        text-transform:uppercase;
+        color:rgba(255,255,255,.86);
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        max-width:230px;
+      }
+
+      .colCount{font-size:12px;color:rgba(255,255,255,.55)}
+
+      .colMenu{
+        display:flex;gap:6px;align-items:center;
+      }
+
+      .iconBtn{
+        width:30px;height:30px;
+        border-radius:10px;
+        border:1px solid rgba(255,255,255,.14);
+        background:rgba(255,255,255,.06);
+        color:rgba(255,255,255,.9);
+        display:flex;align-items:center;justify-content:center;
+        cursor:pointer;
+        user-select:none;
+        transition:transform .12s ease, background .2s ease, border-color .2s ease;
+      }
+      .iconBtn:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.26);background:rgba(255,255,255,.10)}
+
+      .colBody{padding:10px 10px 12px;display:flex;flex-direction:column;gap:10px;min-height:120px}
+
+      .card{
+        border-radius:14px;
+        background:var(--card-bg);
+        border:1px solid var(--card-border);
+        padding:10px 10px;
+        box-shadow:0 10px 25px rgba(0,0,0,.25);
+        backdrop-filter:blur(10px);
+        cursor:grab;
+        user-select:none;
+      }
+      .card:active{cursor:grabbing}
+
+      .cardTitle{font-weight:1000;font-size:13px;letter-spacing:.15px;line-height:1.25}
+      .cardDesc{margin-top:6px;font-size:12px;color:rgba(255,255,255,.68);line-height:1.35;white-space:pre-wrap;word-break:break-word}
+
+      .cardActions{display:flex;gap:8px;align-items:center;margin-top:10px}
+      .miniBtn{
+        border:1px solid rgba(255,255,255,.14);
+        background:rgba(255,255,255,.05);
+        color:rgba(255,255,255,.92);
+        padding:7px 8px;
+        border-radius:12px;
+        font-size:12px;
+        font-weight:950;
+        cursor:pointer;
+        transition:transform .12s ease, background .2s ease, border-color .2s ease;
+      }
+      .miniBtn:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.26);background:rgba(255,255,255,.09)}
+      .miniBtn.danger{border-color:rgba(251,113,133,.35);background:rgba(251,113,133,.10)}
+
+      /* DnD */
+      .col.dropActive{outline:2px solid rgba(34,211,238,.65); outline-offset:2px}
+      .card.dragging{opacity:.55}
+
+      /* Add forms */
+      .addArea{
+        border:1px dashed rgba(255,255,255,.20);
+        border-radius:var(--radius2);
+        padding:10px;
+        background:rgba(255,255,255,.02);
+      }
+
+      .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+      input[type="text"], textarea{
+        width:100%;
+        background:rgba(0,0,0,.20);
+        border:1px solid rgba(255,255,255,.12);
+        border-radius:12px;
+        padding:10px 10px;
+        color:var(--text);
+        outline:none;
+      }
+      textarea{min-height:70px;resize:vertical}
+
+      .field{width:100%}
+      label.small{font-size:12px;color:var(--muted);display:block;margin:0 0 6px}
+
+      .formActions{display:flex;gap:10px;align-items:center;justify-content:flex-end;margin-top:10px}
+
+      /* Empty state */
+      .empty{
+        color:rgba(255,255,255,.62);
+        font-size:12px;
+        line-height:1.45;
+        padding:6px 2px;
+      }
+
+      /* Modal */
+      .modalOverlay{
+        position:fixed; inset:0;
+        background:rgba(0,0,0,.55);
+        display:none;
+        align-items:center;
+        justify-content:center;
+        padding:18px;
+        z-index:50;
+      }
+      .modalOverlay.show{display:flex}
+      .modal{
+        width:100%;
+        max-width:560px;
+        border-radius:18px;
+        border:1px solid rgba(255,255,255,.16);
+        background:rgba(12,18,38,.82);
+        box-shadow:var(--shadow);
+        backdrop-filter:blur(18px);
+        overflow:hidden;
+      }
+      .modalHd{
+        padding:14px 16px;
+        border-bottom:1px solid rgba(255,255,255,.10);
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:10px;
+      }
+      .modalHd h3{margin:0;font-size:14px;letter-spacing:.2px;text-transform:uppercase}
+      .modalBd{padding:14px 16px 16px}
+      .modalFt{
+        padding:14px 16px;
+        border-top:1px solid rgba(255,255,255,.10);
+        display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap
+      }
+
+      /* Footer helper */
+      .hint{
+        max-width:1320px;
+        margin:10px auto 0;
+        color:rgba(255,255,255,.60);
+        font-size:12px;
+        line-height:1.45;
+      }
+
+      @media (max-width:980px){
+        .col{width:310px;min-width:310px;max-width:310px}
+        .colTitleText{max-width:200px}
+      }
+      @media (max-width:420px){
+        .col{width:280px;min-width:280px;max-width:280px}
+      }
     </style>
   </head>
 
@@ -200,12 +346,12 @@
         <div class="brand">
           <div class="logo" aria-hidden="true"></div>
           <div>
-            <h1>Blackbox Dashboard</h1>
-            <p>Organizador de Tarefas</p>
+            <h1>OrbiDesk</h1>
+            <p>Tarefas • Trello-like</p>
           </div>
         </div>
 
-        <div class="controls">
+        <div class="topActions">
           <div class="pill">
             <label for="themeSel">Tema</label>
             <select id="themeSel" aria-label="Tema de fundo">
@@ -216,241 +362,565 @@
             </select>
           </div>
 
-          <div class="navTop" aria-label="Navegação">
-            <a class="navLink" href="../index.html">Painel</a>
-            <a class="navLink" href="./calculadora.html">Calculadora</a>
-            <a class="navLink active" href="./tarefas.html">Tarefas</a>
-            <a class="navLink" href="./timer.html">Timer</a>
-            <a class="navLink" href="./notas.html">Notas</a>
+          <button class="btn ghost" id="btnGoHome" title="Voltar">🏠 Início</button>
+          <button class="btn danger" id="btnResetBoard" title="Limpa somente este quadro">Reset quadro</button>
+        </div>
+      </div>
+
+      <div class="boardWrap">
+        <div class="board" id="board" aria-label="Quadro Kanban"></div>
+
+        <div class="hint">
+          Dica: arraste cartões entre colunas. Use <span class="kbd">Enter</span> para adicionar coluna/cartão quando o campo estiver em foco.
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal (edit create) -->
+    <div class="modalOverlay" id="modalOverlay" role="dialog" aria-modal="true">
+      <div class="modal">
+        <div class="modalHd">
+          <h3 id="modalTitle">Editar</h3>
+          <button class="iconBtn" id="modalClose" title="Fechar">✕</button>
+        </div>
+        <div class="modalBd">
+          <div class="field">
+            <label class="small" for="modalName">Título</label>
+            <input id="modalName" type="text" maxlength="60" placeholder="Ex.: A fazer" />
+          </div>
+          <div class="field" style="margin-top:12px">
+            <label class="small" for="modalDesc">Descrição (opcional)</label>
+            <textarea id="modalDesc" maxlength="800" placeholder="Detalhes..."></textarea>
           </div>
         </div>
-      </div>
-
-      <div class="grid">
-        <div class="col">
-          <section class="card fadeIn" style="animation-delay:0ms">
-            <div class="hd">
-              <div>
-                <h2>Organizador de Tarefas (estilo Trello)</h2>
-                <div class="sub">Drag & drop • cartões • marcação/edição • persistência.</div>
-              </div>
-              <div class="seg"><div class="badge">Hoje: <strong id="todayLabel" style="font-family:var(--mono)"> </strong></div></div>
-            </div>
-            <div class="bd">
-              <div class="board" id="board">
-                <div class="list" data-list="todo">
-                  <div class="list-h">
-                    <div><div class="title">A Fazer</div><div class="sub" style="margin-top:4px;color:var(--muted);font-size:12px">Planeje</div></div>
-                    <div class="count" data-count="todo">0</div>
-                  </div>
-                  <div class="cards" data-cards="todo"></div>
-                  <div class="addbar">
-                    <input type="text" data-new-title="todo" placeholder="Nova tarefa…" maxlength="80" />
-                    <button class="smallbtn" data-add="todo">Adicionar</button>
-                  </div>
-                </div>
-
-                <div class="list" data-list="doing">
-                  <div class="list-h">
-                    <div><div class="title">Em Progresso</div><div class="sub" style="margin-top:4px;color:var(--muted);font-size:12px">Executar</div></div>
-                    <div class="count" data-count="doing">0</div>
-                  </div>
-                  <div class="cards" data-cards="doing"></div>
-                  <div class="addbar">
-                    <input type="text" data-new-title="doing" placeholder="Nova tarefa…" maxlength="80" />
-                    <button class="smallbtn" data-add="doing">Adicionar</button>
-                  </div>
-                </div>
-
-                <div class="list" data-list="done">
-                  <div class="list-h">
-                    <div><div class="title">Concluído</div><div class="sub" style="margin-top:4px;color:var(--muted);font-size:12px">Finalizado</div></div>
-                    <div class="count" data-count="done">0</div>
-                  </div>
-                  <div class="cards" data-cards="done"></div>
-                  <div class="addbar">
-                    <input type="text" data-new-title="done" placeholder="Nova tarefa…" maxlength="80" />
-                    <button class="smallbtn" data-add="done">Adicionar</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
+        <div class="modalFt">
+          <button class="btn" id="modalCancel">Cancelar</button>
+          <button class="btn" id="modalSave">Salvar</button>
         </div>
       </div>
-
-      <div class="toast" id="toast"></div>
     </div>
 
     <script>
       const $ = (sel, root=document) => root.querySelector(sel);
       const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
 
-      function escapeHtml(str){
-        return String(str ?? '').replace(/[&<>"']/g, c=>({
-          '&':'&amp;', '<':'<', '>':'>', '"':'"', "'":'&#039;'
-        }[c]));
-      }
+      const toast = (()=>{
+        const el = document.createElement('div');
+        el.style.position='fixed';
+        el.style.right='18px';
+        el.style.bottom='18px';
+        el.style.padding='12px 14px';
+        el.style.background='rgba(0,0,0,.55)';
+        el.style.border='1px solid rgba(255,255,255,.18)';
+        el.style.borderRadius='14px';
+        el.style.boxShadow='0 18px 60px rgba(0,0,0,.55)';
+        el.style.backdropFilter='blur(10px)';
+        el.style.color='rgba(255,255,255,.92)';
+        el.style.transform='translateY(12px)';
+        el.style.opacity='0';
+        el.style.pointerEvents='none';
+        el.style.transition='opacity .2s ease, transform .2s ease';
+        el.style.zIndex='60';
+        document.body.appendChild(el);
+        let t;
+        return (msg, ms=1600)=>{
+          el.textContent = msg;
+          el.style.opacity='1';
+          el.style.transform='translateY(0)';
+          clearTimeout(t);
+          t = setTimeout(()=>{
+            el.style.opacity='0';
+            el.style.transform='translateY(12px)';
+          }, ms);
+        };
+      })();
 
-      function toast(msg, ms=1800){
-        const el = $('#toast');
-        if(!el) return;
-        el.textContent = msg;
-        el.classList.add('show');
-        clearTimeout(toast._t);
-        toast._t = setTimeout(()=>el.classList.remove('show'), ms);
-      }
-
+      // theme integration with app/index.html
       const themeSel = $('#themeSel');
       function applyTheme(theme){
         document.body.dataset.theme = theme;
         try{ localStorage.setItem('bb_theme', theme); }catch{}
       }
       (function initTheme(){
-        let t = 'aurora';
+        let t='aurora';
         try{ t = localStorage.getItem('bb_theme') || 'aurora'; }catch{}
         if(themeSel) themeSel.value = t;
         applyTheme(t);
       })();
       themeSel?.addEventListener('change', (e)=> applyTheme(e.target.value));
 
-      const todayLabel = $('#todayLabel');
-      function updateTodayLabel(){
-        if(!todayLabel) return;
-        const now = new Date();
-        todayLabel.textContent = now.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'short' });
-      }
-      updateTodayLabel();
+      $('#btnGoHome')?.addEventListener('click', ()=>{
+        location.href = '../index.html';
+      });
 
-      const lists = ['todo','doing','done'];
-      const boardStateKey='bb_trello';
-      const boardState={tasks:[]};
-      const uid = ()=> Math.random().toString(16).slice(2) + Date.now().toString(16);
-
-      function persistBoard(){
-        try{ localStorage.setItem(boardStateKey, JSON.stringify(boardState.tasks)); }catch{}
+      // account namespace
+      const accountKey = 'bb_account';
+      function getAccount(){
+        try{ return localStorage.getItem(accountKey) || 'anon'; }catch{ return 'anon'; }
       }
+      function nsKey(s){
+        // keep stable namespace while remaining compatible with bb_account usage
+        const a = getAccount();
+        return `bb_kanban_${a}__${s}`;
+      }
+
+      // data model
+      /**
+       * board = {
+       *   columns: [{ id, title, cards: [{id,title,desc,createdAt,updatedAt}] }],
+       * }
+       */
+      function uid(prefix='id'){
+        return `${prefix}_${Math.random().toString(16).slice(2)}_${Date.now().toString(16)}`;
+      }
+
+      function defaultBoard(){
+        return {
+          version: 1,
+          columns: [
+            {
+              id: uid('col'),
+              title: 'A fazer',
+              cards: [
+                { id: uid('card'), title: 'Exemplo de cartão', desc: 'Arraste entre colunas e edite.', createdAt: Date.now(), updatedAt: Date.now() }
+              ]
+            },
+            {
+              id: uid('col'),
+              title: 'Em progresso',
+              cards: []
+            },
+            {
+              id: uid('col'),
+              title: 'Concluído',
+              cards: []
+            }
+          ]
+        };
+      }
+
       function loadBoard(){
         try{
-          const t = localStorage.getItem(boardStateKey);
-          if(t) boardState.tasks = JSON.parse(t);
-        }catch{}
+          const raw = localStorage.getItem(nsKey('board'));
+          if(!raw) return defaultBoard();
+          const parsed = JSON.parse(raw);
+          if(!parsed || !Array.isArray(parsed.columns)) return defaultBoard();
+          return parsed;
+        }catch{
+          return defaultBoard();
+        }
       }
-      function countFor(list){ return boardState.tasks.filter(x=>x.list===list).length; }
 
-      function renderBoard(){
-        lists.forEach(list=>{
-          const container = $(`[data-cards="${list}"]`);
-          if(!container) return;
-          container.innerHTML='';
-          const tasks = boardState.tasks.filter(x=>x.list===list);
-          tasks.forEach(task=>{
-            const el=document.createElement('div');
-            el.className='task';
-            el.draggable=true;
-            el.dataset.id=task.id;
-            el.innerHTML=`
-              <div class="t-title"></div>
-              <div class="t-meta">
-                <span class="badge">${escapeHtml(task.tag||'')}</span>
-                <span>${task.done ? '✓' : new Date(task.createdAt).toLocaleDateString('pt-BR')}</span>
-              </div>
-              <div class="t-actions">
-                <button class="delbtn" type="button" title="Excluir tarefa">Excluir</button>
-              </div>
-            `;
+      function saveBoard(){
+        try{ localStorage.setItem(nsKey('board'), JSON.stringify(state)); }catch{}
+      }
 
-            el.querySelector('.t-title').textContent = task.title;
+      let state = loadBoard();
 
-            el.addEventListener('dragstart', (e)=>{
-              e.dataTransfer.setData('text/plain', task.id);
-              e.dataTransfer.effectAllowed='move';
-              el.style.opacity='0.6';
-            });
-            el.addEventListener('dragend', ()=>{ el.style.opacity='1'; });
-            el.addEventListener('dblclick', ()=>{
-              task.list = (task.list==='done') ? 'todo' : 'done';
-              persistBoard();
-              renderBoard();
-              toast('Tarefa movida.');
-            });
+      const boardEl = $('#board');
 
-            el.querySelector('button.delbtn')?.addEventListener('click', (e)=>{
-              e.preventDefault();
-              e.stopPropagation();
-              const ok = confirm('Remover esta tarefa?');
-              if(!ok) return;
-              boardState.tasks = boardState.tasks.filter(t=>t.id!==task.id);
-              persistBoard();
-              renderBoard();
-              toast('Tarefa removida.');
-            });
+      // Modal controller (edit column OR card)
+      const modalOverlay = $('#modalOverlay');
+      const modalTitle = $('#modalTitle');
+      const modalName = $('#modalName');
+      const modalDesc = $('#modalDesc');
+      const modalClose = $('#modalClose');
+      const modalCancel = $('#modalCancel');
+      const modalSave = $('#modalSave');
 
-            el.addEventListener('contextmenu', (e)=>{
-              e.preventDefault();
-              const next = prompt('Editar título:', task.title);
-              if(next===null) return;
-              const trimmed = next.trim();
-              if(!trimmed){
-                const ok = confirm('Remover tarefa?');
-                if(ok){
-                  boardState.tasks = boardState.tasks.filter(t=>t.id!==task.id);
-                  persistBoard();
-                  renderBoard();
-                  toast('Tarefa removida.');
-                }
-                return;
-              }
-              task.title = trimmed;
-              persistBoard();
-              renderBoard();
-              toast('Tarefa editada.');
-            });
+      let modalCtx = null; // { type: 'column'|'card', colId, cardId }
 
-            container.appendChild(el);
+      function openModal({type, colId=null, cardId=null, name='', desc=''}){
+        modalCtx = { type, colId, cardId };
+        modalTitle.textContent = type === 'column' ? 'Editar coluna' : 'Editar cartão';
+        modalName.value = name || '';
+        modalDesc.value = desc || '';
+        modalOverlay.classList.add('show');
+        setTimeout(()=>modalName.focus(), 0);
+      }
+
+      function closeModal(){
+        modalOverlay.classList.remove('show');
+        modalCtx = null;
+      }
+
+      modalClose?.addEventListener('click', closeModal);
+      modalCancel?.addEventListener('click', closeModal);
+      modalOverlay?.addEventListener('click', (e)=>{ if(e.target === modalOverlay) closeModal(); });
+      window.addEventListener('keydown', (e)=>{
+        if(e.key === 'Escape' && modalOverlay.classList.contains('show')) closeModal();
+      });
+
+      modalSave?.addEventListener('click', ()=>{
+        if(!modalCtx) return;
+        const name = (modalName.value || '').trim().slice(0,60);
+        const desc = (modalDesc.value || '').trim().slice(0,800);
+        if(!name){ toast('Informe um título.'); return; }
+
+        if(modalCtx.type === 'column'){
+          const col = state.columns.find(c=>c.id===modalCtx.colId);
+          if(col){
+            col.title = name;
+            saveBoard();
+            render();
+            toast('Coluna atualizada.');
+            closeModal();
+          }
+          return;
+        }
+
+        // card
+        const col = state.columns.find(c=>c.id===modalCtx.colId);
+        const card = col?.cards?.find(k=>k.id===modalCtx.cardId);
+        if(card){
+          card.title = name;
+          card.desc = desc;
+          card.updatedAt = Date.now();
+          saveBoard();
+          render();
+          toast('Cartão atualizado.');
+          closeModal();
+        }
+      });
+
+      // Keyboard quick add (Enter inside forms) handled via input events.
+
+      function render(){
+        boardEl.innerHTML = '';
+
+        // columns
+        state.columns.forEach((col)=>{
+          const colEl = document.createElement('div');
+          colEl.className = 'col';
+          colEl.dataset.colId = col.id;
+
+          const colHd = document.createElement('div');
+          colHd.className = 'colHd';
+
+          const title = document.createElement('div');
+          title.className = 'colTitle';
+
+          const rowTitle = document.createElement('div');
+          rowTitle.className = 'colTitleRow';
+
+          const titleText = document.createElement('div');
+          titleText.className = 'colTitleText';
+          titleText.textContent = col.title;
+
+          const count = document.createElement('div');
+          count.className = 'colCount';
+          count.textContent = `${col.cards.length}`;
+
+          rowTitle.appendChild(titleText);
+          rowTitle.appendChild(count);
+          title.appendChild(rowTitle);
+
+          colHd.appendChild(title);
+
+          const menu = document.createElement('div');
+          menu.className = 'colMenu';
+
+          const btnEditCol = document.createElement('div');
+          btnEditCol.className = 'iconBtn';
+          btnEditCol.title = 'Editar coluna';
+          btnEditCol.textContent = '✎';
+          btnEditCol.addEventListener('click', ()=>{
+            openModal({type:'column', colId: col.id, name: col.title, desc:''});
           });
-          const countEl = document.querySelector(`[data-count="${list}"]`);
-          if(countEl) countEl.textContent = String(countFor(list));
+
+          const btnDelCol = document.createElement('div');
+          btnDelCol.className = 'iconBtn';
+          btnDelCol.title = 'Excluir coluna';
+          btnDelCol.textContent = '🗑';
+          btnDelCol.addEventListener('click', ()=>{
+            const ok = confirm(`Excluir coluna “${col.title}”?`);
+            if(!ok) return;
+            state.columns = state.columns.filter(c=>c.id!==col.id);
+            saveBoard();
+            render();
+            toast('Coluna excluída.');
+          });
+
+          menu.appendChild(btnEditCol);
+          menu.appendChild(btnDelCol);
+          colHd.appendChild(menu);
+
+          colEl.appendChild(colHd);
+
+          const body = document.createElement('div');
+          body.className = 'colBody';
+          body.addEventListener('dragover', (e)=>{
+            e.preventDefault();
+            colEl.classList.add('dropActive');
+          });
+          body.addEventListener('dragleave', ()=>colEl.classList.remove('dropActive'));
+          body.addEventListener('drop', (e)=>{
+            e.preventDefault();
+            colEl.classList.remove('dropActive');
+
+            const payload = e.dataTransfer?.getData('text/plain');
+            if(!payload) return;
+            let data;
+            try{ data = JSON.parse(payload); }catch{ return; }
+            if(data?.type !== 'card') return;
+            const fromColId = data.fromColId;
+            const cardId = data.cardId;
+            const toColId = col.id;
+            if(fromColId === toColId) return;
+
+            const fromCol = state.columns.find(c=>c.id===fromColId);
+            const toCol = state.columns.find(c=>c.id===toColId);
+            if(!fromCol || !toCol) return;
+            const cardIdx = fromCol.cards.findIndex(c=>c.id===cardId);
+            if(cardIdx < 0) return;
+
+            const [card] = fromCol.cards.splice(cardIdx, 1);
+            toCol.cards.unshift(card);
+            card.updatedAt = Date.now();
+
+            saveBoard();
+            render();
+            toast('Cartão movido.');
+          });
+
+          if(col.cards.length === 0){
+            const empty = document.createElement('div');
+            empty.className = 'empty';
+            empty.textContent = 'Sem cartões. Clique em “Adicionar cartão” abaixo.';
+            body.appendChild(empty);
+          }
+
+          col.cards.forEach((card)=>{
+            const cardEl = document.createElement('div');
+            cardEl.className = 'card';
+            cardEl.draggable = true;
+            cardEl.dataset.cardId = card.id;
+            cardEl.dataset.colId = col.id;
+
+            const titleEl = document.createElement('div');
+            titleEl.className = 'cardTitle';
+            titleEl.textContent = card.title;
+
+            const descEl = document.createElement('div');
+            descEl.className = 'cardDesc';
+            descEl.textContent = card.desc ? card.desc : '';
+            if(!card.desc) descEl.style.display = 'none';
+
+            cardEl.appendChild(titleEl);
+            if(card.desc) cardEl.appendChild(descEl);
+
+            const actions = document.createElement('div');
+            actions.className = 'cardActions';
+
+            const btnEdit = document.createElement('button');
+            btnEdit.className = 'miniBtn';
+            btnEdit.type = 'button';
+            btnEdit.textContent = 'Editar';
+            btnEdit.addEventListener('click', (ev)=>{
+              ev.stopPropagation();
+              openModal({type:'card', colId: col.id, cardId: card.id, name: card.title, desc: card.desc || ''});
+            });
+
+            const btnDel = document.createElement('button');
+            btnDel.className = 'miniBtn danger';
+            btnDel.type = 'button';
+            btnDel.textContent = 'Excluir';
+            btnDel.addEventListener('click', (ev)=>{
+              ev.stopPropagation();
+              const ok = confirm('Excluir este cartão?');
+              if(!ok) return;
+              const c = state.columns.find(c=>c.id===col.id);
+              if(!c) return;
+              c.cards = c.cards.filter(k=>k.id!==card.id);
+              saveBoard();
+              render();
+              toast('Cartão excluído.');
+            });
+
+            actions.appendChild(btnEdit);
+            actions.appendChild(btnDel);
+            cardEl.appendChild(actions);
+
+            cardEl.addEventListener('dragstart', (e)=>{
+              cardEl.classList.add('dragging');
+              const payload = JSON.stringify({type:'card', cardId: card.id, fromColId: col.id});
+              e.dataTransfer.setData('text/plain', payload);
+              e.dataTransfer.effectAllowed = 'move';
+            });
+            cardEl.addEventListener('dragend', ()=>cardEl.classList.remove('dragging'));
+
+            body.appendChild(cardEl);
+          });
+
+          // Add card form
+          const addCardWrap = document.createElement('div');
+          addCardWrap.className = 'addArea';
+
+          const addCardTop = document.createElement('div');
+          addCardTop.className = 'row';
+          addCardTop.style.justifyContent='space-between';
+
+          const btnShowAddCard = document.createElement('button');
+          btnShowAddCard.className = 'miniBtn';
+          btnShowAddCard.type = 'button';
+          btnShowAddCard.textContent = '+ Adicionar cartão';
+
+          addCardTop.appendChild(btnShowAddCard);
+          addCardWrap.appendChild(addCardTop);
+
+          const form = document.createElement('div');
+          form.style.display = 'none';
+          form.style.marginTop = '10px';
+          form.innerHTML = `
+            <div class="field">
+              <label class="small">Título do cartão</label>
+              <input type="text" class="inName" maxlength="60" placeholder="Ex.: Tarefa 1" />
+            </div>
+            <div class="field" style="margin-top:10px">
+              <label class="small">Descrição</label>
+              <textarea class="inDesc" maxlength="800" placeholder="Opcional..."></textarea>
+            </div>
+            <div class="formActions">
+              <button class="miniBtn" type="button" data-act="cancel">Cancelar</button>
+              <button class="miniBtn" type="button" data-act="save">Salvar</button>
+            </div>
+          `;
+          addCardWrap.appendChild(form);
+
+          btnShowAddCard.addEventListener('click', ()=>{
+            form.style.display = 'block';
+            btnShowAddCard.style.display = 'none';
+            const input = $('.inName', form);
+            if(input) input.focus();
+          });
+
+          form.addEventListener('click', (ev)=>{
+            const t = ev.target;
+            if(!(t && t.getAttribute)) return;
+            const act = t.getAttribute('data-act');
+            if(act === 'cancel'){
+              form.style.display='none';
+              btnShowAddCard.style.display='inline-flex';
+              form.querySelector('.inName').value='';
+              form.querySelector('.inDesc').value='';
+              return;
+            }
+            if(act === 'save'){
+              const titleV = (form.querySelector('.inName').value || '').trim();
+              const descV = (form.querySelector('.inDesc').value || '').trim();
+              if(!titleV){ toast('Informe o título do cartão.'); return; }
+              const colObj = state.columns.find(c=>c.id===col.id);
+              if(!colObj) return;
+              colObj.cards.unshift({
+                id: uid('card'),
+                title: titleV.slice(0,60),
+                desc: descV.slice(0,800),
+                createdAt: Date.now(),
+                updatedAt: Date.now()
+              });
+              saveBoard();
+              render();
+              toast('Cartão adicionado.');
+            }
+          });
+
+          form.addEventListener('keydown', (e)=>{
+            if(e.key !== 'Enter') return;
+            const target = e.target;
+            if(!(target && target.classList && target.classList.contains('inName'))) return;
+            // do not force enter inside textarea
+            e.preventDefault();
+            form.querySelector('button[data-act="save"]').click();
+          });
+
+          body.appendChild(addCardWrap);
+
+          colEl.appendChild(body);
+          boardEl.appendChild(colEl);
+        });
+
+        // Add column
+        const addCol = document.createElement('div');
+        addCol.className = 'col';
+        addCol.style.background='rgba(255,255,255,.02)';
+        addCol.style.borderStyle='dashed';
+
+        const hd = document.createElement('div');
+        hd.className = 'colHd';
+        hd.innerHTML = `<div class="colTitle"><div class="colTitleRow"><div class="colTitleText">Novo</div><div class="colCount">+</div></div></div><div class="colMenu"></div>`;
+
+        addCol.appendChild(hd);
+
+        const bd = document.createElement('div');
+        bd.className = 'colBody';
+        bd.style.gap='10px';
+        bd.innerHTML = `
+          <div class="addArea" style="width:100%">
+            <div class="row" style="justify-content:space-between">
+              <button class="miniBtn" type="button" id="btnShowAddCol">+ Adicionar coluna</button>
+            </div>
+            <div id="addColForm" style="display:none;margin-top:10px">
+              <div class="field">
+                <label class="small">Título da coluna</label>
+                <input type="text" id="inAddColName" maxlength="60" placeholder="Ex.: Review" />
+              </div>
+              <div class="formActions">
+                <button class="miniBtn" type="button" id="btnCancelAddCol">Cancelar</button>
+                <button class="miniBtn" type="button" id="btnSaveAddCol">Salvar</button>
+              </div>
+            </div>
+          </div>
+        `;
+
+        addCol.appendChild(bd);
+        boardEl.appendChild(addCol);
+
+        const btnShowAddCol = $('#btnShowAddCol', bd);
+        const addColForm = $('#addColForm', bd);
+        const inAddColName = $('#inAddColName', bd);
+        const btnCancelAddCol = $('#btnCancelAddCol', bd);
+        const btnSaveAddCol = $('#btnSaveAddCol', bd);
+
+        btnShowAddCol?.addEventListener('click', ()=>{
+          addColForm.style.display='block';
+          btnShowAddCol.style.display='none';
+          setTimeout(()=>inAddColName?.focus(), 0);
+        });
+        btnCancelAddCol?.addEventListener('click', ()=>{
+          addColForm.style.display='none';
+          btnShowAddCol.style.display='inline-flex';
+          inAddColName.value='';
+        });
+        btnSaveAddCol?.addEventListener('click', ()=>{
+          const t = (inAddColName?.value || '').trim().slice(0,60);
+          if(!t){ toast('Informe o título da coluna.'); return; }
+          state.columns.push({ id: uid('col'), title: t, cards: [] });
+          saveBoard();
+          render();
+          toast('Coluna adicionada.');
+        });
+        inAddColName?.addEventListener('keydown', (e)=>{
+          if(e.key !== 'Enter') return;
+          e.preventDefault();
+          btnSaveAddCol.click();
         });
       }
 
-      $$('.list').forEach(listEl=>{
-        listEl.addEventListener('dragover', (e)=>{
-          e.preventDefault();
-          e.dataTransfer.dropEffect='move';
-        });
-        listEl.addEventListener('drop', (e)=>{
-          e.preventDefault();
-          const id = e.dataTransfer.getData('text/plain');
-          const task = boardState.tasks.find(t=>t.id===id);
-          if(!task) return;
-          const newList = listEl.dataset.list;
-          if(task.list === newList) return;
-          task.list = newList;
-          persistBoard();
-          renderBoard();
-          toast('Tarefa movida.');
-        });
+      // Reset board only for this account namespace
+      $('#btnResetBoard')?.addEventListener('click', ()=>{
+        const ok = confirm('Resetar apenas este quadro (somente sua conta)?');
+        if(!ok) return;
+        try{ localStorage.removeItem(nsKey('board')); }catch{}
+        state = loadBoard();
+        render();
+        toast('Quadro resetado.');
       });
 
-      $$('.addbar button[data-add]').forEach(btn=>{
-        btn.addEventListener('click', ()=>{
-          const list = btn.dataset.add;
-          const input = document.querySelector(`input[data-new-title="${list}"]`);
-          if(!input) return;
-          const title = input.value.trim();
-          if(!title) return;
-          const newTask = { id: uid(), title, list, createdAt: Date.now(), done: false };
-          boardState.tasks.push(newTask);
-          persistBoard();
-          renderBoard();
-          input.value='';
-          toast('Tarefa adicionada.');
-        });
-      });
+      // Initial render
+      render();
 
-      loadBoard();
-      renderBoard();
+      // Prevent form submit reload (if ever added)
+      document.addEventListener('submit', (e)=>e.preventDefault());
     </script>
   </body>
 </html>
