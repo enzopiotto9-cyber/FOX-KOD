@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark light" />
+    <title>Painel • Calculadora</title>
+
+    <style>
+      :root{
+        --bg0:#070A12;
+        --bg1:#0B1630;
+        --stroke: rgba(255,255,255,.14);
+        --stroke2: rgba(255,255,255,.22);
+        --text: rgba(255,255,255,.92);
+        --muted: rgba(255,255,255,.65);
+        --shadow: 0 18px 60px rgba(0,0,0,.55);
+        --shadow2: 0 10px 30px rgba(0,0,0,.35);
+        --radius: 18px;
+        --radius2: 14px;
+        --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+        --yellow: #fbbf24;
+        --green: #34d399;
+      }
+      *{box-sizing:border-box}
+      html,body{height:100%}
+      body{
+        margin:0;
+        font-family: var(--sans);
+        color: var(--text);
+        background: linear-gradient(180deg, var(--bg0), var(--bg1));
+        overflow-x:hidden;
+      }
+      body[data-theme="aurora"]{
+        background:
+          radial-gradient(1100px 650px at 15% 10%, rgba(16,185,129,.35), transparent 58%),
+          radial-gradient(900px 540px at 90% 18%, rgba(59,130,246,.32), transparent 55%),
+          radial-gradient(700px 460px at 70% 88%, rgba(236,72,153,.18), transparent 62%),
+          linear-gradient(180deg, #050915, #0B1636);
+      }
+      body[data-theme="sunset"]{
+        background:
+          radial-gradient(1100px 650px at 18% 12%, rgba(249,115,22,.32), transparent 58%),
+          radial-gradient(900px 540px at 88% 22%, rgba(124,58,237,.26), transparent 55%),
+          radial-gradient(700px 460px at 60% 88%, rgba(34,211,238,.14), transparent 62%),
+          linear-gradient(180deg, #0B0613, #1C1232);
+      }
+      body[data-theme="midnight"]{
+        background:
+          radial-gradient(1100px 650px at 25% 8%, rgba(99,102,241,.26), transparent 58%),
+          radial-gradient(900px 540px at 85% 20%, rgba(34,211,238,.22), transparent 55%),
+          radial-gradient(700px 460px at 65% 88%, rgba(16,185,129,.16), transparent 62%),
+          linear-gradient(180deg, #040713, #0B1630);
+      }
+      body[data-theme="mono"]{
+        background:
+          radial-gradient(1100px 650px at 15% 10%, rgba(255,255,255,.10), transparent 58%),
+          radial-gradient(900px 540px at 90% 18%, rgba(255,255,255,.08), transparent 55%),
+          radial-gradient(700px 460px at 70% 90%, rgba(255,255,255,.06), transparent 62%),
+          linear-gradient(180deg, #05060A, #0A0B12);
+      }
+
+      .app{min-height:100vh;padding:22px 18px 40px}
+      .topbar{
+        display:flex;align-items:center;justify-content:space-between;gap:14px;
+        max-width:1280px;margin:0 auto 16px;
+      }
+      .brand{display:flex;align-items:center;gap:12px}
+      .logo{
+        width:42px;height:42px;border-radius:14px;
+        background:
+          radial-gradient(18px 18px at 30% 25%, rgba(255,255,255,.35), transparent 60%),
+          linear-gradient(135deg, rgba(124,58,237,.95), rgba(34,211,238,.9));
+        box-shadow:0 14px 40px rgba(124,58,237,.35);
+        border:1px solid rgba(255,255,255,.22);
+        position:relative;overflow:hidden;
+      }
+      .logo:after{
+        content:"";position:absolute;top:-30%;left:-30%;width:120%;height:120%;
+        background:conic-gradient(from 180deg, rgba(255,255,255,.0), rgba(255,255,255,.35), rgba(255,255,255,.0));
+        transform:rotate(12deg);
+        animation:spinGlow 5.5s linear infinite;opacity:.8;
+      }
+      @keyframes spinGlow{to{transform:rotate(372deg)}}
+
+      .brand h1{margin:0;font-size:15px;letter-spacing:.2px;font-weight:750;line-height:1.1}
+      .brand p{margin:2px 0 0;font-size:12px;color:var(--muted)}
+
+      .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+      .pill{
+        border:1px solid var(--stroke);
+        background:rgba(255,255,255,.05);
+        border-radius:999px;padding:10px 12px;
+        display:flex;gap:10px;align-items:center;
+        box-shadow:var(--shadow2);
+        backdrop-filter:blur(10px);
+      }
+      .pill label{font-size:12px;color:var(--muted)}
+      select{background:transparent;border:none;color:var(--text);outline:none;font-weight:650}
+      option{background:#0b0d16}
+
+      .btn{
+        cursor:pointer;
+        border:1px solid var(--stroke);
+        background:rgba(255,255,255,.05);
+        color:var(--text);
+        padding:10px 12px;
+        border-radius:12px;
+        font-weight:720;
+        transition:transform .15s ease, background .2s ease, border-color .2s ease;
+        backdrop-filter:blur(10px);
+        box-shadow:var(--shadow2);
+        user-select:none;
+      }
+      .btn:hover{transform:translateY(-1px);border-color:var(--stroke2);background:rgba(255,255,255,.08)}
+      .btn:active{transform:translateY(0px) scale(.99)}
+      .btn.primary{border-color:rgba(34,211,238,.35);background:linear-gradient(135deg, rgba(124,58,237,.30), rgba(34,211,238,.20));}
+
+      .grid{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:14px}
+      .col{display:flex;flex-direction:column;gap:14px}
+
+      .card{
+        border-radius:var(--radius);
+        background:linear-gradient(180deg, rgba(255,255,255,.075), rgba(255,255,255,.035));
+        border:1px solid rgba(255,255,255,.12);
+        box-shadow:var(--shadow);
+        backdrop-filter:blur(14px);
+        overflow:hidden;
+      }
+      .card .hd{
+        padding:14px 16px 10px;
+        display:flex;justify-content:space-between;align-items:flex-start;gap:10px;
+        border-bottom:1px solid rgba(255,255,255,.08);
+        background:rgba(255,255,255,.02);
+      }
+      .card .hd h2{margin:0;font-size:13px;letter-spacing:.25px;text-transform:uppercase;color:rgba(255,255,255,.84)}
+      .card .hd .sub{margin-top:4px;font-size:12px;color:var(--muted)}
+      .card .bd{padding:14px 16px 16px}
+
+      .fadeIn{animation:fadeInUp .55s cubic-bezier(.2,.8,.2,1) both}
+      @keyframes fadeInUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+      .calc{display:grid;grid-template-columns:1fr;gap:12px}
+      .calc-top{padding:12px;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.18)}
+      .calc-display{display:flex;flex-direction:column;gap:6px}
+      .calc-display .expr{font-family:var(--mono);color:var(--muted);font-size:12px;min-height:16px;word-break:break-all}
+      .calc-display .value{font-family:var(--mono);font-size:24px;font-weight:800;letter-spacing:.2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+      .seg{display:flex;gap:8px;flex-wrap:wrap}
+      .tag{font-size:12px;padding:7px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:var(--muted)}
+      .tag strong{color:var(--text)}
+
+      .calc-keys{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+      .key{
+        border-radius:14px;border:1px solid rgba(255,255,255,.14);
+        background:rgba(255,255,255,.05);color:var(--text);
+        padding:13px 10px;text-align:center;
+        font-family:var(--mono);font-weight:800;cursor:pointer;
+        transition:transform .12s ease, background .2s ease, border-color .2s ease;
+        user-select:none;position:relative;overflow:hidden;
+      }
+      .key:before{content:"";position:absolute;inset:-2px;background:radial-gradient(180px 80px at 20% 20%, rgba(34,211,238,.20), transparent 60%);opacity:0;transition:opacity .18s ease}
+      .key:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.26);background:rgba(255,255,255,.08)}
+      .key:hover:before{opacity:1}
+      .key:active{transform:translateY(0px) scale(.99)}
+      .key.op{background:linear-gradient(135deg, rgba(124,58,237,.22), rgba(34,211,238,.10));border-color:rgba(124,58,237,.28)}
+      .key.mem{background:linear-gradient(135deg, rgba(34,211,238,.18), rgba(255,255,255,.05));border-color:rgba(34,211,238,.28)}
+      .key.equals{grid-column:span 2;background:linear-gradient(135deg, rgba(34,211,238,.35), rgba(124,58,237,.22));border-color:rgba(34,211,238,.45)}
+
+      .calc-bot{display:grid;grid-template-columns:1fr;gap:10px}
+      .history{border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.16);padding:10px}
+      .history .row{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:6px 6px;border-radius:12px}
+      .history .row:hover{background:rgba(255,255,255,.06)}
+      .history .expr{font-family:var(--mono);font-size:12px;color:rgba(255,255,255,.78);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+      .history .val{font-family:var(--mono);font-size:12px;color:rgba(255,255,255,.58);flex:0 0 auto}
+
+      .toast{position:fixed;right:18px;bottom:18px;padding:12px 14px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.18);border-radius:14px;box-shadow:var(--shadow);backdrop-filter:blur(10px);color:var(--text);transform:translateY(12px);opacity:0;pointer-events:none;transition:opacity .2s ease, transform .2s ease;max-width:360px}
+      .toast.show{opacity:1;transform:translateY(0)}
+
+      .navTop{
+        display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+      }
+      .navLink{
+        text-decoration:none;
+        color:var(--muted);
+        border:1px solid rgba(255,255,255,.12);
+        background:rgba(255,255,255,.03);
+        padding:8px 10px;
+        border-radius:12px;
+        font-weight:700;
+      }
+      .navLink.active{
+        color:var(--text);
+        border-color:rgba(34,211,238,.35);
+        background:rgba(34,211,238,.10);
+      }
+
+      button:focus,.key:focus,input:focus,select:focus{outline:none}
+    </style>
+  </head>
+
+  <body>
+    <div class="app">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            <h1>Blackbox Dashboard</h1>
+            <p>Calculadora</p>
+          </div>
+        </div>
+
+        <div class="controls">
+          <div class="pill">
+            <label for="themeSel">Tema</label>
+            <select id="themeSel" aria-label="Tema de fundo">
+              <option value="aurora">Aurora</option>
+              <option value="sunset">Sunset</option>
+              <option value="midnight">Midnight</option>
+              <option value="mono">Mono</option>
+            </select>
+          </div>
+
+          <div class="navTop" aria-label="Navegação">
+            <a class="navLink" href="../index.html">Painel</a>
+            <a class="navLink active" href="./calculadora.html">Calculadora</a>
+            <a class="navLink" href="./tarefas.html">Tarefas</a>
+            <a class="navLink" href="./timer.html">Timer</a>
+            <a class="navLink" href="./notas.html">Notas</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="col">
+          <section class="card fadeIn" style="animation-delay:0ms">
+            <div class="hd">
+              <div>
+                <h2>Calculadora Estilosa & Complexa</h2>
+                <div class="sub">Teclado + memória (MC/MR/M+/M-) + histórico.</div>
+              </div>
+              <div class="seg"><div class="tag">M: <strong id="calcMemLabel">0</strong></div></div>
+            </div>
+
+            <div class="bd">
+              <div class="calc">
+                <div class="calc-top">
+                  <div class="calc-display">
+                    <div class="expr" id="calcExpr"></div>
+                    <div class="value" id="calcValue">0</div>
+                  </div>
+                </div>
+
+                <div class="calc-keys" aria-label="Teclado da calculadora">
+                  <div class="key mem" data-key="MC">MC</div>
+                  <div class="key mem" data-key="MR">MR</div>
+                  <div class="key mem" data-key="M+">M+</div>
+                  <div class="key mem" data-key="M-">M-</div>
+
+                  <div class="key" data-key="7">7</div>
+                  <div class="key" data-key="8">8</div>
+                  <div class="key" data-key="9">9</div>
+                  <div class="key op" data-key="/">÷</div>
+
+                  <div class="key" data-key="4">4</div>
+                  <div class="key" data-key="5">5</div>
+                  <div class="key" data-key="6">6</div>
+                  <div class="key op" data-key="*">×</div>
+
+                  <div class="key" data-key="1">1</div>
+                  <div class="key" data-key="2">2</div>
+                  <div class="key" data-key="3">3</div>
+                  <div class="key op" data-key="-">−</div>
+
+                  <div class="key" data-key="0">0</div>
+                  <div class="key" data-key=".">.</div>
+                  <div class="key op" data-key="+">+</div>
+                  <div class="key op" data-key="C">C</div>
+
+                  <div class="key equals" data-key="=">=</div>
+                  <div class="key" data-key="BS">⌫</div>
+                </div>
+
+                <div class="calc-bot">
+                  <div class="history">
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px">
+                      <div style="font-weight:900;font-size:13px">Histórico</div>
+                      <div style="color:var(--muted);font-size:12px">Clique para repetir</div>
+                    </div>
+                    <div id="calcHistory"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <div class="toast" id="toast"></div>
+    </div>
+
+    <script>
+      const $ = (sel, root=document) => root.querySelector(sel);
+      const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+      function toast(msg, ms=1800){
+        const el = $('#toast');
+        el.textContent = msg;
+        el.classList.add('show');
+        clearTimeout(toast._t);
+        toast._t = setTimeout(()=>el.classList.remove('show'), ms);
+      }
+
+      // Themes
+      const themeSel = $('#themeSel');
+      function applyTheme(theme){
+        document.body.dataset.theme = theme;
+        try{ localStorage.setItem('bb_theme', theme); }catch{}
+      }
+      (function initTheme(){
+        let t = 'aurora';
+        try{ t = localStorage.getItem('bb_theme') || 'aurora'; }catch{}
+        if(themeSel) themeSel.value = t;
+        applyTheme(t);
+      })();
+      themeSel?.addEventListener('change', (e)=> applyTheme(e.target.value));
+
+      // ---------- Calculadora ----------
+      const calcExpr = $('#calcExpr');
+      const calcValue = $('#calcValue');
+      const calcMemLabel = $('#calcMemLabel');
+      const calcHistoryEl = $('#calcHistory');
+
+      const calcState = { expr:'', value:'0', mem:0, history:[] };
+      function persistCalc(){
+        try{
+          localStorage.setItem('bb_calc_mem', String(calcState.mem));
+          localStorage.setItem('bb_calc_history', JSON.stringify(calcState.history.slice(0,30)));
+        }catch{}
+      }
+      function loadCalc(){
+        try{
+          const m = localStorage.getItem('bb_calc_mem');
+          if(m!==null) calcState.mem = Number(m) || 0;
+          const h = localStorage.getItem('bb_calc_history');
+          if(h) calcState.history = JSON.parse(h);
+        }catch{}
+      }
+      function updateCalcUI(){
+        calcExpr.textContent = calcState.expr;
+        calcValue.textContent = calcState.value;
+        calcMemLabel.textContent = String(calcState.mem);
+        renderCalcHistory();
+      }
+      function normalizeOperator(op){
+        return op==='*' || op==='/' || op==='+' || op==='-' ? op : op;
+      }
+      function evaluateExpression(expr){
+        if(!/^[0-9+\-*/.\s]+$/.test(expr)) return null;
+        try{
+          const res = Function('"use strict"; return ('+expr+');')();
+          if(!Number.isFinite(res)) return null;
+          return res;
+        }catch{ return null; }
+      }
+      function setValueFromNumber(n){
+        calcState.value = (Math.abs(n) >= 1e12) ? n.toExponential(6) : String(n);
+      }
+      function appendToken(tok){
+        if(tok==='.'){
+          const parts = calcState.expr.split(/([+\-*/])/).filter(Boolean);
+          const last = parts[parts.length-1] ?? '';
+          if(last.includes('.')) return;
+        }
+        calcState.expr += tok;
+      }
+      function safeNumber(x){
+        const n = Number(x);
+        return Number.isFinite(n) ? n : null;
+      }
+      function onKey(tok){
+        if(tok==='C'){
+          calcState.expr='';
+          calcState.value='0';
+          updateCalcUI();
+          return;
+        }
+        if(tok==='BS'){
+          calcState.expr = calcState.expr.slice(0,-1);
+          const tryRes = evaluateExpression(calcState.expr || '0');
+          if(tryRes===null) calcState.value='0'; else setValueFromNumber(tryRes);
+          updateCalcUI();
+          return;
+        }
+        if(tok==='='){
+          const expr = (calcState.expr || '0').trim();
+          const res = evaluateExpression(expr);
+          if(res===null){ toast('Expressão inválida.'); return; }
+          const pretty = expr.replace(/\s+/g,' ');
+          calcState.history.unshift({expr: pretty, val: String(res)});
+          calcState.history = calcState.history.slice(0,20);
+          setValueFromNumber(res);
+          calcState.expr='';
+          persistCalc();
+          updateCalcUI();
+          return;
+        }
+        if(tok==='MC'){ calcState.mem=0; persistCalc(); updateCalcUI(); return; }
+        if(tok==='MR'){ calcState.expr += String(calcState.mem); updateCalcUI(); return; }
+        if(tok==='M+'){ const n=safeNumber(calcState.value); if(n===null) return; calcState.mem += n; persistCalc(); updateCalcUI(); return; }
+        if(tok==='M-'){ const n=safeNumber(calcState.value); if(n===null) return; calcState.mem -= n; persistCalc(); updateCalcUI(); return; }
+
+        if(['+','-','*','/'].includes(tok)){
+          calcState.expr = calcState.expr.replace(/[+\-*/]\s*$/,'');
+          calcState.expr += normalizeOperator(tok);
+          updateCalcUI();
+          return;
+        }
+
+        appendToken(tok);
+        const res = evaluateExpression(calcState.expr);
+        if(res!==null) setValueFromNumber(res);
+        updateCalcUI();
+      }
+
+      function renderCalcHistory(){
+        if(!calcHistoryEl) return;
+        calcHistoryEl.innerHTML='';
+        if(calcState.history.length===0){
+          const empty = document.createElement('div');
+          empty.style.color='var(--muted)';
+          empty.style.fontSize='12px';
+          empty.textContent='Sem histórico ainda.';
+          calcHistoryEl.appendChild(empty);
+          return;
+        }
+        calcState.history.forEach(h=>{
+          const row = document.createElement('div');
+          row.className='row';
+          const expr = document.createElement('div');
+          expr.className='expr';
+          expr.textContent = h.expr;
+          const val = document.createElement('div');
+          val.className='val';
+          val.textContent = `= ${h.val}`;
+          row.appendChild(expr);
+          row.appendChild(val);
+          row.title='Clique para repetir';
+          row.addEventListener('click', ()=>{
+            calcState.expr = h.expr;
+            const res = evaluateExpression(h.expr);
+            if(res!==null) setValueFromNumber(res);
+            persistCalc();
+            updateCalcUI();
+          });
+          calcHistoryEl.appendChild(row);
+        });
+      }
+
+      $$('.key[data-key]').forEach(k=>{
+        k.tabIndex=0;
+        k.addEventListener('click', ()=> onKey(k.dataset.key));
+      });
+
+      document.addEventListener('keydown', (e)=>{
+        const key=e.key;
+        const isTyping = document.activeElement && ['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName);
+        if(isTyping) return;
+        if((key>='0'&&key<='9') || key==='.') { onKey(key); return; }
+        if(['+','-','*','/'].includes(key)) { onKey(key); return; }
+        if(key==='Enter' || key==='=') { onKey('='); return; }
+        if(key==='Backspace') { onKey('BS'); e.preventDefault(); return; }
+        if(key==='Escape') { onKey('C'); return; }
+      });
+
+      loadCalc();
+      updateCalcUI();
+    </script>
+  </body>
+</html>
+

@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark light" />
+    <title>Painel • Tarefas</title>
+
+    <style>
+      :root{
+        --bg0:#070A12;
+        --bg1:#0B1630;
+        --stroke: rgba(255,255,255,.14);
+        --stroke2: rgba(255,255,255,.22);
+        --text: rgba(255,255,255,.92);
+        --muted: rgba(255,255,255,.65);
+        --shadow: 0 18px 60px rgba(0,0,0,.55);
+        --shadow2: 0 10px 30px rgba(0,0,0,.35);
+        --radius: 18px;
+        --radius2: 14px;
+        --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      }
+      *{box-sizing:border-box}
+      html,body{height:100%}
+      body{
+        margin:0;
+        font-family: var(--sans);
+        color: var(--text);
+        background: linear-gradient(180deg, var(--bg0), var(--bg1));
+        overflow-x:hidden;
+      }
+      body[data-theme="aurora"]{
+        background:
+          radial-gradient(1100px 650px at 15% 10%, rgba(16,185,129,.35), transparent 58%),
+          radial-gradient(900px 540px at 90% 18%, rgba(59,130,246,.32), transparent 55%),
+          radial-gradient(700px 460px at 70% 88%, rgba(236,72,153,.18), transparent 62%),
+          linear-gradient(180deg, #050915, #0B1636);
+      }
+      body[data-theme="sunset"]{
+        background:
+          radial-gradient(1100px 650px at 18% 12%, rgba(249,115,22,.32), transparent 58%),
+          radial-gradient(900px 540px at 88% 22%, rgba(124,58,237,.26), transparent 55%),
+          radial-gradient(700px 460px at 60% 88%, rgba(34,211,238,.14), transparent 62%),
+          linear-gradient(180deg, #0B0613, #1C1232);
+      }
+      body[data-theme="midnight"]{
+        background:
+          radial-gradient(1100px 650px at 25% 8%, rgba(99,102,241,.26), transparent 58%),
+          radial-gradient(900px 540px at 85% 20%, rgba(34,211,238,.22), transparent 55%),
+          radial-gradient(700px 460px at 65% 88%, rgba(16,185,129,.16), transparent 62%),
+          linear-gradient(180deg, #040713, #0B1630);
+      }
+      body[data-theme="mono"]{
+        background:
+          radial-gradient(1100px 650px at 15% 10%, rgba(255,255,255,.10), transparent 58%),
+          radial-gradient(900px 540px at 90% 18%, rgba(255,255,255,.08), transparent 55%),
+          radial-gradient(700px 460px at 70% 90%, rgba(255,255,255,.06), transparent 62%),
+          linear-gradient(180deg, #05060A, #0A0B12);
+      }
+
+      .app{min-height:100vh;padding:22px 18px 40px}
+      .topbar{
+        display:flex;align-items:center;justify-content:space-between;gap:14px;
+        max-width:1280px;margin:0 auto 16px;
+      }
+      .brand{display:flex;align-items:center;gap:12px}
+      .logo{
+        width:42px;height:42px;border-radius:14px;
+        background:
+          radial-gradient(18px 18px at 30% 25%, rgba(255,255,255,.35), transparent 60%),
+          linear-gradient(135deg, rgba(124,58,237,.95), rgba(34,211,238,.9));
+        box-shadow:0 14px 40px rgba(124,58,237,.35);
+        border:1px solid rgba(255,255,255,.22);
+        position:relative;overflow:hidden;
+      }
+      .logo:after{
+        content:"";position:absolute;top:-30%;left:-30%;width:120%;height:120%;
+        background:conic-gradient(from 180deg, rgba(255,255,255,.0), rgba(255,255,255,.35), rgba(255,255,255,.0));
+        transform:rotate(12deg);
+        animation:spinGlow 5.5s linear infinite;opacity:.8;
+      }
+      @keyframes spinGlow{to{transform:rotate(372deg)}}
+      .brand h1{margin:0;font-size:15px;letter-spacing:.2px;font-weight:750;line-height:1.1}
+      .brand p{margin:2px 0 0;font-size:12px;color:var(--muted)}
+
+      .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+      .pill{
+        border:1px solid var(--stroke);
+        background:rgba(255,255,255,.05);
+        border-radius:999px;padding:10px 12px;
+        display:flex;gap:10px;align-items:center;
+        box-shadow:var(--shadow2);
+        backdrop-filter:blur(10px);
+      }
+      .pill label{font-size:12px;color:var(--muted)}
+      select{background:transparent;border:none;color:var(--text);outline:none;font-weight:650}
+      option{background:#0b0d16}
+
+      .btn{
+        cursor:pointer;
+        border:1px solid var(--stroke);
+        background:rgba(255,255,255,.05);
+        color:var(--text);
+        padding:10px 12px;
+        border-radius:12px;
+        font-weight:720;
+        transition:transform .15s ease, background .2s ease, border-color .2s ease;
+        backdrop-filter:blur(10px);
+        box-shadow:var(--shadow2);
+        user-select:none;
+      }
+      .btn:hover{transform:translateY(-1px);border-color:var(--stroke2);background:rgba(255,255,255,.08)}
+      .btn:active{transform:translateY(0px) scale(.99)}
+
+      .navTop{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+      .navLink{
+        text-decoration:none;
+        color:var(--muted);
+        border:1px solid rgba(255,255,255,.12);
+        background:rgba(255,255,255,.03);
+        padding:8px 10px;
+        border-radius:12px;
+        font-weight:700;
+      }
+      .navLink.active{color:var(--text);border-color:rgba(34,211,238,.35);background:rgba(34,211,238,.10)}
+
+      .grid{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:14px}
+      .col{display:flex;flex-direction:column;gap:14px}
+
+      .card{
+        border-radius:var(--radius);
+        background:linear-gradient(180deg, rgba(255,255,255,.075), rgba(255,255,255,.035));
+        border:1px solid rgba(255,255,255,.12);
+        box-shadow:var(--shadow);
+        backdrop-filter:blur(14px);
+        overflow:hidden;
+      }
+      .card .hd{
+        padding:14px 16px 10px;
+        display:flex;justify-content:space-between;align-items:flex-start;gap:10px;
+        border-bottom:1px solid rgba(255,255,255,.08);
+        background:rgba(255,255,255,.02);
+      }
+      .card .hd h2{margin:0;font-size:13px;letter-spacing:.25px;text-transform:uppercase;color:rgba(255,255,255,.84)}
+      .card .hd .sub{margin-top:4px;font-size:12px;color:var(--muted)}
+      .card .bd{padding:14px 16px 16px}
+
+      .fadeIn{animation:fadeInUp .55s cubic-bezier(.2,.8,.2,1) both}
+      @keyframes fadeInUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+      .board{display:flex;gap:12px;overflow:auto;padding-bottom:6px}
+      .board::-webkit-scrollbar{height:10px}
+      .board::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:999px}
+
+      .list{min-width:260px;max-width:320px;flex:0 0 auto;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.16);display:flex;flex-direction:column}
+      .list-h{padding:12px 12px 10px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;align-items:center;gap:10px}
+      .list-h .title{font-weight:850;font-size:13px;letter-spacing:.2px}
+      .list-h .count{color:var(--muted);font-size:12px;font-family:var(--mono)}
+      .cards{padding:10px;display:flex;flex-direction:column;gap:10px;min-height:120px}
+
+      .task{border-radius:14px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);padding:10px;cursor:grab;transition:transform .12s ease, background .2s ease, border-color .2s ease;user-select:none}
+      .task:active{cursor:grabbing;transform:scale(.99)}
+      .task:hover{border-color:rgba(255,255,255,.26);background:rgba(255,255,255,.08)}
+      .task .t-title{font-weight:850;font-size:13px;line-height:1.2}
+      .task .t-meta{margin-top:6px;display:flex;align-items:center;justify-content:space-between;gap:10px;color:var(--muted);font-size:12px;font-family:var(--mono)}
+      .task .t-actions{display:flex;justify-content:flex-end;margin-top:10px}
+      .task .delbtn{
+        border-radius:12px;
+        padding:6px 10px;
+        border:1px solid rgba(255,255,255,.14);
+        background:rgba(251,113,133,.10);
+        color:rgba(255,255,255,.92);
+        font-weight:850;
+        cursor:pointer;
+        transition:transform .12s ease, background .2s ease, border-color .2s ease;
+        user-select:none;
+      }
+      .task .delbtn:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.26);background:rgba(251,113,133,.18)}
+      .task .delbtn:active{transform:translateY(0px) scale(.99)}
+      .badge{padding:4px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05)}
+
+      .addbar{margin:0 10px 12px;padding:10px;border-radius:16px;border:1px dashed rgba(255,255,255,.18);background:rgba(255,255,255,.03);display:flex;flex-direction:column;gap:8px}
+      .addbar input{width:100%;background:rgba(0,0,0,.15);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px 10px;color:var(--text);outline:none}
+      .addbar input:focus{border-color:rgba(34,211,238,.45);box-shadow:0 0 0 3px rgba(34,211,238,.15)}
+
+      .smallbtn{border-radius:12px;padding:10px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:var(--text);font-weight:820;cursor:pointer;transition:transform .12s ease, background .2s ease, border-color .2s ease}
+      .smallbtn:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.26);background:rgba(255,255,255,.10)}
+      .smallbtn:active{transform:translateY(0px) scale(.99)}
+
+      .toast{position:fixed;right:18px;bottom:18px;padding:12px 14px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.18);border-radius:14px;box-shadow:var(--shadow);backdrop-filter:blur(10px);color:var(--text);transform:translateY(12px);opacity:0;pointer-events:none;transition:opacity .2s ease, transform .2s ease;max-width:360px}
+      .toast.show{opacity:1;transform:translateY(0)}
+      button:focus,input:focus,select:focus{outline:none}
+    </style>
+  </head>
+
+  <body>
+    <div class="app">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            <h1>Blackbox Dashboard</h1>
+            <p>Organizador de Tarefas</p>
+          </div>
+        </div>
+
+        <div class="controls">
+          <div class="pill">
+            <label for="themeSel">Tema</label>
+            <select id="themeSel" aria-label="Tema de fundo">
+              <option value="aurora">Aurora</option>
+              <option value="sunset">Sunset</option>
+              <option value="midnight">Midnight</option>
+              <option value="mono">Mono</option>
+            </select>
+          </div>
+
+          <div class="navTop" aria-label="Navegação">
+            <a class="navLink" href="../index.html">Painel</a>
+            <a class="navLink" href="./calculadora.html">Calculadora</a>
+            <a class="navLink active" href="./tarefas.html">Tarefas</a>
+            <a class="navLink" href="./timer.html">Timer</a>
+            <a class="navLink" href="./notas.html">Notas</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="col">
+          <section class="card fadeIn" style="animation-delay:0ms">
+            <div class="hd">
+              <div>
+                <h2>Organizador de Tarefas (estilo Trello)</h2>
+                <div class="sub">Drag & drop • cartões • marcação/edição • persistência.</div>
+              </div>
+              <div class="seg"><div class="badge">Hoje: <strong id="todayLabel" style="font-family:var(--mono)"> </strong></div></div>
+            </div>
+            <div class="bd">
+              <div class="board" id="board">
+                <div class="list" data-list="todo">
+                  <div class="list-h">
+                    <div><div class="title">A Fazer</div><div class="sub" style="margin-top:4px;color:var(--muted);font-size:12px">Planeje</div></div>
+                    <div class="count" data-count="todo">0</div>
+                  </div>
+                  <div class="cards" data-cards="todo"></div>
+                  <div class="addbar">
+                    <input type="text" data-new-title="todo" placeholder="Nova tarefa…" maxlength="80" />
+                    <button class="smallbtn" data-add="todo">Adicionar</button>
+                  </div>
+                </div>
+
+                <div class="list" data-list="doing">
+                  <div class="list-h">
+                    <div><div class="title">Em Progresso</div><div class="sub" style="margin-top:4px;color:var(--muted);font-size:12px">Executar</div></div>
+                    <div class="count" data-count="doing">0</div>
+                  </div>
+                  <div class="cards" data-cards="doing"></div>
+                  <div class="addbar">
+                    <input type="text" data-new-title="doing" placeholder="Nova tarefa…" maxlength="80" />
+                    <button class="smallbtn" data-add="doing">Adicionar</button>
+                  </div>
+                </div>
+
+                <div class="list" data-list="done">
+                  <div class="list-h">
+                    <div><div class="title">Concluído</div><div class="sub" style="margin-top:4px;color:var(--muted);font-size:12px">Finalizado</div></div>
+                    <div class="count" data-count="done">0</div>
+                  </div>
+                  <div class="cards" data-cards="done"></div>
+                  <div class="addbar">
+                    <input type="text" data-new-title="done" placeholder="Nova tarefa…" maxlength="80" />
+                    <button class="smallbtn" data-add="done">Adicionar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <div class="toast" id="toast"></div>
+    </div>
+
+    <script>
+      const $ = (sel, root=document) => root.querySelector(sel);
+      const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+      function escapeHtml(str){
+        return String(str ?? '').replace(/[&<>"']/g, c=>({
+          '&':'&amp;', '<':'<', '>':'>', '"':'"', "'":'&#039;'
+        }[c]));
+      }
+
+      function toast(msg, ms=1800){
+        const el = $('#toast');
+        if(!el) return;
+        el.textContent = msg;
+        el.classList.add('show');
+        clearTimeout(toast._t);
+        toast._t = setTimeout(()=>el.classList.remove('show'), ms);
+      }
+
+      const themeSel = $('#themeSel');
+      function applyTheme(theme){
+        document.body.dataset.theme = theme;
+        try{ localStorage.setItem('bb_theme', theme); }catch{}
+      }
+      (function initTheme(){
+        let t = 'aurora';
+        try{ t = localStorage.getItem('bb_theme') || 'aurora'; }catch{}
+        if(themeSel) themeSel.value = t;
+        applyTheme(t);
+      })();
+      themeSel?.addEventListener('change', (e)=> applyTheme(e.target.value));
+
+      const todayLabel = $('#todayLabel');
+      function updateTodayLabel(){
+        if(!todayLabel) return;
+        const now = new Date();
+        todayLabel.textContent = now.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'short' });
+      }
+      updateTodayLabel();
+
+      const lists = ['todo','doing','done'];
+      const boardStateKey='bb_trello';
+      const boardState={tasks:[]};
+      const uid = ()=> Math.random().toString(16).slice(2) + Date.now().toString(16);
+
+      function persistBoard(){
+        try{ localStorage.setItem(boardStateKey, JSON.stringify(boardState.tasks)); }catch{}
+      }
+      function loadBoard(){
+        try{
+          const t = localStorage.getItem(boardStateKey);
+          if(t) boardState.tasks = JSON.parse(t);
+        }catch{}
+      }
+      function countFor(list){ return boardState.tasks.filter(x=>x.list===list).length; }
+
+      function renderBoard(){
+        lists.forEach(list=>{
+          const container = $(`[data-cards="${list}"]`);
+          if(!container) return;
+          container.innerHTML='';
+          const tasks = boardState.tasks.filter(x=>x.list===list);
+          tasks.forEach(task=>{
+            const el=document.createElement('div');
+            el.className='task';
+            el.draggable=true;
+            el.dataset.id=task.id;
+            el.innerHTML=`
+              <div class="t-title"></div>
+              <div class="t-meta">
+                <span class="badge">${escapeHtml(task.tag||'')}</span>
+                <span>${task.done ? '✓' : new Date(task.createdAt).toLocaleDateString('pt-BR')}</span>
+              </div>
+              <div class="t-actions">
+                <button class="delbtn" type="button" title="Excluir tarefa">Excluir</button>
+              </div>
+            `;
+
+            el.querySelector('.t-title').textContent = task.title;
+
+            el.addEventListener('dragstart', (e)=>{
+              e.dataTransfer.setData('text/plain', task.id);
+              e.dataTransfer.effectAllowed='move';
+              el.style.opacity='0.6';
+            });
+            el.addEventListener('dragend', ()=>{ el.style.opacity='1'; });
+            el.addEventListener('dblclick', ()=>{
+              task.list = (task.list==='done') ? 'todo' : 'done';
+              persistBoard();
+              renderBoard();
+              toast('Tarefa movida.');
+            });
+
+            el.querySelector('button.delbtn')?.addEventListener('click', (e)=>{
+              e.preventDefault();
+              e.stopPropagation();
+              const ok = confirm('Remover esta tarefa?');
+              if(!ok) return;
+              boardState.tasks = boardState.tasks.filter(t=>t.id!==task.id);
+              persistBoard();
+              renderBoard();
+              toast('Tarefa removida.');
+            });
+
+            el.addEventListener('contextmenu', (e)=>{
+              e.preventDefault();
+              const next = prompt('Editar título:', task.title);
+              if(next===null) return;
+              const trimmed = next.trim();
+              if(!trimmed){
+                const ok = confirm('Remover tarefa?');
+                if(ok){
+                  boardState.tasks = boardState.tasks.filter(t=>t.id!==task.id);
+                  persistBoard();
+                  renderBoard();
+                  toast('Tarefa removida.');
+                }
+                return;
+              }
+              task.title = trimmed;
+              persistBoard();
+              renderBoard();
+              toast('Tarefa editada.');
+            });
+
+            container.appendChild(el);
+          });
+          const countEl = document.querySelector(`[data-count="${list}"]`);
+          if(countEl) countEl.textContent = String(countFor(list));
+        });
+      }
+
+      $$('.list').forEach(listEl=>{
+        listEl.addEventListener('dragover', (e)=>{
+          e.preventDefault();
+          e.dataTransfer.dropEffect='move';
+        });
+        listEl.addEventListener('drop', (e)=>{
+          e.preventDefault();
+          const id = e.dataTransfer.getData('text/plain');
+          const task = boardState.tasks.find(t=>t.id===id);
+          if(!task) return;
+          const newList = listEl.dataset.list;
+          if(task.list === newList) return;
+          task.list = newList;
+          persistBoard();
+          renderBoard();
+          toast('Tarefa movida.');
+        });
+      });
+
+      $$('.addbar button[data-add]').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const list = btn.dataset.add;
+          const input = document.querySelector(`input[data-new-title="${list}"]`);
+          if(!input) return;
+          const title = input.value.trim();
+          if(!title) return;
+          const newTask = { id: uid(), title, list, createdAt: Date.now(), done: false };
+          boardState.tasks.push(newTask);
+          persistBoard();
+          renderBoard();
+          input.value='';
+          toast('Tarefa adicionada.');
+        });
+      });
+
+      loadBoard();
+      renderBoard();
+    </script>
+  </body>
+</html>
+
