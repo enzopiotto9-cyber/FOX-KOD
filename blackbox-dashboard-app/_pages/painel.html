@@ -111,3 +111,175 @@
       input[type="text"], input[type="password"]{
         width:100%;max-width:340px;background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px;color:var(--text);outline:none
       }
+      .btn{cursor:pointer;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:var(--text);padding:10px 12px;border-radius:12px;font-weight:850;transition:transform .12s ease, background .2s ease, border-color .2s ease;user-select:none}
+      .btn:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.26);background:rgba(255,255,255,.10)}
+      .btn:active{transform:translateY(0) scale(.99)}
+
+      .toast{position:fixed;right:18px;bottom:18px;padding:12px 14px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.18);border-radius:14px;box-shadow:var(--shadow);backdrop-filter:blur(10px);color:var(--text);transform:translateY(12px);opacity:0;pointer-events:none;transition:opacity .2s ease, transform .2s ease;max-width:360px}
+      .toast.show{opacity:1;transform:translateY(0)}
+
+      .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.55)}
+      .modal.show{display:flex}
+      .modalCard{width:100%;max-width:520px;border-radius:18px;background:rgba(10,14,24,.85);border:1px solid rgba(255,255,255,.14);box-shadow:var(--shadow);backdrop-filter:blur(14px);padding:16px}
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            <h1>OrbiDesk</h1>
+            <p>Dashboard de produtividade (Calculadora • Tarefas • Timer • Notas)</p>
+          </div>
+        </div>
+        <div class="controls">
+          <div class="pill">
+            <label for="themeSel">Tema</label>
+            <select id="themeSel" aria-label="Tema de fundo">
+              <option value="aurora">Aurora</option>
+              <option value="sunset">Sunset</option>
+              <option value="midnight">Midnight</option>
+              <option value="mono">Mono</option>
+            </select>
+          </div>
+          <button class="btn" id="btnAccount">Conta</button>
+          <button class="btn" id="btnResetAll" title="Limpa seus dados locais">Reset local</button>
+        </div>
+      </div>
+
+      <div class="navGrid">
+        <div class="card">
+          <div class="hd"><h2>Boas-vindas</h2></div>
+          <div class="bd welcome">
+            <div class="hero">OrbiDesk</div>
+            <div class="welcome" style="gap:6px">
+              <div style="color:var(--muted);font-size:13px;line-height:1.4">
+                Navegue pelas páginas e mantenha tudo salvo localmente. Use o modo de conta para separar dados por usuário (privacidade).
+              </div>
+            </div>
+            <div class="quickLinks" style="margin-top:12px">
+              <a class="linkBtn" href="./_pages/tarefas.html">
+                <div class="ico" style="background:rgba(34,211,238,.08);border-color:rgba(34,211,238,.25)">🗂️</div>
+                <div class="linkTxt"><b>Tarefas</b><span>Organizador estilo Trello</span></div>
+              </a>
+              <a class="linkBtn" href="./_pages/calculadora.html">
+                <div class="ico" style="background:rgba(124,58,237,.08);border-color:rgba(124,58,237,.25)">🧮</div>
+                <div class="linkTxt"><b>Calculadora</b><span>Histórico + memória</span></div>
+              </a>
+              <a class="linkBtn" href="./_pages/timer.html">
+                <div class="ico" style="background:rgba(249,115,22,.08);border-color:rgba(249,115,22,.25)">⏱️</div>
+                <div class="linkTxt"><b>Timer</b><span>Cronômetro + contagem regressiva</span></div>
+              </a>
+              <a class="linkBtn" href="./_pages/notas.html">
+                <div class="ico" style="background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.25)">📝</div>
+                <div class="linkTxt"><b>Notas</b><span>Autosave + snapshots</span></div>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="hd"><h2>Conta (Privacidade)</h2></div>
+          <div class="bd userBox">
+            <div style="color:var(--muted);font-size:13px;line-height:1.45">
+              Use um nome de conta para separar os dados salvos no navegador.
+              <span style="font-family:var(--mono)">Sem servidor</span> — tudo fica local.
+            </div>
+            <div class="row">
+              <input id="accountName" type="text" placeholder="Nome da conta" maxlength="40" />
+            </div>
+            <div class="row">
+              <button class="btn" id="btnLogin">Entrar</button>
+              <button class="btn" id="btnLogout">Sair</button>
+            </div>
+            <div style="font-size:12px;color:var(--muted)" id="accountStatus">Conta: anônimo</div>
+            <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap">
+              <button class="btn" id="btnSwitchToAnon">Usar anônimo</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+      const $ = (sel, root=document) => root.querySelector(sel);
+      const toastEl = $('#toast');
+      function toast(msg, ms=1800){
+        if(!toastEl) return;
+        toastEl.textContent = msg;
+        toastEl.classList.add('show');
+        clearTimeout(toastEl._t);
+        toastEl._t = setTimeout(()=>toastEl.classList.remove('show'), ms);
+      }
+
+      const themeSel = $('#themeSel');
+      function applyTheme(theme){
+        document.body.dataset.theme = theme;
+        try{ localStorage.setItem('bb_theme', theme); }catch{}
+      }
+      (function initTheme(){
+        let t = 'aurora';
+        try{ t = localStorage.getItem('bb_theme') || 'aurora'; }catch{}
+        if(themeSel) themeSel.value = t;
+        applyTheme(t);
+      })();
+      themeSel?.addEventListener('change', (e)=> applyTheme(e.target.value));
+
+      const accountKey = 'bb_account';
+      function getAccount(){
+        try{
+          return localStorage.getItem(accountKey) || 'anon';
+        }catch{ return 'anon'; }
+      }
+      function setAccount(v){
+        try{ localStorage.setItem(accountKey, v); }catch{}
+      }
+      const accountStatus = $('#accountStatus');
+      function renderStatus(){
+        const a = getAccount();
+        if(accountStatus) accountStatus.textContent = 'Conta: ' + (a==='anon' ? 'anônimo' : a);
+      }
+      renderStatus();
+
+      $('#btnLogin')?.addEventListener('click', ()=>{
+        const v = ($('#accountName')?.value || '').trim().slice(0,40);
+        if(!v) { toast('Informe um nome de conta.'); return; }
+        setAccount('acct:' + v.replace(/[^a-zA-Z0-9_-]/g,''));
+        renderStatus();
+        toast('Conta ativa.' );
+      });
+      $('#btnLogout')?.addEventListener('click', ()=>{
+        setAccount('anon');
+        if($('#accountName')) $('#accountName').value='';
+        renderStatus();
+        toast('Saiu da conta.');
+      });
+      $('#btnSwitchToAnon')?.addEventListener('click', ()=>{
+        setAccount('anon');
+        if($('#accountName')) $('#accountName').value='';
+        renderStatus();
+        toast('Usando anônimo.');
+      });
+
+      $('#btnResetAll')?.addEventListener('click', ()=>{
+        const ok = confirm('Resetar dados locais do navegador?');
+        if(!ok) return;
+        const keys = Object.keys(localStorage);
+        keys.forEach(k=>{
+          if(k.startsWith('bb_') || k==='bb_account'){
+            try{ localStorage.removeItem(k);}catch{}
+          }
+        });
+        toast('Reset completo.');
+        setTimeout(()=>location.reload(), 700);
+      });
+
+      // Placeholder: pages read bb_account to namespace localStorage.
+    </script>
+  </body>
+</html>
+
