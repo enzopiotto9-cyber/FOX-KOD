@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="dark light" />
-    <title>OrbiDesk • Agenda</title>
+<title>X-organization • Agenda</title>
 
     <style>
       :root{
@@ -151,7 +151,8 @@
         background:rgba(255,255,255,.22);
         box-shadow:0 0 0 1px rgba(255,255,255,.10) inset;
       }
-      .dot.on{background:rgba(34,211,238,.85); box-shadow:0 0 0 1px rgba(34,211,238,.35) inset}
+.dot.on{background:rgba(34,211,238,.85); box-shadow:0 0 0 1px rgba(34,211,238,.35) inset}
+.dot.taskDot{background:rgba(249,115,22,.95); box-shadow:0 0 0 1px rgba(249,115,22,.40) inset}
 
       .cell.selected{outline:2px solid rgba(34,211,238,.65); outline-offset:2px;}
 
@@ -221,7 +222,7 @@
         <div class="brand">
           <div class="logo" aria-hidden="true"></div>
           <div>
-            <h1>OrbiDesk</h1>
+<h1>X-organization</h1>
             <p>Agenda • Mês + marcações</p>
           </div>
         </div>
@@ -423,6 +424,9 @@
 
         gridEl.innerHTML = '';
 
+        const today = new Date();
+        const todayKey = ymd(today);
+
         // DOW header
         dowLabels.forEach(lbl=>{
           const h = document.createElement('div');
@@ -451,17 +455,20 @@
 
           cell.appendChild(dayNum);
 
-          // Visual dot (one event => one dot)
+          // Visual dot: evento (on) ou hoje (sem depender de evento)
           const dots = document.createElement('div');
           dots.className = 'dots';
+
           if(ev && ev.title){
+            const d1 = document.createElement('div');
+            d1.className = 'dot taskDot';
+            dots.appendChild(d1);
+          } else if(key === todayKey){
             const d1 = document.createElement('div');
             d1.className = 'dot on';
             dots.appendChild(d1);
-          }else{
-            // keep empty / subtle indicator when no event
-            // (no dot to mimic typical calendar)
           }
+
           cell.appendChild(dots);
 
           cell.addEventListener('click', ()=> openModalForDay(key));
@@ -507,7 +514,6 @@
         setTimeout(()=> modalEventTitle.focus(), 0);
 
         // highlight selected cell
-        $$('.cell', gridEl); // ensure helper exists? we'll avoid
         gridEl.querySelectorAll('.cell').forEach(c=>c.classList.remove('selected'));
         const cell = gridEl.querySelector(`.cell[data-date-key="${dateKey}"]`);
         cell?.classList.add('selected');
@@ -593,6 +599,19 @@
         toast('Mês limpo.');
       });
 
+      // --- Navigation (Prev/Next month) ---
+      $('#btnPrevMonth')?.addEventListener('click', ()=>{
+        cursor.m -= 1;
+        if(cursor.m < 0){ cursor.m = 11; cursor.y -= 1; }
+        render();
+      });
+
+      $('#btnNextMonth')?.addEventListener('click', ()=>{
+        cursor.m += 1;
+        if(cursor.m > 11){ cursor.m = 0; cursor.y += 1; }
+        render();
+      });
+
       // --- Init ---
       // If user changes account in another tab, storage event updates.
       window.addEventListener('storage', (e)=>{
@@ -604,6 +623,7 @@
       });
 
       render();
+
     </script>
   </body>
 </html>

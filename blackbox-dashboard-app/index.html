@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="dark light" />
-    <title>OrbiDesk</title>
+<title>X-organization</title>
     <style>
       :root{
         --bg0:#070A12;
@@ -36,16 +36,16 @@
       }
       body[data-theme="aurora"]{
         background:
-          radial-gradient(1100px 650px at 15% 10%, rgba(0, 255, 242, 0.344), transparent 58%),
-          radial-gradient(900px 540px at 90% 18%, rgba(255, 255, 255, 0), transparent 55%),
-          radial-gradient(1000px 4000px at 100% 110%, rgba(0, 38, 255, 0), transparent 100%),
-          linear-gradient(180deg, rgba(255, 255, 255, 0.529), rgb(0, 64, 255));
+          radial-gradient(1100px 650px at 15% 10%, rgb(0, 0, 0), transparent 58%),
+          radial-gradient(900px 540px at 90% 18%, rgba(0, 0, 0, 0), transparent 55%),
+          radial-gradient(3000px 4000px at 2% 110%, rgb(0, 0, 0), transparent 100%),
+          linear-gradient(180deg, rgba(32, 32, 32, 0.529), rgb(0, 255, 234));
       }
       body[data-theme="sunset"]{
         background:
           radial-gradient(1100px 650px at 18% 12%, rgba(69, 43, 25, 0), transparent 58%),
           radial-gradient(900px 540px at 88% 22%, rgba(124, 58, 237, 0), transparent 55%),
-          radial-gradient(700px 460px at 60% 88%, rgba(34, 211, 238, 0), transparent 62%),
+          radial-gradient(700px 460px at 60% 88%, rgba(0, 221, 255, 0), transparent 62%),
           linear-gradient(180deg, #00a2ff2c, #000000);
       }
       body[data-theme="midnight"]{
@@ -68,15 +68,16 @@
 .brand{display:flex;align-items:center;gap:12px}
       .logo{
         width:46px;height:46px;border-radius:16px;
-
         position:relative;overflow:hidden;
-        background: transparent;
-        box-shadow: none;
+        background: rgba(255,255,255,0.04);
+        border:1px solid rgba(255,255,255,0.10);
+        box-shadow: 0 12px 35px rgba(0,0,0,0.35);
         transform: translateZ(0);
         display:flex;
         align-items:center;
         justify-content:center;
       }
+
       .logo svg{display:block;}
 .logo:after{display:none;}
       @keyframes spinGlow{to{transform:rotate(372deg)}}
@@ -96,7 +97,11 @@
 
       .card{border-radius:var(--radius);background:transparent;border:none;box-shadow:none;backdrop-filter:none;overflow:hidden}
       .card .hd{padding:14px 300px 10px;border-bottom:1px solid rgb(0, 60, 255);background:transparent}
-.card .hd h2{margin:0;font-size:30px;letter-spacing:.25px;text-transform:uppercase;color:rgb(255, 255, 255)}
+      .card .hd h2{margin:0;font-size:30px;letter-spacing:.25px;text-transform:uppercase;color:rgb(255, 255, 255);line-height:1}
+#deviceClock{display:inline-block;transform:translateY(1px);font-size:24px;font-weight:1000;letter-spacing:.8px;}
+
+
+#topbarRightClock{margin-left:auto;display:flex;align-items:center;gap:10px}
 
       .card .bd{padding:14px 16px 16px}
 
@@ -120,6 +125,18 @@
         display:flex;gap:120px;align-items:center;
         box-shadow:0 12px 40px rgba(0, 0, 0, 0);
       }
+      /* Garante tamanho do bloco do ícone em todos os botões */
+      .linkBtn .ico{
+        width:40px;
+        height:40px;
+        border-radius:14px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        flex:0 0 40px;
+      }
+
+
       .linkBtn:nth-child(2){animation-delay:.05s}
       .linkBtn:nth-child(3){animation-delay:.10s}
       .linkBtn:nth-child(4){animation-delay:.15s}
@@ -146,33 +163,41 @@
   </head>
   <body>
     <div class="app">
-      <div class="topbar">
+        <div class="topbar">
           <div class="brand">
             <div class="logo" aria-hidden="true">
+
               <svg viewBox="0 0 64 64" width="46" height="46" xmlns="http://www.w3.org/2000/svg" ari-hidden="true">
 
-              <defs>
-                <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0" stop-color="rgba(124,58,237,.95)" />
-                  <stop offset="1" stop-color="rgba(34,211,238,.95)" />
-                </linearGradient>
-              </defs>
-              <path fill="url(#g)" d="M32 6c7.5 0 14.3 3.1 19.2 8.1 1.1 1.1 1.1 2.9 0 4s-2.9 1.1-4 0A22.3 22.3 0 0 0 32 11c-12.7 0-23 10.3-23 23s10.3 23 23 23 23-10.3 23-23c0-4.6-1.3-9-3.8-12.7-.9-1.3-.6-3.1.7-4s3.1-.6 4 .7A26.2 26.2 0 0 1 60 34c0 15.5-12.5 28-28 28S4 49.5 4 34 16.5 6 32 6z"/>
-              <path fill="rgba(255,255,255,.9)" d="M22 34c0-5.5 4.5-10 10-10s10 4.5 10 10c0 5.4-4.4 9.8-9.8 10H32c-5.5 0-10-4.5-10-10zm10 4.2a4.2 4.2 0 1 0 0-8.4 4.2 4.2 0 0 0 0 8.4z"/>
-              <path fill="rgba(34,211,238,.95)" d="M45.2 18.8c.7-.7 1.8-.9 2.7-.4l.3.2c1.1.8 1.3 2.4.4 3.5l-3.5 4.2c-.9 1.1-2.5 1.3-3.6.4-1.1-.9-1.3-2.5-.4-3.6l4.1-4.3z"/>
+              <!-- Gradient removido: logo agora em azul/preto/cinza/branco -->
+              <defs></defs>
+
+              <!-- Nova logo (X-orgn) - símbolo diferente -->
+              <rect x="10" y="10" width="44" height="44" rx="16" fill="rgba(0,0,0,0.22)"/>
+              <path d="M23 20h5l6 9 6-9h5l-9 13 9 13h-5l-6-9-6 9h-5l9-13-9-13z" fill="rgba(59,130,246,0.95)"/>
+              <path d="M20 20h2l5 8-1 2-6-10zm24 0h-2l-5 8 1 2 6-10z" fill="rgba(255,255,255,0.85)"/>
             </svg>
+
           </div>
 
           <div>
-            <h1 style="font-size:24px;line-height:1.1;letter-spacing:.2px;">OrbiDesk</h1>
+<h1 style="font-size:24px;line-height:1.1;letter-spacing:.2px;">X-organization</h1>
+
+
 
             <p>Calculadora • Tarefas • Timer • Notas</p>
           </div>
         </div>
-        <div class="controls">
+      <div class="controls" id="topbarRight">
+            <div id="topbarRightClock" aria-label="Relógio do dispositivo">
+              <span id="deviceClock">00:00:00</span>
+
+
+            </div>
           <div class="pill">
             <label for="themeSel">Tema</label>
             <select id="themeSel" aria-label="Tema de fundo">
+
               <option value="aurora">padrão</option>
               <option value="sunset">dark</option>
               <option value="midnight">gotancity</option>
@@ -185,7 +210,7 @@
 
       <div class="navGrid">
           <div class="card">
-          <div class="hd"><h2><span id="deviceClock">00:00:00</span></h2></div>
+          <div class="hd"><h2></h2></div>
           <div class="bd welcome">
 
             <div class="head">AQUI ESTÃO TODOS OS ITEMS QUE VOCÊ PRECISA</div>
@@ -221,15 +246,51 @@
                 <div class="ico" style="background:rgba(255, 255, 255, 0);border-color:rgb(255, 0, 123)">🎨</div>
                 <div class="linkTxt"><b>Paint</b><span>Canvas para desenhar</span></div>
               </a>
-              <a class="linkBtn" href="./_pages/velocidade.html">
-                <div class="ico" style="background:rgba(0, 221, 255, 0);border-color:rgb(0, 221, 255)">⚡</div>
-                <div class="linkTxt"><b>Velocidade</b><span>Click • Scroll • Reflexos</span></div>
+            </div>
+
+            <div style="margin-top:14px">
+              <div style="font-size:14px;font-weight:950;letter-spacing:.2px;margin:0 0 10px;">companheiros que podem te ajudar</div>
+              <div class="quickLinks" style="margin-top:0">
+                <a class="linkBtn" href="https://www.canva.com/" target="_blank" rel="noopener noreferrer">
+                  <div class="ico" style="border-color:rgb(0, 221, 255)">
+                    <svg viewBox="0 0 64 64" width="22" height="22" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <path fill="rgba(0, 221, 255, 1)" d="M14 20l18-10 18 10v24L32 54 14 44V20z" opacity=".28"/>
+                      <path fill="rgba(255,255,255,.95)" d="M32 14c-1.4 0-2.7.7-3.4 1.9l-16 27.7c-.7 1.2-.7 2.7 0 3.9.7 1.2 2 1.9 3.4 1.9h30c1.4 0 2.7-.7 3.4-1.9.7-1.2.7-2.7 0-3.9l-16-27.7c-.7-1.2-2-1.9-3.4-1.9z"/>
+                      <path fill="rgba(0, 221, 255, 1)" d="M27.5 26.5h9l-4.5 7.2-4.5-7.2z"/>
+                    </svg>
+                  </div>
+                  <div class="linkTxt"><b>Canva</b><span>criar & design</span></div>
+                </a>
+
+                <a class="linkBtn" href="https://base44.com/lp-pt?utm_source=google&utm_medium=cpc&utm_campaign=yt_base44_acq_br_pt_dt_intent_app-building_free_08-25^caf_app&experiment_id=^c5^^&gad_source=2&gad_campaignid=22895940127&gclid=Cj0KCQjwlLDQBhDjARIsAPlIefGYE0AvlxeYdsOg3mU6GVB8yCQOqizPs7P76o2G0hx8Fe546WVLC3EaAiAgEALw_wcB" target="_blank" rel="noopener noreferrer">
+                  <div class="ico" style="border-color:rgb(124, 58, 237)">
+                    <svg viewBox="0 0 64 64" width="22" height="22" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <rect x="10" y="10" width="44" height="44" rx="14" fill="rgba(124,58,237,.25)"/>
+                      <path fill="rgba(124, 58, 237, 1)" d="M20 42V22l10 6 14-10v24l-14 10-10-6z"/>
+                      <path fill="rgba(255,255,255,.95)" d="M24 25v14l8 5 12-8V22l-12 8-8-5z" opacity=".9"/>
+                    </svg>
+                  </div>
+                  <div class="linkTxt"><b>Base44</b><span>aprender & criar</span></div>
+                </a>
+              </div>
+            </div>
+
+            <div style="margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+              <a class="btn" style="display:flex;align-items:center;gap:10px;text-decoration:none" href="https://github.com/enzopiotto9-cyber" target="_blank" rel="noopener noreferrer" aria-label="Visitar GitHub">
+                <span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;">
+                  <svg viewBox="0 0 16 16" width="18" height="18" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path fill="rgba(255,255,255,.95)" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+                  </svg>
+                </span>
+                <span style="font-weight:950;">enzo piotto9-cyber</span>
               </a>
+              <div style="color:var(--muted);font-size:12px;">lado: enzo saurin pioto</div>
             </div>
           </div>
         </div>
 
         <!-- Removido: Conta (Privacidade) -->
+
       </div>
 
 
@@ -270,7 +331,9 @@
 
       // Device clock (HH:MM:SS) - atualiza pelo relógio do dispositivo
       const deviceClockEl = $('#deviceClock');
+
       function pad2(n){return String(n).padStart(2,'0')}
+
       function renderDeviceClock(){
         if(!deviceClockEl) return;
         const d = new Date();
