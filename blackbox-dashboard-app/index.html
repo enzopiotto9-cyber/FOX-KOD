@@ -36,24 +36,24 @@
       }
       body[data-theme="aurora"]{
         background:
-          radial-gradient(1100px 650px at 15% 10%, rgba(0, 0, 0, 0.392), transparent 58%),
-          radial-gradient(900px 540px at 90% 18%, rgba(59,130,246,.32), transparent 55%),
-          radial-gradient(700px 460px at 70% 88%, rgba(236,72,153,.18), transparent 62%),
-          linear-gradient(180deg, #050915, #0B1636);
+          radial-gradient(1100px 650px at 15% 10%, rgba(0, 255, 242, 0.344), transparent 58%),
+          radial-gradient(900px 540px at 90% 18%, rgba(255, 255, 255, 0), transparent 55%),
+          radial-gradient(1000px 4000px at 100% 110%, rgba(0, 38, 255, 0), transparent 100%),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.529), rgb(0, 64, 255));
       }
       body[data-theme="sunset"]{
         background:
-          radial-gradient(1100px 650px at 18% 12%, rgba(249,115,22,.32), transparent 58%),
+          radial-gradient(1100px 650px at 18% 12%, rgba(69, 43, 25, 0), transparent 58%),
           radial-gradient(900px 540px at 88% 22%, rgba(124, 58, 237, 0), transparent 55%),
-          radial-gradient(700px 460px at 60% 88%, rgba(34,211,238,.14), transparent 62%),
-          linear-gradient(180deg, #ffffff, #5100ff);
+          radial-gradient(700px 460px at 60% 88%, rgba(34, 211, 238, 0), transparent 62%),
+          linear-gradient(180deg, #00a2ff2c, #000000);
       }
       body[data-theme="midnight"]{
         background:
-          radial-gradient(1100px 650px at 25% 8%, rgba(89, 75, 0, 0.26), transparent 58%),
-          radial-gradient(900px 540px at 85% 20%, rgba(131, 131, 131, 0.22), transparent 55%),
-          radial-gradient(700px 460px at 65% 88%, rgba(255, 153, 0, 0.16), transparent 62%),
-          linear-gradient(180deg, #ffffff, #004cff);
+          radial-gradient(1100px 650px at 25% 8%, rgba(255, 179, 0, 0), transparent 58%),
+          radial-gradient(900px 540px at 85% 20%, rgba(153, 0, 255, 0), transparent 55%),
+          radial-gradient(700px 460px at 65% 88%, rgba(0, 255, 136, 0), transparent 62%),
+          linear-gradient(180deg, #000000, #7700ff5c);
       }
       body[data-theme="mono"]{
         background:
@@ -118,29 +118,29 @@
         background:linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0));
         padding:10px 10px;
         display:flex;gap:120px;align-items:center;
-        box-shadow:0 12px 40px rgba(154, 62, 62, 0);
+        box-shadow:0 12px 40px rgba(0, 0, 0, 0);
       }
       .linkBtn:nth-child(2){animation-delay:.05s}
       .linkBtn:nth-child(3){animation-delay:.10s}
       .linkBtn:nth-child(4){animation-delay:.15s}
       @keyframes enterUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-      .linkBtn:hover{transform:translateY(-2px);border-color:rgb(0, 60, 255);background:rgba(255, 255, 255, 0.03)}
+      .linkBtn:hover{transform:translateY(-2px);border-color:rgb(0, 6, 255);background:rgba(0, 38, 255, 0.03)}
       .ico{width:40px;height:40px;border-radius:14px;border:1px solid rgba(255, 0, 0, 0);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
       .ico:after{content:"";position:absolute;inset:-40%;background:radial-gradient(circle at 60% 60%, rgba(255, 0, 0, 0), transparent 55%);transform:rotate(15deg)}
       .linkTxt{display:flex;flex-direction:column;gap:3px;position:relative}
-      .linkTxt b{font-size:14px;letter-spacing:.2px}
+      .linkTxt b{font-size:25px;letter-spacing:.2px}
       .linkTxt span{font-size:12px;color:var(--muted)}
 
       .userBox{display:flex;flex-direction:column;gap:10px}
       .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
       input[type="text"], input[type="password"]{
-        width:100%;max-width:340px;background:rgba(255, 0, 0, 0);border:1px solid rgba(255, 0, 0, 0.12);border-radius:12px;padding:10px;color:var(--text);outline:none
+        width:100%;max-width:340px;background:rgba(255, 0, 0, 0);border:1px solid rgb(255, 255, 255);border-radius:12px;padding:10px;color:var(--text);outline:none
       }
       .btn{cursor:pointer;border:1px solid rgba(255, 255, 255, 0.18);background:rgba(255,255,255,.06);color:var(--text);padding:10px 12px;border-radius:12px;font-weight:900;transition:transform .12s ease, background .2s ease, border-color .2s ease;user-select:none}
       .btn:hover{transform:translateY(-1px);border-color:rgb(255, 0, 0);background:rgba(255, 0, 0, 0.1)}
       .btn:active{transform:translateY(0) scale(.99)}
 
-      .toast{position:fixed;right:18px;bottom:18px;padding:12px 14px;background:rgba(0, 0, 0, 0.55);border:1px solid rgba(255,255,255,.18);border-radius:14px;box-shadow:var(--shadow);backdrop-filter:blur(10px);color:var(--text);transform:translateY(12px);opacity:0;pointer-events:none;transition:opacity .2s ease, transform .2s ease;max-width:360px}
+      .toast{position:fixed;right:18px;bottom:18px;padding:12px 14px;background:rgba(255, 255, 255, 0.55);border:1px solid rgba(255,255,255,.18);border-radius:14px;box-shadow:var(--shadow);backdrop-filter:blur(10px);color:var(--text);transform:translateY(12px);opacity:0;pointer-events:none;transition:opacity .2s ease, transform .2s ease;max-width:360px}
       .toast.show{opacity:1;transform:translateY(0)}
     </style>
   </head>
@@ -149,7 +149,7 @@
       <div class="topbar">
           <div class="brand">
             <div class="logo" aria-hidden="true">
-              <svg viewBox="0 0 64 64" width="46" height="46" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <svg viewBox="0 0 64 64" width="46" height="46" xmlns="http://www.w3.org/2000/svg" ari-hidden="true">
 
               <defs>
                 <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
@@ -173,13 +173,13 @@
           <div class="pill">
             <label for="themeSel">Tema</label>
             <select id="themeSel" aria-label="Tema de fundo">
-              <option value="aurora">Aurora</option>
-              <option value="sunset">Sunset</option>
-              <option value="midnight">Midnight</option>
+              <option value="aurora">padrão</option>
+              <option value="sunset">dark</option>
+              <option value="midnight">gotancity</option>
               <option value="mono">Mono</option>
             </select>
           </div>
-          <button class="btn" id="btnResetAll" title="Limpa seus dados locais">Reset local</button>
+          <button class="btn" id="btnResetAll" title="Limpa seus dados locais">LIMPAR DADOS</button>
         </div>
       </div>
 
@@ -204,6 +204,10 @@
               <a class="linkBtn" href="./_pages/timer.html">
                 <div class="ico" style="background:rgba(255, 106, 0, 0);border-color:rgb(255, 106, 0)">⏱️</div>
                 <div class="linkTxt"><b>Timer</b><span>Cronômetro + contagem regressiva</span></div>
+              </a>
+              <a class="linkBtn" href="./_pages/agenda.html">
+                <div class="ico" style="background:rgba(34, 211, 238, 0);border-color:rgb(34, 211, 238)">📅</div>
+                <div class="linkTxt"><b>Agenda</b><span>Mês + marcações</span></div>
               </a>
               <a class="linkBtn" href="./_pages/notas.html">
                 <div class="ico" style="background:rgba(52, 211, 153, 0);border-color:rgb(52, 211, 153)">📝</div>

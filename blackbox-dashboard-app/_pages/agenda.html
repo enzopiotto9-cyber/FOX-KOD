@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark light" />
+    <title>OrbiDesk • Agenda</title>
+
+    <style>
+      :root{
+        --bg0:#070A12;
+        --bg1:#0B1630;
+        --text: rgba(255,255,255,.92);
+        --muted: rgba(255,255,255,.65);
+        --shadow: 0 18px 60px rgba(0,0,0,.55);
+        --shadow2: 0 10px 30px rgba(0,0,0,.35);
+        --radius:18px;
+        --stroke: rgba(255,255,255,.14);
+        --stroke2: rgba(255,255,255,.22);
+        --good:#34d399;
+        --warn:#fbbf24;
+        --danger:#fb7185;
+        --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+
+        --cell: rgba(255,255,255,.04);
+        --cellBorder: rgba(255,255,255,.10);
+      }
+
+      *{box-sizing:border-box}
+      html,body{height:100%}
+      body{
+        margin:0;
+        font-family: var(--sans);
+        color: var(--text);
+        background:
+          radial-gradient(1200px 700px at 20% 10%, rgba(124,58,237,.35), transparent 60%),
+          radial-gradient(900px 600px at 85% 20%, rgba(34,211,238,.28), transparent 55%),
+          radial-gradient(700px 500px at 70% 90%, rgba(249,115,22,.18), transparent 60%),
+          linear-gradient(180deg, var(--bg0), var(--bg1));
+        overflow-x:hidden;
+      }
+      body[data-theme="mono"]{
+        background:
+          radial-gradient(1100px 650px at 15% 10%, rgba(255,255,255,.10), transparent 58%),
+          radial-gradient(900px 540px at 90% 18%, rgba(255,255,255,.08), transparent 55%),
+          radial-gradient(700px 460px at 70% 90%, rgba(255,255,255,.06), transparent 62%),
+          linear-gradient(180deg, #05060A, #0A0B12);
+      }
+
+      .app{min-height:100vh; padding:22px 18px 40px}
+      .topbar{max-width:1280px;margin:0 auto 16px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+
+      .brand{display:flex;align-items:center;gap:12px}
+      .logo{
+        width:46px;height:46px;border-radius:16px;
+        position:relative;overflow:hidden;
+        background:
+          radial-gradient(16px 16px at 30% 25%, rgba(255,255,255,.35), transparent 60%),
+          linear-gradient(135deg, rgba(124,58,237,.95), rgba(34,211,238,.9));
+        box-shadow:0 14px 40px rgba(124,58,237,.35);
+        border:1px solid rgba(255,255,255,.22);
+      }
+      .logo:after{
+        content:"";position:absolute;top:-40%;left:-40%;width:140%;height:140%;
+        background:conic-gradient(from 180deg, rgba(255,255,255,.0), rgba(255,255,255,.35), rgba(255,255,255,.0));
+        transform:rotate(12deg);
+        animation:spinGlow 5.5s linear infinite;opacity:.8;
+      }
+      @keyframes spinGlow{to{transform:rotate(372deg)}}
+
+      .brand h1{margin:0;font-size:16px;letter-spacing:.2px;font-weight:850}
+      .brand p{margin:2px 0 0;font-size:12px;color:var(--muted)}
+
+      .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+      .pill{border:1px solid var(--stroke);background:rgba(255,255,255,.05);border-radius:999px;padding:10px 12px;box-shadow:var(--shadow2);backdrop-filter:blur(10px);display:flex;gap:10px;align-items:center}
+      .pill label{font-size:12px;color:var(--muted);white-space:nowrap}
+      select{background:transparent;border:none;color:var(--text);outline:none;font-weight:650}
+      option{background:#0b0d16}
+
+      .btn{
+        cursor:pointer;
+        border:1px solid rgba(255,255,255,.14);
+        background:rgba(255,255,255,.06);
+        color:var(--text);
+        padding:10px 12px;
+        border-radius:12px;
+        font-weight:900;
+        transition:transform .12s ease, background .2s ease, border-color .2s ease;
+        user-select:none;
+      }
+      .btn:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.26);background:rgba(255,255,255,.10)}
+      .btn:active{transform:translateY(0) scale(.99)}
+      .btn.danger{border-color:rgba(251,113,133,.35);background:rgba(251,113,133,.10)}
+      .btn.ghost{background:transparent}
+
+      .wrap{max-width:980px;margin:0 auto}
+
+      .card{
+        border-radius:var(--radius);
+        background:rgba(255,255,255,.04);
+        border:1px solid rgba(255,255,255,.12);
+        box-shadow:var(--shadow);
+        backdrop-filter:blur(14px);
+        overflow:hidden;
+      }
+      .cardHd{padding:14px 16px 12px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+      .cardHd h2{margin:0;font-size:14px;letter-spacing:.25px;text-transform:uppercase;color:rgba(255,255,255,.84)}
+
+      .nav{
+        display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end
+      }
+      .monthTitle{
+        font-family: var(--mono);
+        font-weight: 1000;
+        letter-spacing:.2px;
+      }
+
+      .grid{
+        padding:14px 16px 16px;
+        display:grid;
+        grid-template-columns:repeat(7, 1fr);
+        gap:8px;
+      }
+      .dow{font-size:12px;color:var(--muted);text-align:center;padding:4px 0 2px}
+
+      .cell{
+        height:88px;
+        border-radius:14px;
+        background:var(--cell);
+        border:1px solid var(--cellBorder);
+        padding:10px 10px;
+        cursor:pointer;
+        position:relative;
+        overflow:hidden;
+        transition:transform .12s ease, border-color .2s ease, background .2s ease;
+        user-select:none;
+      }
+      .cell:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.06)}
+      .cell:active{transform:translateY(0) scale(.99)}
+
+      .cell.muted{
+        opacity:.45;
+        background:rgba(255,255,255,.02);
+      }
+
+      .dayNum{font-weight:1000;font-size:14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+      .dots{display:flex;gap:4px;align-items:center;position:absolute;left:10px;bottom:10px}
+      .dot{
+        width:8px;height:8px;border-radius:999px;
+        background:rgba(255,255,255,.22);
+        box-shadow:0 0 0 1px rgba(255,255,255,.10) inset;
+      }
+      .dot.on{background:rgba(34,211,238,.85); box-shadow:0 0 0 1px rgba(34,211,238,.35) inset}
+
+      .cell.selected{outline:2px solid rgba(34,211,238,.65); outline-offset:2px;}
+
+      /* Modal */
+      .modalOverlay{position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:center; justify-content:center; padding:18px; z-index:50}
+      .modalOverlay.show{display:flex}
+      .modal{
+        width:100%; max-width:560px;
+        border-radius:18px;
+        border:1px solid rgba(255,255,255,.16);
+        background:rgba(12,18,38,.82);
+        box-shadow:var(--shadow);
+        backdrop-filter:blur(18px);
+        overflow:hidden;
+      }
+      .modalHd{padding:14px 16px; border-bottom:1px solid rgba(255,255,255,.10); display:flex; align-items:center; justify-content:space-between; gap:10px}
+      .modalHd h3{margin:0;font-size:14px;letter-spacing:.2px;text-transform:uppercase}
+      .iconBtn{
+        width:36px;height:36px;border-radius:12px;
+        border:1px solid rgba(255,255,255,.14);
+        background:rgba(255,255,255,.06);
+        color:rgba(255,255,255,.9);
+        display:flex;align-items:center;justify-content:center;
+        cursor:pointer;user-select:none;
+      }
+      .iconBtn:hover{border-color:rgba(255,255,255,.26);background:rgba(255,255,255,.10)}
+
+      .modalBd{padding:14px 16px 16px}
+      .field{margin-top:12px}
+      .field:first-child{margin-top:0}
+      label.small{font-size:12px;color:var(--muted);display:block;margin:0 0 6px}
+
+      input[type="text"], textarea{
+        width:100%;
+        background:rgba(0,0,0,.20);
+        border:1px solid rgba(255,255,255,.12);
+        border-radius:12px;
+        padding:10px 10px;
+        color:var(--text);
+        outline:none;
+      }
+      textarea{min-height:90px;resize:vertical}
+
+      .modalFt{
+        padding:14px 16px;
+        border-top:1px solid rgba(255,255,255,.10);
+        display:flex;
+        justify-content:space-between;
+        gap:10px;
+        flex-wrap:wrap;
+      }
+      .ftLeft,.ftRight{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+      /* Footer helper */
+      .hint{max-width:980px;margin:10px auto 0;color:rgba(255,255,255,.60);font-size:12px;line-height:1.45}
+      .kbd{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.75);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);padding:4px 7px;border-radius:10px}
+
+      @media (max-width:720px){
+        .cell{height:78px}
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="app">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            <h1>OrbiDesk</h1>
+            <p>Agenda • Mês + marcações</p>
+          </div>
+        </div>
+
+        <div class="controls">
+          <div class="pill">
+            <label for="themeSel">Tema</label>
+            <select id="themeSel" aria-label="Tema de fundo">
+              <option value="aurora">Aurora</option>
+              <option value="sunset">Sunset</option>
+              <option value="midnight">Midnight</option>
+              <option value="mono">Mono</option>
+            </select>
+          </div>
+
+          <button class="btn ghost" id="btnGoHome" title="Voltar">🏠 Início</button>
+          <button class="btn danger" id="btnClearMonth" title="Apaga eventos do mês visível">Limpar mês</button>
+        </div>
+      </div>
+
+      <div class="wrap">
+        <div class="card" role="application" aria-label="Agenda mensal">
+          <div class="cardHd">
+            <h2>Calendário</h2>
+            <div class="nav">
+              <button class="btn" id="btnPrevMonth" title="Mês anterior"><</button>
+              <div class="monthTitle" id="monthTitle">—</div>
+              <button class="btn" id="btnNextMonth" title="Próximo mês">></button>
+            </div>
+          </div>
+
+          <div class="grid" id="grid" aria-label="Grade de dias">
+            <!-- DOW + cells renderizados via JS -->
+          </div>
+        </div>
+
+        <div class="hint">
+          Clique em um dia para marcar/editar. Use <span class="kbd">Esc</span> para fechar.
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modalOverlay" id="modalOverlay" role="dialog" aria-modal="true">
+      <div class="modal">
+        <div class="modalHd">
+          <h3 id="modalTitle">Editar dia</h3>
+          <button class="iconBtn" id="modalClose" title="Fechar">✕</button>
+        </div>
+
+        <div class="modalBd">
+          <div class="field">
+            <label class="small" for="modalDate">Data</label>
+            <input id="modalDate" type="text" readonly />
+          </div>
+
+          <div class="field">
+            <label class="small" for="modalEventTitle">Título</label>
+            <input id="modalEventTitle" type="text" maxlength="60" placeholder="Ex.: Reunião / Pagamento" />
+          </div>
+
+          <div class="field">
+            <label class="small" for="modalEventDesc">Descrição (opcional)</label>
+            <textarea id="modalEventDesc" maxlength="600" placeholder="Detalhes do compromisso..."></textarea>
+          </div>
+        </div>
+
+        <div class="modalFt">
+          <div class="ftLeft">
+            <button class="btn danger" id="btnDeleteEvent" title="Apagar evento do dia">Apagar</button>
+          </div>
+          <div class="ftRight">
+            <button class="btn" id="modalCancel">Cancelar</button>
+            <button class="btn" id="modalSave">Salvar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const $ = (sel, root=document) => root.querySelector(sel);
+
+      // --- Theme ---
+      const themeSel = $('#themeSel');
+      function applyTheme(theme){
+        document.body.dataset.theme = theme;
+        try{ localStorage.setItem('bb_theme', theme); }catch{}
+      }
+      (function initTheme(){
+        let t = 'aurora';
+        try{ t = localStorage.getItem('bb_theme') || 'aurora'; }catch{}
+        if(themeSel) themeSel.value = t;
+        applyTheme(t);
+      })();
+      themeSel?.addEventListener('change', (e)=> applyTheme(e.target.value));
+
+      // --- Toast ---
+      const toast = (()=>{
+        const el = document.createElement('div');
+        el.style.position='fixed';
+        el.style.right='18px';
+        el.style.bottom='18px';
+        el.style.padding='12px 14px';
+        el.style.background='rgba(0,0,0,.55)';
+        el.style.border='1px solid rgba(255,255,255,.18)';
+        el.style.borderRadius='14px';
+        el.style.boxShadow='0 18px 60px rgba(0,0,0,.55)';
+        el.style.backdropFilter='blur(10px)';
+        el.style.color='rgba(255,255,255,.92)';
+        el.style.transform='translateY(12px)';
+        el.style.opacity='0';
+        el.style.pointerEvents='none';
+        el.style.transition='opacity .2s ease, transform .2s ease';
+        el.style.zIndex='60';
+        document.body.appendChild(el);
+        let t;
+        return (msg, ms=1600)=>{
+          el.textContent = msg;
+          el.style.opacity='1';
+          el.style.transform='translateY(0)';
+          clearTimeout(t);
+          t = setTimeout(()=>{
+            el.style.opacity='0';
+            el.style.transform='translateY(12px)';
+          }, ms);
+        };
+      })();
+
+      // --- Navigation ---
+      $('#btnGoHome')?.addEventListener('click', ()=> location.href = '../index.html');
+
+      // --- Account namespace ---
+      const accountKey = 'bb_account';
+      function getAccount(){
+        try{ return localStorage.getItem(accountKey) || 'anon'; }catch{ return 'anon'; }
+      }
+      function nsKey(s){
+        const a = getAccount();
+        return `bb_agenda_${a}__${s}`;
+      }
+
+      // --- Data model: one event per day (igual smartphones) ---
+      /**
+       * events: { [yyyy-mm-dd]: { title, desc, updatedAt } }
+       */
+      function loadEvents(){
+        try{
+          const raw = localStorage.getItem(nsKey('events'));
+          if(!raw) return {};
+          const parsed = JSON.parse(raw);
+          if(!parsed || typeof parsed !== 'object') return {};
+          return parsed;
+        }catch{ return {}; }
+      }
+      function saveEvents(){
+        try{ localStorage.setItem(nsKey('events'), JSON.stringify(events)); }catch{}
+      }
+
+      let events = loadEvents();
+
+      // --- Calendar helpers ---
+      const monthTitleEl = $('#monthTitle');
+      const gridEl = $('#grid');
+
+      // Monday-first like many phone calendars (adjust if you prefer Sunday)
+      const dowLabels = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+
+      function pad2(n){ return String(n).padStart(2,'0'); }
+      function ymd(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
+      function parseYmd(str){
+        // str: yyyy-mm-dd
+        const [y,m,dd] = str.split('-').map(Number);
+        return new Date(y, m-1, dd);
+      }
+
+      function startOfMonth(y, m){ return new Date(y, m, 1); }
+      function endOfMonth(y, m){ return new Date(y, m+1, 0); }
+
+      // Convert JS getDay() where Sun=0..Sat=6 to Monday-first index 0..6
+      function mondayFirstDayIndex(date){
+        const gd = date.getDay();
+        return (gd + 6) % 7; // Sun->6, Mon->0, ...
+      }
+
+      let cursor = (()=>{
+        const now = new Date();
+        return { y: now.getFullYear(), m: now.getMonth() };
+      })();
+
+      function render(){
+        const { y, m } = cursor;
+        const first = startOfMonth(y,m);
+        const last = endOfMonth(y,m);
+        const daysInMonth = last.getDate();
+
+        // Build 42 cells (6 weeks) for consistent layout
+        const gridStartIndex = mondayFirstDayIndex(first); // 0..6
+        const totalCells = 42;
+
+        gridEl.innerHTML = '';
+
+        // DOW header
+        dowLabels.forEach(lbl=>{
+          const h = document.createElement('div');
+          h.className = 'dow';
+          h.textContent = lbl;
+          gridEl.appendChild(h);
+        });
+
+        // Dates
+        for(let i=0;i<totalCells;i++){
+          const cellIndex = i - gridStartIndex; // relative day number
+          const date = new Date(y, m, 1);
+          date.setDate(date.getDate() + cellIndex);
+
+          const inMonth = date.getMonth() === m;
+          const key = ymd(date);
+          const ev = events[key];
+
+          const cell = document.createElement('div');
+          cell.className = 'cell' + (inMonth ? '' : ' muted');
+          cell.dataset.dateKey = key;
+
+          const dayNum = document.createElement('div');
+          dayNum.className = 'dayNum';
+          dayNum.textContent = String(date.getDate());
+
+          cell.appendChild(dayNum);
+
+          // Visual dot (one event => one dot)
+          const dots = document.createElement('div');
+          dots.className = 'dots';
+          if(ev && ev.title){
+            const d1 = document.createElement('div');
+            d1.className = 'dot on';
+            dots.appendChild(d1);
+          }else{
+            // keep empty / subtle indicator when no event
+            // (no dot to mimic typical calendar)
+          }
+          cell.appendChild(dots);
+
+          cell.addEventListener('click', ()=> openModalForDay(key));
+          gridEl.appendChild(cell);
+        }
+
+        const monthName = new Intl.DateTimeFormat('pt-BR',{ month:'long' }).format(first);
+        monthTitleEl.textContent = `${monthName[0].toUpperCase()+monthName.slice(1)} de ${y}`;
+      }
+
+      // --- Modal logic ---
+      const modalOverlay = $('#modalOverlay');
+      const modalClose = $('#modalClose');
+      const modalCancel = $('#modalCancel');
+      const modalSave = $('#modalSave');
+      const btnDeleteEvent = $('#btnDeleteEvent');
+
+      const modalTitle = $('#modalTitle');
+      const modalDate = $('#modalDate');
+      const modalEventTitle = $('#modalEventTitle');
+      const modalEventDesc = $('#modalEventDesc');
+
+      let modalCtx = null; // { dateKey }
+
+      function formatPtDate(dateKey){
+        const d = parseYmd(dateKey);
+        return new Intl.DateTimeFormat('pt-BR',{ weekday:'short', day:'2-digit', month:'2-digit', year:'numeric' }).format(d);
+      }
+
+      function openModalForDay(dateKey){
+        modalCtx = { dateKey };
+        const ev = events[dateKey];
+
+        modalTitle.textContent = 'Editar dia';
+        modalDate.value = formatPtDate(dateKey);
+        modalEventTitle.value = ev?.title || '';
+        modalEventDesc.value = ev?.desc || '';
+
+        btnDeleteEvent.disabled = !ev;
+        btnDeleteEvent.style.opacity = ev ? '1' : '.55';
+
+        modalOverlay.classList.add('show');
+        setTimeout(()=> modalEventTitle.focus(), 0);
+
+        // highlight selected cell
+        $$('.cell', gridEl); // ensure helper exists? we'll avoid
+        gridEl.querySelectorAll('.cell').forEach(c=>c.classList.remove('selected'));
+        const cell = gridEl.querySelector(`.cell[data-date-key="${dateKey}"]`);
+        cell?.classList.add('selected');
+      }
+
+      function closeModal(){
+        modalOverlay.classList.remove('show');
+        modalCtx = null;
+        gridEl.querySelectorAll('.cell').forEach(c=>c.classList.remove('selected'));
+      }
+
+      modalClose?.addEventListener('click', closeModal);
+      modalCancel?.addEventListener('click', closeModal);
+      modalOverlay?.addEventListener('click', (e)=>{ if(e.target === modalOverlay) closeModal(); });
+
+      window.addEventListener('keydown', (e)=>{
+        if(e.key === 'Escape' && modalOverlay.classList.contains('show')) closeModal();
+        if(e.key === 'Enter' && modalOverlay.classList.contains('show')){
+          // avoid hijacking multiline
+          const active = document.activeElement;
+          if(active && active === modalEventDesc) return;
+          if(active && active === modalEventTitle){
+            e.preventDefault();
+            modalSave.click();
+          }
+        }
+      });
+
+      modalSave?.addEventListener('click', ()=>{
+        if(!modalCtx) return;
+        const dateKey = modalCtx.dateKey;
+        const title = (modalEventTitle.value || '').trim().slice(0,60);
+        const desc = (modalEventDesc.value || '').trim().slice(0,600);
+
+        if(!title){
+          // if no title, interpret as delete
+          delete events[dateKey];
+          saveEvents();
+          render();
+          closeModal();
+          toast('Evento removido.');
+          return;
+        }
+
+        events[dateKey] = { title, desc, updatedAt: Date.now() };
+        saveEvents();
+        render();
+        closeModal();
+        toast('Evento salvo.');
+      });
+
+      btnDeleteEvent?.addEventListener('click', ()=>{
+        if(!modalCtx) return;
+        const dateKey = modalCtx.dateKey;
+        if(!events[dateKey]) return;
+        const ok = confirm('Apagar o evento deste dia?');
+        if(!ok) return;
+        delete events[dateKey];
+        saveEvents();
+        render();
+        closeModal();
+        toast('Evento apagado.');
+      });
+
+      // --- Clear month ---
+      function monthRangeKeys(y, m){
+        const first = new Date(y, m, 1);
+        const last = new Date(y, m+1, 0);
+        const out = [];
+        for(let d=1; d<=last.getDate(); d++){
+          out.push(ymd(new Date(y, m, d)));
+        }
+        return out;
+      }
+
+      $('#btnClearMonth')?.addEventListener('click', ()=>{
+        const ok = confirm('Apagar TODOS os eventos do mês visível?');
+        if(!ok) return;
+        const keys = monthRangeKeys(cursor.y, cursor.m);
+        keys.forEach(k=>{ delete events[k]; });
+        saveEvents();
+        render();
+        toast('Mês limpo.');
+      });
+
+      // --- Init ---
+      // If user changes account in another tab, storage event updates.
+      window.addEventListener('storage', (e)=>{
+        if(e.key === 'bb_account'){
+          // reload events namespace
+          events = loadEvents();
+          render();
+        }
+      });
+
+      render();
+    </script>
+  </body>
+</html>
+
