@@ -1,0 +1,25 @@
+<svg viewBox="0 0 64 64" width="64" height="64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="50%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+    <linearGradient id="lg2" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+  </defs>
+  <!-- Fundo -->
+  <rect x="4" y="4" width="56" height="56" rx="16" fill="url(#lg)" opacity="0.15"/>
+  <rect x="4" y="4" width="56" height="56" rx="16" fill="none" stroke="url(#lg)" stroke-width="1.5" opacity="0.4"/>
+  <!-- X estilizado -->
+  <g transform="translate(32,32)">
+    <!-- Traço 1 -->
+    <line x1="-18" y1="-18" x2="18" y2="18" stroke="url(#lg)" stroke-width="5" stroke-linecap="round"/>
+    <!-- Traço 2 -->
+    <line x1="18" y1="-18" x2="-18" y2="18" stroke="url(#lg2)" stroke-width="5" stroke-linecap="round"/>
+    <!-- Brilho central -->
+    <circle cx="0" cy="0" r="4" fill="white" opacity="0.9"/>
+  </g>
+</svg>
