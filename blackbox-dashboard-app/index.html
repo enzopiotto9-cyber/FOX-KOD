@@ -15,7 +15,7 @@
         --shadow2: 0 10px 30px rgba(0,0,0,.35);
         --radius:1px;
         --stroke: rgba(0, 0, 0, 0.14);
-        --stroke2: rgba(255, 0, 0, 0.22);
+        --stroke2: rgb(255, 0, 0);
         --good:#34d399;
         --warn:#fbbf24;
         --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -63,7 +63,15 @@
           linear-gradient(180deg, #05060A, #0A0B12);
       }
 
-      .app{min-height:100vh;padding:22px 18px 40px}
+      .app{min-height:100vh;padding:22px 18px 40px;position:relative}
+      .siteDesign{
+        width:100%;
+        max-width:1210px;
+        display:block;
+        margin:0 auto 14px;
+        border-radius:16px;
+        box-shadow: 0 18px 60px rgba(0,0,0,.25);
+      }
       .topbar{max-width:1980px;margin:0 auto 16px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:14px}
       .topbar > .brand{grid-column:1;justify-self:start}
 
@@ -179,7 +187,21 @@
       .linkBtn:nth-child(3){animation-delay:.10s}
       .linkBtn:nth-child(4){animation-delay:.15s}
       @keyframes enterUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-      .linkBtn:hover{transform:translateY(-2px);border-color:rgb(0, 6, 255);background:rgba(0, 38, 255, 0.03)}
+      .linkBtn{
+        transform: translateZ(0);
+        transition: transform .16s ease, border-color .2s ease, background .2s ease, box-shadow .2s ease;
+        transform-origin: center;
+      }
+      .linkBtn:hover{
+        transform: translateY(-2px) scale(1.06);
+        border-color:rgb(0, 6, 255);
+        background:rgba(0, 38, 255, 0.03);
+        box-shadow: 0 18px 60px rgba(0, 6, 255, 0.12);
+      }
+      .linkBtn:focus-visible{
+        outline: 2px solid rgba(0, 221, 255, 0.85);
+        outline-offset: 4px;
+      }
       .ico{width:40px;height:40px;border-radius:14px;border:1px solid rgba(255, 0, 0, 0);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
       .ico:after{content:"";position:absolute;inset:-40%;background:radial-gradient(circle at 60% 60%, rgba(255, 0, 0, 0), transparent 55%);transform:rotate(15deg)}
       .linkTxt{display:flex;flex-direction:column;gap:3px;position:relative}
@@ -202,6 +224,8 @@
   </head>
   <body>
     <div class="app">
+      <img
+      />
         <div class="topbar">
           <div class="brand" style="justify-content:center;">
 
