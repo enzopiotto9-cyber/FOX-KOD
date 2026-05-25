@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calculadora Estilosa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg0:#060612;
+      --bg1:#0b0b1f;
+      --card:rgba(255,255,255,.06);
+      --card2:rgba(255,255,255,.10);
+      --stroke:rgba(255,255,255,.12);
+      --text:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.68);
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --accent1:#7c3aed;
+      --accent2:#22c55e;
+      --accent3:#06b6d4;
+      --warn:#f59e0b;
+      --danger:#ef4444;
+      --radius:22px;
+      --radius2:16px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(900px 600px at 15% 20%, rgba(255, 0, 119, 0.222), transparent 55%),
+        radial-gradient(800px 520px at 85% 20%, rgba(68, 0, 255, 0.227), transparent 60%),
+        radial-gradient(700px 520px at 50% 85%, rgba(0, 149, 255, 0.285), transparent 55%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      overflow-x:hidden;
+    }
+
+    .wrap{
+      min-height:100%;
+      display:grid;
+      place-items:center;
+      padding:22px;
+    }
+
+    .stage{
+      width:min(460px, 100%);
+      position:relative;
+    }
+
+    .glow{
+      position:absolute;
+      inset:-40px -30px auto -30px;
+      height:160px;
+      background: radial-gradient(closest-side, rgba(93, 0, 255, 0.45), transparent 70%);
+      filter: blur(22px);
+      pointer-events:none;
+      opacity:.9;
+    }
+
+    .calc{
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      border:1px solid var(--stroke);
+      border-radius:var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      overflow:hidden;
+      transform: translateZ(0);
+    }
+
+    .top{
+      padding:18px 18px 12px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      background:
+        radial-gradient(900px 220px at 20% 0%, rgba(124,58,237,.25), transparent 55%),
+        radial-gradient(700px 240px at 90% 0%, rgba(6,182,212,.18), transparent 55%);
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:10px;
+    }
+
+    .title{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:700;
+      letter-spacing:.2px;
+    }
+
+    .logo{
+      width:40px;height:40px;
+      border-radius:50px;
+      background: linear-gradient(135deg, rgba(93, 0, 255, 0.95), rgba(6,182,212,.85));
+      box-shadow: 0 10px 30px rgba(124,58,237,.32);
+      position:relative;
+      border:1px solid rgba(255, 255, 255, 0.121);
+      overflow:hidden;
+    }
+    .logo::after{
+      content:"";
+      position:absolute;
+      width:120%;height:120%;
+      left:-10%;top:-15%;
+      background: radial-gradient(circle at 30% 20%, rgba(255,255,255,.65), transparent 45%);
+      transform: rotate(12deg);
+    }
+
+    .mode{
+      font-size:12px;
+      color:var(--muted);
+      display:flex;
+      align-items:center;
+      gap:8px;
+      user-select:none;
+    }
+    .dot{
+      width:9px;height:9px;border-radius:99px;
+      background: rgba(0, 255, 110, 0.95);
+      box-shadow: 0 0 0 6px rgba(0, 255, 145, 0.137);
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+    @keyframes pulse{
+      0%,100%{transform:scale(1);opacity:.9}
+      50%{transform:scale(1.18);opacity:1}
+    }
+
+    .screen{
+      border-radius:var(--radius2);
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.22);
+      padding:14px 14px 12px;
+      position:relative;
+      overflow:hidden;
+    }
+    .screen::before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background: radial-gradient(500px 120px at 20% 0%, rgba(124,58,237,.18), transparent 65%);
+      pointer-events:none;
+    }
+
+    .expr{
+      font-family:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      color: rgba(255,255,255,.72);
+      min-height:22px;
+      font-size:13px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .result{
+      margin-top:6px;
+      font-family:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size:34px;
+      font-weight:600;
+      letter-spacing:.2px;
+      line-height:1.1;
+      text-shadow: 0 12px 30px rgba(255, 255, 255, 0.35);
+      display:flex;
+      align-items:flex-end;
+      justify-content:flex-end;
+      gap:10px;
+    }
+
+    .spark{
+      width:10px;height:10px;border-radius:50%;
+      background: linear-gradient(180deg, rgba(34,197,94,1), rgb(255, 255, 255));
+      box-shadow: 0 0 0 8px rgba(6,182,212,.15);
+      margin-bottom:9px;
+      opacity:0;
+      transform: translateY(6px);
+      transition: .25s ease;
+    }
+    .result.flash .spark{opacity:1;transform: translateY(0)}
+
+    .hint{
+      margin-top:10px;
+      font-size:12px;
+      color:rgba(255, 255, 255, 0.759);
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      user-select:none;
+    }
+    kbd{
+      font-family:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size:11px;
+      padding:2px 7px;
+      border-radius:9px;
+      background: rgba(0, 0, 0, 0.126);
+      border:1px solid rgba(255,255,255,.14);
+      color: rgba(0, 255, 162, 0.656);
+    }
+
+    .grid{
+      padding:14px;
+      display:grid;
+      gap:10px;
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    button{
+      appearance:none;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      border-radius:16px;
+      height:52px;
+      font-size:16px;
+      font-weight:600;
+      cursor:pointer;
+      transition: transform .08s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
+      box-shadow: 0 10px 26px rgba(0,0,0,.18);
+      position:relative;
+      overflow:hidden;
+      user-select:none;
+    }
+
+    button::after{
+      content:"";
+      position:absolute;
+      inset:-30px;
+      background: radial-gradient(120px 60px at 20% 10%, rgba(255,255,255,.22), transparent 60%);
+      opacity:0;
+      transition: opacity .25s ease;
+    }
+
+    button:hover{
+      background: rgba(255,255,255,.09);
+      border-color: rgba(255,255,255,.22);
+    }
+
+    button:hover::after{opacity:1}
+
+    button:active{transform: translateY(1px) scale(.99)}
+
+    .op{background: rgba(124,58,237,.18); border-color: rgba(124,58,237,.35)}
+    .op:hover{background: rgba(124,58,237,.24)}
+
+    .util{background: rgba(255,255,255,.05)}
+    .danger{background: rgba(239,68,68,.18); border-color: rgba(239,68,68,.35)}
+    .danger:hover{background: rgba(239,68,68,.24)}
+
+    .eq{
+      grid-column: span 2;
+      height:52px;
+      border-radius:18px;
+      background: linear-gradient(135deg, rgba(251, 0, 255, 0.273), rgba(255, 0, 68, 0.536));
+      border-color: rgb(255, 255, 255);
+      box-shadow: 0 16px 44px rgba(255, 0, 174, 0.28);
+    }
+    .eq:hover{filter:saturate(1.08) brightness(1.03)}
+
+    .subtle{
+      font-size:12px;
+      color:rgba(255,255,255,.65);
+      margin:0 14px 14px;
+      user-select:none;
+    }
+
+    .shake{
+      animation: shake .35s ease;
+    }
+    @keyframes shake{
+      0%,100%{transform:translateX(0)}
+      25%{transform:translateX(-4px)}
+      50%{transform:translateX(4px)}
+      75%{transform:translateX(-2px)}
+    }
+
+    @media (max-width: 420px){
+      .result{font-size:30px}
+      button{height:48px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="stage">
+      <div class="glow"></div>
+
+      <div class="calc" role="application" aria-label="Calculadora estilosa">
+        <div class="top">
+          <div class="brand">
+            <div class="title">
+              <div class="logo" aria-hidden="true"></div>
+              <div>Calculadora Estilosa</div>
+            </div>
+            <div class="mode" aria-live="polite">
+              <span class="dot" aria-hidden="true"></span>
+              <span id="status">Pronta</span>
+            </div>
+          </div>
+
+          <div class="screen" aria-live="polite">
+            <div class="expr" id="expr">&nbsp;</div>
+            <div class="result" id="result"><span id="resultText">0</span><span class="spark" aria-hidden="true"></span></div>
+            <div class="hint">
+              <div>Enter = igual • Backspace = apagar</div>
+              <div><kbd>Esc</kbd> limpa</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid" aria-label="Teclado">
+          <button class="util" data-action="clear" title="Limpar (Esc)">CE</button>
+          <button class="util" data-action="back" title="Apagar (Backspace)">⌫</button>
+          <button class="util op" data-action="percent" title="Porcentagem">%</button>
+          <button class="util op" data-action="operator" data-value="/" title="Dividir">÷</button>
+
+          <button data-action="digit" data-value="7">7</button>
+          <button data-action="digit" data-value="8">8</button>
+          <button data-action="digit" data-value="9">9</button>
+          <button class="util op" data-action="operator" data-value="*" title="Multiplicar">×</button>
+
+          <button data-action="digit" data-value="4">4</button>
+          <button data-action="digit" data-value="5">5</button>
+          <button data-action="digit" data-value="6">6</button>
+          <button class="util op" data-action="operator" data-value="-" title="Subtrair">−</button>
+
+          <button data-action="digit" data-value="1">1</button>
+          <button data-action="digit" data-value="2">2</button>
+          <button data-action="digit" data-value="3">3</button>
+          <button class="util op" data-action="operator" data-value="+" title="Somar">+</button>
+
+          <button data-action="digit" data-value="0">0</button>
+          <button data-action="dot" title="Ponto decimal">.</button>
+          <button class="util" data-action="sign" title="Alternar sinal">±</button>
+          <button class="eq" data-action="equals" title="Calcular (Enter)">=</button>
+        </div>
+
+        <p class="subtle">Dica: você pode escrever mentalmente como em uma conta normal — a calculadora entende parênteses e decimais.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const exprEl = document.getElementById('expr');
+    const resultEl = document.getElementById('result');
+    const resultTextEl = document.getElementById('resultText');
+    const statusEl = document.getElementById('status');
+
+    // Estado
+    let tokens = [];        // tokens numéricos e operadores
+    let current = '0';     // número em edição
+    let lastAction = 'init';
+
+    const OPERATORS = new Set(['+','-','*','/']);
+
+    function setStatus(text, tone='ok'){
+      statusEl.textContent = text;
+      resultEl.style.color = '';
+      resultEl.style.filter = '';
+      if(tone==='warn') resultEl.style.color = 'rgba(245,158,11,.95)';
+      if(tone==='danger') resultEl.style.color = 'rgba(239,68,68,.95)';
+    }
+
+    function normalizeNumberStr(s){
+      // Garante que o usuário veja ponto decimal, e evita múltiplos pontos
+      if(s === '' || s === '-') return '0';
+      if(s === '-0') return '0';
+      return s;
+    }
+
+    function formatNumber(n){
+      if(!Number.isFinite(n)) return 'Erro';
+      // Evita notação científica em faixa razoável
+      const abs = Math.abs(n);
+      if(abs !== 0 && (abs >= 1e12 || abs < 1e-9)){
+        return n.toExponential(8).replace(/\.?0+e/, 'e').replace(/e\+?/,'e');
+      }
+      // arredonda para evitar float feio
+      const rounded = Math.round(n * 1e12) / 1e12;
+      // remove zeros finais
+      return String(rounded).replace(/\.0+$/, '').replace(/(\.[0-9]*?)0+$/, '$1');
+    }
+
+    function render(){
+      const expr = [...tokens];
+      if(lastAction === 'entering' || lastAction === 'dot' || lastAction === 'digit' || lastAction === 'sign'){
+        expr.push(current);
+      }
+      exprEl.textContent = expr.length ? expr.join(' ') : '\u00A0';
+      resultTextEl.textContent = normalizeNumberStr(current);
+    }
+
+    function flash(){
+      resultEl.classList.remove('flash');
+      // força reflow
+      void resultEl.offsetWidth;
+      resultEl.classList.add('flash');
+      setTimeout(()=>resultEl.classList.remove('flash'), 260);
+    }
+
+    function shake(){
+      resultEl.classList.remove('shake');
+      void resultEl.offsetWidth;
+      resultEl.classList.add('shake');
+      setTimeout(()=>resultEl.classList.remove('shake'), 420);
+    }
+
+    function pushCurrentIfNeeded(){
+      if(lastAction === 'digit' || lastAction === 'dot' || lastAction === 'sign' || lastAction === 'entering'){
+        // ainda estamos editando current
+      } else {
+        // nenhuma entrada ativa
+      }
+    }
+
+    function applyOperator(op){
+      // Se o usuário acabou de digitar um número, commita current.
+      if(OPERATORS.has(op)){
+        if(tokens.length === 0){
+          tokens.push(current);
+        } else {
+          const last = tokens[tokens.length-1];
+          if(OPERATORS.has(last)){
+            // troca operador
+            tokens[tokens.length-1] = op;
+          } else {
+            tokens.push(op);
+          }
+        }
+        current = '0';
+        lastAction = 'operator';
+        setStatus('Operador: ' + op);
+        render();
+      }
+    }
+
+    function clearAll(){
+      tokens = [];
+      current = '0';
+      lastAction = 'init';
+      exprEl.textContent = '\u00A0';
+      resultTextEl.textContent = '0';
+      setStatus('Pronta');
+    }
+
+    function backspace(){
+      if(lastAction === 'operator'){
+        // se estava esperando número, ignora
+        return;
+      }
+      if(current.length <= 1 || (current.length === 2 && current.startsWith('-'))){
+        current = '0';
+      }else{
+        current = current.slice(0,-1);
+        if(current === '-' ) current = '0';
+      }
+      lastAction = 'entering';
+      setStatus('Apagando');
+      render();
+    }
+
+    function inputDigit(d){
+      if(lastAction === 'operator' || lastAction === 'init'){
+        current = d;
+      } else {
+        if(current === '0') current = d;
+        else current += d;
+      }
+      lastAction = 'digit';
+      setStatus('Digitando');
+      render();
+    }
+
+    function inputDot(){
+      if(lastAction === 'operator' || lastAction === 'init'){
+        current = '0.';
+      } else {
+        if(!current.includes('.')){
+          current += '.';
+        }
+      }
+      lastAction = 'dot';
+      setStatus('Decimal');
+      render();
+    }
+
+    function toggleSign(){
+      if(lastAction === 'operator' || lastAction === 'init'){
+        if(current === '0') current = '0';
+        else current = '-' + current;
+      } else {
+        if(current === '0'){
+          // sem efeito
+        } else if(current.startsWith('-')){
+          current = current.slice(1);
+        } else {
+          current = '-' + current;
+        }
+      }
+      lastAction = 'sign';
+      setStatus('Sinal');
+      render();
+    }
+
+    function percent(){
+      // Interpretação inteligente: % do valor atual
+      // Ex: 50 % => 0.5
+      const v = Number(current);
+      if(!Number.isFinite(v)){
+        shake();}}
+        //termine o app;
+      
