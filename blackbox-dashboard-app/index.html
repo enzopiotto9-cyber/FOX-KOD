@@ -1,5 +1,5 @@
 <!DOCTYPE html
-<!-- Z3-CONNOR redesigned UI (glass + animated backgrounds) - preserve theme/clock/reset logic -->
+<-- Z3-CONNOR redesigned UI (glass + animated backgrounds) - preserve theme/clock/reset logic -->
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
@@ -7,7 +7,7 @@
     <meta name="color-scheme" content="dark light" />
 <title>Z3-CONNOR</title>
     <style>
-      :root{
+:root{
         --bg0:#070A12;
         --bg1:#0B1630;
         --text: rgba(255, 255, 255, 0.92);
@@ -19,6 +19,7 @@
         --stroke2: rgb(255, 0, 0);
         --good:#34d399;
         --warn:#fbbf24;
+        --siteAccent: rgb(25, 0, 255);
         --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
         --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
       }
@@ -71,7 +72,7 @@
         display:block;
         margin:0 auto 14px;
         border-radius:16px;
-        box-shadow: 0 18px 60px rgba(0,0,0,.25);
+        box-shadow: 0 18px 60px rgba(106, 106, 106, 0.294);
       }
       .topbar{max-width:1980px;margin:0 auto 16px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:14px}
       .topbar > .brand{grid-column:1;justify-self:start}
@@ -80,7 +81,7 @@
 
 
 
-      .brand{display:flex;align-items:center;gap:20px}
+      .brand{display:flex;align-items:center;gap:50px}
 
       .logo{
         width:64px;height:64px;border-radius:20px;
@@ -95,7 +96,7 @@
         animation: logoPulse 4s ease-in-out infinite;
       }
       @keyframes logoPulse{
-        0%,100%{box-shadow: 0 0 40px rgba(2,132,199,0.3), 0 0 80px rgba(124,58,237,0.15), inset 0 0 20px rgba(56,189,248,0.1);}
+        0%,100%{box-shadow: 0 0 40px rgba(0, 170, 255, 0.3), 0 0 80px rgba(124,58,237,0.15), inset 0 0 20px rgba(56,189,248,0.1);}
         50%{box-shadow: 0 0 60px rgba(2,132,199,0.5), 0 0 100px rgba(124,58,237,0.25), inset 0 0 30px rgba(56,189,248,0.15);}
       }
 
@@ -111,7 +112,7 @@
         background:none;
         -webkit-background-clip: initial;
         background-clip: initial;
-        color:#ff0000;
+        color:#ffffff;
 
         font-size:70px;
 
@@ -123,18 +124,20 @@
         background-clip: initial;
         color:#ffffff;
 
-        text-shadow:0 0 40px rgba(0, 170, 255, 0.254);
         animation: titleGlow 4s ease-in-out infinite;
       }
       @keyframes titleGlow{
-        0%,100%{filter:drop-shadow(0 0 8px rgb(146, 146, 146));}
-        50%{filter:drop-shadow(0 0 16px rgba(0, 0, 0, 0.683));}
+        0%{text-shadow:0 0 40px rgb(255, 0, 0), 0 0 80px rgba(255, 0, 0, 0.5);}
+        33%{text-shadow:0 0 40px rgb(0, 255, 13), 0 0 80px rgba(0, 255, 13, 0.5);}
+        66%{text-shadow:0 0 40px rgb(0, 21, 255), 0 0 80px rgba(0, 21, 255, 0.5);}
+        100%{text-shadow:0 0 40px rgb(255, 0, 0), 0 0 80px rgba(255, 0, 0, 0.5);}
       }
       .brand p{margin:2px 0 0;font-size:16px;color:var(--muted);font-weight:500;letter-spacing:.3px}
 
 
       .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
-      .pill{border:1px solid var(--stroke);background:rgba(255, 255, 255, 0.05);border-radius:999px;padding:10px 12px;box-shadow:var(--shadow2);backdrop-filter:blur(10px);display:flex;gap:10px;align-items:center}
+      .pill{border:1px solid var(--stroke);background:rgba(255, 255, 255, 0.05);border-radius:999px;padding:10px 12px;box-shadow:var(--shadow2);backdrop-filter:blur(10px);display:flex;gap:10px;align-items:center;transition:transform .16s ease, border-color .2s ease, background .2s ease, box-shadow .2s ease}
+      .pill:hover{transform:translateY(-2px);border-color:rgba(255,255,255,0.3);background:rgba(255,255,255,0.1);box-shadow:0 8px 30px rgba(0,0,0,0.5), 0 0 15px rgba(255,255,255,0.1)}
       .pill label{font-size:12px;color:var(--muted)}
       select{background:transparent;border:none;color:var(--text);outline:none;font-weight:650}
       option{background:#0b0d16}
@@ -143,7 +146,8 @@
       @media (max-width:980px){.navGrid{grid-template-columns:1fr}}
 
       .card{border-radius:var(--radius);background:transparent;border:none;box-shadow:none;backdrop-filter:none;overflow:hidden}
-      .card .hd{padding:14px 300px 10px;border-bottom:1px solid rgb(0, 60, 255);background:transparent}
+      .card .hd{padding:14px 300px 10px;border-bottom:1px solid rgba(255, 255, 255, 0.3);background:transparent}
+
       .card .hd h2{margin:0;font-size:30px;letter-spacing:.25px;text-transform:uppercase;color:rgb(255, 255, 255);line-height:1}
 #deviceClock{display:inline-block;transform:translateY(1px);font-size:24px;font-weight:1000;letter-spacing:.8px;}
 
@@ -204,12 +208,12 @@
       }
       .linkBtn:hover{
         transform: translateY(-4px) scale(1.08);
-        border-color:rgba(34,211,238,.78);
-        background: linear-gradient(180deg, rgba(34,211,238,.16), rgba(124,58,237,.08));
-        box-shadow:
-          0 24px 70px rgba(0, 6, 255, 0.26),
-          0 0 0 1px rgba(34,211,238,.34) inset,
-          0 0 22px rgba(34,211,238,.20);
+        border-color:rgba(255, 255, 255, 0.088);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05));
+          box-shadow:
+          0 24px 70px rgba(0, 0, 0, 0.8),
+          0 0 0 1px rgba(255, 255, 255, 0) inset,
+          0 0 22px rgb(0, 0, 0);
       }
 
       .linkBtn:focus-visible{
@@ -219,18 +223,48 @@
       .ico{width:40px;height:40px;border-radius:14px;border:1px solid rgba(255, 0, 0, 0);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
       .ico:after{content:"";position:absolute;inset:-40%;background:radial-gradient(circle at 60% 60%, rgba(255, 0, 0, 0), transparent 55%);transform:rotate(15deg)}
       .linkTxt{display:flex;flex-direction:column;gap:3px;position:relative}
-      .linkTxt b{font-size:25px;letter-spacing:.2px}
-      .linkTxt span{font-size:12px;color:var(--muted)}
+      .linkTxt b{font-size:25px;letter-spacing:.2px;color:#ffffff}
+      .linkTxt span{font-size:12px;color:#ffffff}
+
 
       .userBox{display:flex;flex-direction:column;gap:10px}
       .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
       input[type="text"], input[type="password"]{
         width:100%;max-width:340px;background:rgba(255, 0, 0, 0);border:1px solid rgb(255, 255, 255);border-radius:12px;padding:10px;color:var(--text);outline:none
       }
-      .btn{cursor:pointer;border:1px solid rgba(255, 255, 255, 0.18);background:rgba(255,255,255,.06);color:#ffffff;padding:10px 12px;border-radius:12px;font-weight:900;transition:transform .12s ease, background .2s ease, border-color .2s ease;user-select:none}
+      .btn{cursor:pointer;border:1px solid rgba(255, 255, 255, 0.101);background:rgba(255,255,255,.06);color:#ffffff;padding:10px 12px;border-radius:12px;font-weight:900;transition:transform .12s ease, background .2s ease, border-color .2s ease;user-select:none}
 
-      .btn:hover{transform:translateY(-1px);border-color:rgb(255, 0, 0);background:rgba(255, 0, 0, 0.1)}
+      /* RGB Animation for GitHub button only */
+      #btnResetAll + .btn, a.btn{animation:btnRGBGlow 2s ease-in-out infinite;position:relative;overflow:hidden}
+
+      @keyframes btnRGBGlow{
+        0%{box-shadow:0 0 5px rgba(255,0,0,0.5), 0 0 10px rgba(255,0,0,0.3), inset 0 0 5px rgba(255,0,0,0.1);border-color:rgba(255,0,0,0.5);}
+        33%{box-shadow:0 0 5px rgba(0,255,13,0.5), 0 0 10px rgba(0,255,13,0.3), inset 0 0 5px rgba(0,255,13,0.1);border-color:rgba(0,255,13,0.5);}
+        66%{box-shadow:0 0 5px rgba(0,21,255,0.5), 0 0 10px rgba(0,21,255,0.3), inset 0 0 5px rgba(0,21,255,0.1);border-color:rgba(0,21,255,0.5);}
+        100%{box-shadow:0 0 5px rgba(255,0,0,0.5), 0 0 10px rgba(255,0,0,0.3), inset 0 0 5px rgba(255,0,0,0.1);border-color:rgba(255,0,0,0.5);}
+      }
+
+      #btnResetAll + .btn::before, a.btn::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.05) 50%, transparent 70%);animation:btnShine 3s ease-in-out infinite;pointer-events:none;}
+
+      @keyframes btnShine{
+        0%{transform:translateX(-100%) rotate(45deg);}
+        50%{transform:translateX(100%) rotate(45deg);}
+        100%{transform:translateX(100%) rotate(45deg);}
+      }
+
+      .btn:hover{transform:translateY(-1px);border-color:rgba(0, 0, 0, 0);background:rgba(0, 0, 0, 0)}
       .btn:active{transform:translateY(0) scale(.99)}
+
+      /* Clean sweep animation overlay */
+      .cleanSweep{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;overflow:hidden}
+      .cleanSweep::before{content:'';position:absolute;top:-100%;left:0;width:100%;height:200%;background:linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.9) 40%, rgba(255,255,255,1) 50%, rgba(255,255,255,0.9) 60%, transparent 100%);animation:sweepDown 1.5s ease-in-out forwards}
+
+      @keyframes sweepDown{
+        0%{top:-100%;opacity:0}
+        30%{top:0;opacity:1}
+        70%{top:0;opacity:1}
+        100%{top:100%;opacity:0}
+      }
 
       .toast{position:fixed;right:18px;bottom:18px;padding:12px 14px;background:rgba(255, 255, 255, 0.55);border:1px solid rgba(255,255,255,.18);border-radius:14px;box-shadow:var(--shadow);backdrop-filter:blur(10px);color:var(--text);transform:translateY(12px);opacity:0;pointer-events:none;transition:opacity .2s ease, transform .2s ease;max-width:360px}
       .toast.show{opacity:1;transform:translateY(0)}
@@ -272,13 +306,23 @@ src="./logo2.jpg"
               <option value="sunset">dark</option>
               <option value="midnight">gotancity</option>
               <option value="mono">Mono</option>
-              <option value="image">Minha imagem</option>
+              <option value="./temas/tema1.jpg">Tema 1</option>
+              <option value="./temas/tema2a.jpg">Tema 2</option>
+              <option value="./temas/tema 2-4k.jpg">Tema 3</option>
+              <option value="./temas/tema3.jpg">Tema 4</option>
+              <option value="./temas/tema4.jpg">Tema 5</option>
+              <option value="./temas/tema5.jpg">Tema 6</option>
+              <option value="./temas/tema5.png">Tema 7</option>
+              <option value="./temas/tema6.png">Tema 8</option>
+              <option value="./temas/tema7.png">Tema 9</option>
+              <option value="custom">Minha imagem (tema)</option>
+
             </select>
           </div>
 
           <div class="pill" style="padding:8px 10px;">
             <label for="themeImage" style="font-size:12px;color:var(--muted);font-weight:700;cursor:pointer;">
-              Imagem
+              meu tema
             </label>
             <input type="file" id="themeImage" accept="image/*" style="display:none" />
           </div>
@@ -327,7 +371,7 @@ src="./logo2.jpg"
               </a>
             </div>
             
-            <div class="head" style="border-top:1px solid rgb(0, 60, 255);padding-top:10px;">AQUI ESTÃO OUTROS SITE QUE VÃO TE AJUDAR</div>
+            <div class="head" style="border-top:1px solid rgba(255, 255, 255, 0.3);padding-top:10px;">AQUI ESTÃO OUTROS SITE QUE VÃO TE AJUDAR</div>
             <div style="color:var(--muted);font-size:10px;line-height:1.45">
 
               Use os botões abaixo para ser rediresionado para es paginas.
@@ -471,10 +515,53 @@ src="./logo2.jpg"
 
       const themeSel = $('#themeSel');
       function applyTheme(theme){
-        if(theme === 'image') return;
+        // Se o usuário escolheu tema "custom", usa a imagem salva pelo input file
+        if(theme === 'custom' || theme === 'image'){
+          document.body.dataset.theme = 'custom';
+          try{ localStorage.setItem('bb_theme', 'custom'); }catch{}
+
+          const saved = (()=>{
+            try{ return localStorage.getItem('bb_theme_image'); }catch{ return null; }
+          })();
+          if(saved) applyImageTheme(saved);
+          return;
+        }
+
+        // Se o tema for um caminho de arquivo (ex: ./temas/tema1.jpg), aplica como background
+        if(theme && theme.startsWith('./')){
+          document.body.dataset.theme = 'file';
+          try{ localStorage.setItem('bb_theme', theme); }catch{}
+          
+          // Remove estilos inline anteriores
+          document.body.style.backgroundImage = '';
+          document.body.style.backgroundSize = '';
+          document.body.style.backgroundPosition = '';
+          document.body.style.backgroundRepeat = '';
+          document.body.style.backgroundAttachment = '';
+          
+          // Aplica a imagem do tema
+          document.body.style.backgroundImage = `url(${theme})`;
+          document.body.style.backgroundSize = 'cover';
+          document.body.style.backgroundPosition = 'center';
+          document.body.style.backgroundRepeat = 'no-repeat';
+          document.body.style.backgroundAttachment = 'fixed';
+          return;
+        }
+
+        // Tema normal (aurora, sunset, midnight, mono): garante que "file" não fique ativo.
         document.body.dataset.theme = theme;
+
+        // remove background-image inline
+        document.body.style.backgroundImage = '';
+        document.body.style.backgroundSize = '';
+        document.body.style.backgroundPosition = '';
+        document.body.style.backgroundRepeat = '';
+        document.body.style.backgroundAttachment = '';
+
         try{ localStorage.setItem('bb_theme', theme); }catch{}
       }
+
+
 
       function applyImageTheme(dataUrl){
         // Guarda como background-image no CSS inline via body.style
@@ -485,19 +572,52 @@ src="./logo2.jpg"
         document.body.style.backgroundPosition = 'center';
         document.body.style.backgroundRepeat = 'no-repeat';
         document.body.style.backgroundAttachment = 'fixed';
+
+        // garante que o tema `image` continue ativo ao navegar/voltar
+        document.body.dataset.theme = 'image';
       }
+
+
+      // Auto-save: garante que a preferência de imagem persista ao recarregar
+// (mantido por compatibilidade) 
+      function persistImageThemeOnLoad(){}
 
       (function initTheme(){
 
-        let t = 'aurora';
 
-        try{ t = localStorage.getItem('bb_theme') || 'aurora'; }catch{}
-        if(themeSel) themeSel.value = t;
+        let t = './temas/tema2a.jpg';
+
+        try{ t = localStorage.getItem('bb_theme') || './temas/tema2a.jpg'; }catch{}
+        const themeSelEl = $('#themeSel');
+        if(themeSelEl) themeSelEl.value = t;
+
+        // Se o tema salvo for custom/image, reaplica a imagem salva
+        if(t === 'custom' || t === 'image'){
+          try{
+            const d = localStorage.getItem('bb_theme_image');
+            if(d){
+              applyImageTheme(d);
+            }
+          }catch{}
+
+          document.body.dataset.theme = 'custom';
+          try{ localStorage.setItem('bb_theme', 'custom'); }catch{}
+          return;
+        }
+
+        // Se o tema salvo for um caminho de arquivo, reaplica
+        if(t && t.startsWith('./')){
+          applyTheme(t);
+          return;
+        }
+
+        // Tema normal
         applyTheme(t);
       })();
+
       themeSel?.addEventListener('change', (e)=> {
         const v = e.target.value;
-        if(v === 'image'){
+        if(v === 'custom' || v === 'image'){
           // carrega a última imagem salva, se houver
           try{
             const d = localStorage.getItem('bb_theme_image');
@@ -505,26 +625,30 @@ src="./logo2.jpg"
           }catch{}
           return;
         }
-        // se mudou para tema normal, remove imagem aplicada inline
-        document.body.style.backgroundImage = '';
-        document.body.style.backgroundSize = '';
-        document.body.style.backgroundPosition = '';
-        document.body.style.backgroundRepeat = '';
-        document.body.style.backgroundAttachment = '';
+        // Para temas normais ou temas de arquivo, aplica o tema
         applyTheme(v);
       });
 
       const themeImageInput = $('#themeImage');
-      themeImageInput?.addEventListener('change', async (e)=>{
-        const file = e.target.files && e.target.files[0];
+      function persistImageTheme(file){
+        const STORAGE_KEY = 'bb_theme_image';
         if(!file) return;
         const reader = new FileReader();
         reader.onload = ()=>{
-          applyImageTheme(String(reader.result || ''));
-          // força o select na opção image
-          if(themeSel) themeSel.value = 'image';
+          const dataUrl = String(reader.result || '');
+          try{ localStorage.setItem(STORAGE_KEY, dataUrl); }catch{}
+          applyImageTheme(dataUrl);
+          // garante que o select fique no modo custom
+          if(themeSel) themeSel.value = 'custom';
         };
         reader.readAsDataURL(file);
+      }
+
+      themeImageInput?.addEventListener('change', async (e)=>{
+
+        const file = e.target.files && e.target.files[0];
+        if(!file) return;
+        persistImageTheme(file);
       });
 
       // Removido: lógica de Conta (Privacidade)
@@ -546,18 +670,30 @@ src="./logo2.jpg"
       renderDeviceClock();
       setInterval(renderDeviceClock, 1000);
 
-      // Reset all (mantido)
+      // Reset all with clean sweep animation
       $('#btnResetAll')?.addEventListener('click', ()=>{
 
         const ok = confirm('Resetar dados locais?');
         if(!ok) return;
+
+        // Create clean sweep overlay
+        const sweep = document.createElement('div');
+        sweep.className = 'cleanSweep';
+        document.body.appendChild(sweep);
+
+        // Clear data
         Object.keys(localStorage).forEach(k=>{
           if(k.startsWith('bb_')){
             try{ localStorage.removeItem(k);}catch{}
           }
         });
+
+        // Show toast and reload after animation
         toast('Reset completo.');
-        setTimeout(()=>location.reload(), 700);
+        setTimeout(()=>{
+          sweep.remove();
+          location.reload();
+        }, 1500);
       });
     </script>
   </body>
