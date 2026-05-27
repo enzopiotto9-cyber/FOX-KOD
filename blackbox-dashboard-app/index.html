@@ -1,4 +1,5 @@
 <!DOCTYPE html
+<!-- Z3-CONNOR redesigned UI (glass + animated backgrounds) - preserve theme/clock/reset logic -->
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
@@ -162,6 +163,15 @@
 
       .quickLinks{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
       @media (max-width:560px){.quickLinks{grid-template-columns:1fr}}
+
+      /* Visuais: entrada + animação de brilho ao longo do tempo */
+      @keyframes linkPulse{
+        0%,100%{ filter: drop-shadow(0 0 0 rgba(34,211,238,0)); }
+        50%{ filter: drop-shadow(0 0 18px rgba(34,211,238,.26)); }
+      }
+
+
+
       .linkBtn{
         text-decoration:none;
         border-radius:100px;
@@ -193,11 +203,15 @@
         transform-origin: center;
       }
       .linkBtn:hover{
-        transform: translateY(-2px) scale(1.06);
-        border-color:rgb(0, 6, 255);
-        background:rgba(0, 38, 255, 0.03);
-        box-shadow: 0 18px 60px rgba(0, 6, 255, 0.12);
+        transform: translateY(-4px) scale(1.08);
+        border-color:rgba(34,211,238,.78);
+        background: linear-gradient(180deg, rgba(34,211,238,.16), rgba(124,58,237,.08));
+        box-shadow:
+          0 24px 70px rgba(0, 6, 255, 0.26),
+          0 0 0 1px rgba(34,211,238,.34) inset,
+          0 0 22px rgba(34,211,238,.20);
       }
+
       .linkBtn:focus-visible{
         outline: 2px solid rgba(0, 221, 255, 0.85);
         outline-offset: 4px;
@@ -258,8 +272,17 @@ src="./logo2.jpg"
               <option value="sunset">dark</option>
               <option value="midnight">gotancity</option>
               <option value="mono">Mono</option>
+              <option value="image">Minha imagem</option>
             </select>
           </div>
+
+          <div class="pill" style="padding:8px 10px;">
+            <label for="themeImage" style="font-size:12px;color:var(--muted);font-weight:700;cursor:pointer;">
+              Imagem
+            </label>
+            <input type="file" id="themeImage" accept="image/*" style="display:none" />
+          </div>
+
           <button class="btn" id="btnResetAll" title="Limpa seus dados locais">LIMPAR DADOS</button>
         </div>
       </div>
@@ -303,12 +326,12 @@ src="./logo2.jpg"
                 <div class="linkTxt"><b>Paint</b><span>Canvas para desenhar</span></div>
               </a>
             </div>
+            
+            <div class="head" style="border-top:1px solid rgb(0, 60, 255);padding-top:10px;">AQUI ESTÃO OUTROS SITE QUE VÃO TE AJUDAR</div>
+            <div style="color:var(--muted);font-size:10px;line-height:1.45">
 
-            <div style="margin-top:14px">
-<div style="font-size:14px;font-weight:950;letter-spacing:.2px;margin:0 0 10px;">
-<span style="display:block;border-bottom:2px solid rgb(0, 6, 255);padding-bottom:6px;">&nbsp;</span>
-<div class="head" style="margin:0;">companheiros que podem te ajudar</div>
-              </div>
+              Use os botões abaixo para ser rediresionado para es paginas.
+            </div>
               <div class="quickLinks" style="margin-top:0">
 
                 <a class="linkBtn" href="https://www.canva.com/" target="_blank" rel="noopener noreferrer">
@@ -444,20 +467,68 @@ src="./logo2.jpg"
 
       // existing app scripts
 
+
+
       const themeSel = $('#themeSel');
       function applyTheme(theme){
+        if(theme === 'image') return;
         document.body.dataset.theme = theme;
         try{ localStorage.setItem('bb_theme', theme); }catch{}
       }
+
+      function applyImageTheme(dataUrl){
+        // Guarda como background-image no CSS inline via body.style
+        if(!dataUrl) return;
+        try{ localStorage.setItem('bb_theme_image', dataUrl); }catch{}
+        document.body.style.backgroundImage = `url(${dataUrl})`;
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundPosition = 'center';
+        document.body.style.backgroundRepeat = 'no-repeat';
+        document.body.style.backgroundAttachment = 'fixed';
+      }
+
       (function initTheme(){
+
         let t = 'aurora';
+
         try{ t = localStorage.getItem('bb_theme') || 'aurora'; }catch{}
         if(themeSel) themeSel.value = t;
         applyTheme(t);
       })();
-      themeSel?.addEventListener('change', (e)=> applyTheme(e.target.value));
+      themeSel?.addEventListener('change', (e)=> {
+        const v = e.target.value;
+        if(v === 'image'){
+          // carrega a última imagem salva, se houver
+          try{
+            const d = localStorage.getItem('bb_theme_image');
+            if(d) applyImageTheme(d);
+          }catch{}
+          return;
+        }
+        // se mudou para tema normal, remove imagem aplicada inline
+        document.body.style.backgroundImage = '';
+        document.body.style.backgroundSize = '';
+        document.body.style.backgroundPosition = '';
+        document.body.style.backgroundRepeat = '';
+        document.body.style.backgroundAttachment = '';
+        applyTheme(v);
+      });
+
+      const themeImageInput = $('#themeImage');
+      themeImageInput?.addEventListener('change', async (e)=>{
+        const file = e.target.files && e.target.files[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = ()=>{
+          applyImageTheme(String(reader.result || ''));
+          // força o select na opção image
+          if(themeSel) themeSel.value = 'image';
+        };
+        reader.readAsDataURL(file);
+      });
 
       // Removido: lógica de Conta (Privacidade)
+
 
       // Device clock (HH:MM:SS) - atualiza pelo relógio do dispositivo
       const deviceClockEl = $('#deviceClock');
