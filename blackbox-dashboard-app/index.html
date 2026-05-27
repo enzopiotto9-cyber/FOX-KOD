@@ -107,30 +107,14 @@
       .brand h1{
         justify-self:center;
         margin:0;
-
-        /* cor sólida (troque #ffcc00 pelo valor desejado) */
         background:none;
         -webkit-background-clip: initial;
         background-clip: initial;
         color:#ffffff;
-
         font-size:70px;
-
         line-height:1.1;
         letter-spacing:.5px;
         font-weight:950;
-
-        -webkit-background-clip: initial;
-        background-clip: initial;
-        color:#ffffff;
-
-        animation: titleGlow 4s ease-in-out infinite;
-      }
-      @keyframes titleGlow{
-        0%{text-shadow:0 0 40px rgb(255, 0, 0), 0 0 80px rgba(255, 0, 0, 0.5);}
-        33%{text-shadow:0 0 40px rgb(0, 255, 13), 0 0 80px rgba(0, 255, 13, 0.5);}
-        66%{text-shadow:0 0 40px rgb(0, 21, 255), 0 0 80px rgba(0, 21, 255, 0.5);}
-        100%{text-shadow:0 0 40px rgb(255, 0, 0), 0 0 80px rgba(255, 0, 0, 0.5);}
       }
       .brand p{margin:2px 0 0;font-size:16px;color:var(--muted);font-weight:500;letter-spacing:.3px}
 
@@ -142,8 +126,27 @@
       select{background:transparent;border:none;color:var(--text);outline:none;font-weight:650}
       option{background:#0b0d16}
 
-      .navGrid{max-width:121280px;margin:0 auto;display:grid;grid-template-columns:1.1fr .9fr;gap:14px}
-      @media (max-width:980px){.navGrid{grid-template-columns:1fr}}
+      /* Sidebar Taskbar - Fixed left navigation */
+      .sidebar{position:fixed;left:0;top:0;width:80px;height:100vh;background:rgba(255,255,255,0.06);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-right:1px solid rgba(255,255,255,0.1);display:flex;flex-direction:column;align-items:center;padding:10px 0 20px;z-index:1000;box-shadow:4px 0 30px rgba(0,0,0,0.3)}
+      .sidebarBtn{width:56px;height:56px;border-radius:16px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;margin:6px 0;text-decoration:none;transition:all 0.2s ease;position:relative;cursor:pointer}
+      .sidebarBtn:hover{
+        background:rgba(255,255,255,0.12);
+        border-color:rgba(255,255,255,0.25);
+        transform:translateY(-4px) scale(1.08);
+        box-shadow:0 24px 70px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0) inset, 0 0 22px rgba(0,0,0,0.5);
+      }
+      .sidebarBtn.active{background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.3);box-shadow:0 0 20px rgba(255,255,255,0.1)}
+      .sidebarBtn .sico{font-size:22px;line-height:1}
+      .sidebarBtn .slabel{font-size:8px;color:rgba(255,255,255,0.7);font-weight:600;letter-spacing:0.3px}
+      .sidebarDivider{width:40px;height:1px;background:rgba(255,255,255,0.15);margin:8px 0}
+
+      /* Page transition animation */
+      @keyframes pageFadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+      .pageTransition{animation:pageFadeIn 0.3s ease forwards}
+
+      .navGrid{max-width:121280px;margin:0 auto;margin-left:90px;display:grid;grid-template-columns:1.1fr .9fr;gap:14px}
+      @media (max-width:980px){.navGrid{grid-template-columns:1fr;margin-left:0}}
+      @media (max-width:768px){.sidebar{display:none}}
 
       .card{border-radius:var(--radius);background:transparent;border:none;box-shadow:none;backdrop-filter:none;overflow:hidden}
       .card .hd{padding:14px 300px 10px;border-bottom:1px solid rgba(255, 255, 255, 0.3);background:transparent}
@@ -232,7 +235,7 @@
       input[type="text"], input[type="password"]{
         width:100%;max-width:340px;background:rgba(255, 0, 0, 0);border:1px solid rgb(255, 255, 255);border-radius:12px;padding:10px;color:var(--text);outline:none
       }
-      .btn{cursor:pointer;border:1px solid rgba(255, 255, 255, 0.101);background:rgba(255,255,255,.06);color:#ffffff;padding:10px 12px;border-radius:12px;font-weight:900;transition:transform .12s ease, background .2s ease, border-color .2s ease;user-select:none}
+      .btn{cursor:pointer;border:1px solid rgba(255, 255, 255, 0.101);background:rgba(255, 255, 255, 0);color:#ffffff;padding:10px 12px;border-radius:12px;font-weight:900;transition:transform .12s ease, background .2s ease, border-color .2s ease;user-select:none}
 
       /* RGB Animation for GitHub button only */
       #btnResetAll + .btn, a.btn{animation:btnRGBGlow 2s ease-in-out infinite;position:relative;overflow:hidden}
@@ -252,7 +255,7 @@
         100%{transform:translateX(100%) rotate(45deg);}
       }
 
-      .btn:hover{transform:translateY(-1px);border-color:rgba(0, 0, 0, 0);background:rgba(0, 0, 0, 0)}
+      .btn:hover{transform:content: '\e819';(-10px);border-color:rgba(255, 255, 255, 0.09);background:rgba(255, 0, 0, 0)}
       .btn:active{transform:translateY(0) scale(.99)}
 
       /* Clean sweep animation overlay */
@@ -266,68 +269,93 @@
         100%{top:100%;opacity:0}
       }
 
-      .toast{position:fixed;right:18px;bottom:18px;padding:12px 14px;background:rgba(255, 255, 255, 0.55);border:1px solid rgba(255,255,255,.18);border-radius:14px;box-shadow:var(--shadow);backdrop-filter:blur(10px);color:var(--text);transform:translateY(12px);opacity:0;pointer-events:none;transition:opacity .2s ease, transform .2s ease;max-width:360px}
+      .toast{position:fixed;right:18px;bottom:18px;padding:12px 14px;background:rgba(128, 128, 128, 0.55);border:1px solid rgba(255,255,255,.18);border-radius:14px;box-shadow:var(--shadow);backdrop-filter:blur(10px);color:var(--text);transform:translateY(12px);opacity:0;pointer-events:none;transition:opacity .2s ease, transform .2s ease;max-width:360px}
       .toast.show{opacity:1;transform:translateY(0)}
     </style>
   </head>
   <body>
     <div class="app">
+      <!-- Sidebar Taskbar -->
+      <nav class="sidebar" aria-label="Barra de tarefas">
+        <!-- Logo no topo -->
+        <div style="width:50px;height:50px;margin-bottom:10px;overflow:hidden;border-radius:14px;border:1px solid rgba(255,255,255,0.15);box-shadow:0 0 15px rgba(255,0,0,0.3)">
+          <img src="./logo2.jpg" alt="Logo" style="width:100%;height:100%;object-fit:cover;display:block"/>
+        </div>
+
+        <!-- Botões das páginas -->
+        <a class="sidebarBtn" href="./_pages/tarefas.html" title="Tarefas">
+          <span class="sico">🗂️</span>
+          <span class="slabel">Tarefas</span>
+        </a>
+        <a class="sidebarBtn" href="./_pages/calculadora.html" title="Calculadora">
+          <span class="sico">🧮</span>
+          <span class="slabel">Calc</span>
+        </a>
+        <a class="sidebarBtn" href="./_pages/timer.html" title="Timer">
+          <span class="sico">⏱️</span>
+          <span class="slabel">Timer</span>
+        </a>
+        <a class="sidebarBtn" href="./_pages/agenda.html" title="Agenda">
+          <span class="sico">📅</span>
+          <span class="slabel">Agenda</span>
+        </a>
+        <a class="sidebarBtn" href="./_pages/notas.html" title="Notas">
+          <span class="sico">📝</span>
+          <span class="slabel">Notas</span>
+        </a>
+        <div class="sidebarDivider"></div>
+        <a class="sidebarBtn" href="./_pages/chatbot.html" title="Chat">
+          <span class="sico">💬</span>
+          <span class="slabel">Chat</span>
+        </a>
+        <a class="sidebarBtn" href="./_pages/paint.html" title="Paint">
+          <span class="sico">🎨</span>
+          <span class="slabel">Paint</span>
+        </a>
+
+        <!-- Parte inferior: Temas e Limpar -->
+        <div style="flex:1"></div>
+        <div class="sidebarDivider"></div>
+
+        <div class="sidebarBtn" title="Temas" style="cursor:pointer">
+          <span class="sico">🖌️</span>
+          <span class="slabel">Temas</span>
+          <select id="themeSelSidebar" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%" aria-label="Selecionar tema">
+            <option value="aurora">padrão</option>
+            <option value="sunset">dark</option>
+            <option value="midnight">gotancity</option>
+            <option value="mono">Mono</option>
+            <option value="./temas/tema1.jpg">Tema 1</option>
+            <option value="./temas/tema2a.jpg">Tema 2</option>
+            <option value="./temas/tema 2-4k.jpg">Tema 3</option>
+            <option value="./temas/tema3.jpg">Tema 4</option>
+            <option value="./temas/tema4.jpg">Tema 5</option>
+            <option value="./temas/tema5.jpg">Tema 6</option>
+            <option value="./temas/tema5.png">Tema 7</option>
+            <option value="./temas/tema6.png">Tema 8</option>
+            <option value="./temas/tema7.png">Tema 9</option>
+            <option value="custom">Minha imagem</option>
+          </select>
+        </div>
+
+        <div class="sidebarBtn" id="btnResetSidebar" title="Limpar dados" style="cursor:pointer">
+          <span class="sico">🗑️</span>
+          <span class="slabel">Limpar</span>
+        </div>
+      </nav>
+
       <img
       />
         <div class="topbar">
           <div class="brand" style="justify-content:center;">
-
-            <div class="logo" aria-hidden="true" style="overflow:visible;background:transparent;border:none;box-shadow:none;animation:none;flex:0 0 auto;display:flex;align-items:center;justify-content:center">
-
-
-
-
-<img
-src="./logo2.jpg"
-  alt="Logo"
-  style="width:100px;height:90px;object-fit:contain;display:block;border-radius:20px"
-/>
+            <div>
+              <h1>~~CONNOR</h1>
             </div>
-<div>
-<h1>Z3-CONNOR</h1>
-          </div>
         </div>
       <div class="controls" id="topbarRight">
             <div id="topbarRightClock" aria-label="Relógio do dispositivo">
               <span id="deviceClock">00:00:00</span>
-
-
             </div>
-          <div class="pill">
-            <label for="themeSel">Temas</label>
-            <select id="themeSel" aria-label="Tema de fundo">
-
-              <option value="aurora">padrão</option>
-              <option value="sunset">dark</option>
-              <option value="midnight">gotancity</option>
-              <option value="mono">Mono</option>
-              <option value="./temas/tema1.jpg">Tema 1</option>
-              <option value="./temas/tema2a.jpg">Tema 2</option>
-              <option value="./temas/tema 2-4k.jpg">Tema 3</option>
-              <option value="./temas/tema3.jpg">Tema 4</option>
-              <option value="./temas/tema4.jpg">Tema 5</option>
-              <option value="./temas/tema5.jpg">Tema 6</option>
-              <option value="./temas/tema5.png">Tema 7</option>
-              <option value="./temas/tema6.png">Tema 8</option>
-              <option value="./temas/tema7.png">Tema 9</option>
-              <option value="custom">Minha imagem (tema)</option>
-
-            </select>
-          </div>
-
-          <div class="pill" style="padding:8px 10px;">
-            <label for="themeImage" style="font-size:12px;color:var(--muted);font-weight:700;cursor:pointer;">
-              meu tema
-            </label>
-            <input type="file" id="themeImage" accept="image/*" style="display:none" />
-          </div>
-
-          <button class="btn" id="btnResetAll" title="Limpa seus dados locais">LIMPAR DADOS</button>
         </div>
       </div>
 
@@ -336,46 +364,7 @@ src="./logo2.jpg"
           <div class="hd"><h2></h2></div>
           <div class="bd welcome">
 
-            <div class="head">AQUI ESTÃO TODOS OS ITEMS QUE VOCÊ PRECISA</div>
-            <div style="color:var(--muted);font-size:10px;line-height:1.45">
-              Use os botões abaixo para navegar por função (páginas separadas). As páginas separam os dados por conta (local).
-            </div>
-            <div class="quickLinks" style="margin-top:14px">
-              <a class="linkBtn" href="./_pages/tarefas.html">
-                <div class="ico" style="background:rgba(0, 221, 255, 0);border-color:rgb(0, 221, 255)">🗂️</div>
-                <div class="linkTxt"><b>Tarefas</b><span>Organizador estilo Trello</span></div>
-              </a>
-              <a class="linkBtn" href="./_pages/calculadora.html">
-                <div class="ico" style="background:rgba(124, 58, 237, 0);border-color:rgb(93, 0, 255)">🧮</div>
-                <div class="linkTxt"><b>Calculadora</b><span>Histórico + memória</span></div>
-              </a>
-              <a class="linkBtn" href="./_pages/timer.html">
-                <div class="ico" style="background:rgba(255, 106, 0, 0);border-color:rgb(255, 106, 0)">⏱️</div>
-                <div class="linkTxt"><b>Timer</b><span>Cronômetro + contagem regressiva</span></div>
-              </a>
-              <a class="linkBtn" href="./_pages/agenda.html">
-                <div class="ico" style="background:rgba(34, 211, 238, 0);border-color:rgb(34, 211, 238)">📅</div>
-                <div class="linkTxt"><b>Agenda</b><span>Mês + marcações</span></div>
-              </a>
-              <a class="linkBtn" href="./_pages/notas.html">
-                <div class="ico" style="background:rgba(52, 211, 153, 0);border-color:rgb(52, 211, 153)">📝</div>
-                <div class="linkTxt"><b>Notas</b><span>Autosave + snapshots</span></div>
-              </a>
-              <a class="linkBtn" href="./_pages/chatbot.html">
-                <div class="ico" style="background:rgba(255, 255, 255, 0);border-color:rgb(255, 255, 255)">💬</div>
-                <div class="linkTxt"><b>Chat</b><span>Assistente local</span></div>
-              </a>
-              <a class="linkBtn" href="./_pages/paint.html">
-                <div class="ico" style="background:rgba(255, 255, 255, 0);border-color:rgb(255, 0, 123)">🎨</div>
-                <div class="linkTxt"><b>Paint</b><span>Canvas para desenhar</span></div>
-              </a>
-            </div>
-            
-            <div class="head" style="border-top:1px solid rgba(255, 255, 255, 0.3);padding-top:10px;">AQUI ESTÃO OUTROS SITE QUE VÃO TE AJUDAR</div>
-            <div style="color:var(--muted);font-size:10px;line-height:1.45">
-
-              Use os botões abaixo para ser rediresionado para es paginas.
-            </div>
+            <div class="head" style="padding-bottom:10px;margin-bottom:14px;">AQUI ESTÃO OUTROS SITE QUE VÃO TE AJUDAR</div>
               <div class="quickLinks" style="margin-top:0">
 
                 <a class="linkBtn" href="https://www.canva.com/" target="_blank" rel="noopener noreferrer">
@@ -649,6 +638,42 @@ src="./logo2.jpg"
         const file = e.target.files && e.target.files[0];
         if(!file) return;
         persistImageTheme(file);
+      });
+
+      // Sidebar theme selector sync
+      const themeSelSidebar = $('#themeSelSidebar');
+      if(themeSelSidebar){
+        themeSelSidebar.addEventListener('change', (e)=>{
+          const v = e.target.value;
+          // Sync with main theme selector
+          if(themeSel) themeSel.value = v;
+          applyTheme(v);
+        });
+      }
+
+      // Sidebar reset button
+      $('#btnResetSidebar')?.addEventListener('click', ()=>{
+        const ok = confirm('Resetar dados locais?');
+        if(!ok) return;
+
+        // Create clean sweep overlay
+        const sweep = document.createElement('div');
+        sweep.className = 'cleanSweep';
+        document.body.appendChild(sweep);
+
+        // Clear data
+        Object.keys(localStorage).forEach(k=>{
+          if(k.startsWith('bb_')){
+            try{ localStorage.removeItem(k);}catch{}
+          }
+        });
+
+        // Show toast and reload after animation
+        toast('Reset completo.');
+        setTimeout(()=>{
+          sweep.remove();
+          location.reload();
+        }, 1500);
       });
 
       // Removido: lógica de Conta (Privacidade)
