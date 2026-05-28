@@ -24,7 +24,7 @@
         --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
       }
       *{box-sizing:border-box}
-      html,body{height:100%}
+html,body{height:100%}
       body{
         margin:0;
         font-family: var(--sans);
@@ -148,12 +148,11 @@
       @media (max-width:980px){.navGrid{grid-template-columns:1fr;margin-left:0}}
       @media (max-width:768px){.sidebar{display:none}}
 
-      .card{border-radius:var(--radius);background:transparent;border:none;box-shadow:none;backdrop-filter:none;overflow:hidden}
+.card{border-radius:var(--radius);background:transparent;border:none;box-shadow:none;backdrop-filter:none;overflow:visible}
       .card .hd{padding:14px 300px 10px;border-bottom:1px solid rgba(255, 255, 255, 0.3);background:transparent}
 
       .card .hd h2{margin:0;font-size:30px;letter-spacing:.25px;text-transform:uppercase;color:rgb(255, 255, 255);line-height:1}
 #deviceClock{display:inline-block;transform:translateY(1px);font-size:24px;font-weight:1000;letter-spacing:.8px;}
-
 
 #topbarRightClock{margin-left:auto;display:flex;align-items:center;gap:10px}
 
@@ -223,7 +222,7 @@
         outline: 2px solid rgba(0, 221, 255, 0.85);
         outline-offset: 4px;
       }
-      .ico{width:40px;height:40px;border-radius:14px;border:1px solid rgba(255, 0, 0, 0);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.ico{width:40px;height:40px;border-radius:14px;border:1px solid rgba(255, 0, 0, 0);display:flex;align-items:center;justify-content:center;position:relative;overflow:visible}
       .ico:after{content:"";position:absolute;inset:-40%;background:radial-gradient(circle at 60% 60%, rgba(255, 0, 0, 0), transparent 55%);transform:rotate(15deg)}
       .linkTxt{display:flex;flex-direction:column;gap:3px;position:relative}
       .linkTxt b{font-size:25px;letter-spacing:.2px;color:#ffffff}
@@ -238,7 +237,7 @@
       .btn{cursor:pointer;border:1px solid rgba(255, 255, 255, 0.101);background:rgba(255, 255, 255, 0);color:#ffffff;padding:10px 12px;border-radius:12px;font-weight:900;transition:transform .12s ease, background .2s ease, border-color .2s ease;user-select:none}
 
       /* RGB Animation for GitHub button only */
-      #btnResetAll + .btn, a.btn{animation:btnRGBGlow 2s ease-in-out infinite;position:relative;overflow:hidden}
+#btnResetAll + .btn, a.btn{animation:btnRGBGlow 2s ease-in-out infinite;position:relative}
 
       @keyframes btnRGBGlow{
         0%{box-shadow:0 0 5px rgba(255,0,0,0.5), 0 0 10px rgba(255,0,0,0.3), inset 0 0 5px rgba(255,0,0,0.1);border-color:rgba(255,0,0,0.5);}
@@ -259,7 +258,7 @@
       .btn:active{transform:translateY(0) scale(.99)}
 
       /* Clean sweep animation overlay */
-      .cleanSweep{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;overflow:hidden}
+.cleanSweep{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;overflow:visible}
       .cleanSweep::before{content:'';position:absolute;top:-100%;left:0;width:100%;height:200%;background:linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.9) 40%, rgba(255,255,255,1) 50%, rgba(255,255,255,0.9) 60%, transparent 100%);animation:sweepDown 1.5s ease-in-out forwards}
 
       @keyframes sweepDown{
@@ -325,15 +324,28 @@
             <option value="sunset">dark</option>
             <option value="midnight">gotancity</option>
             <option value="mono">Mono</option>
-            <option value="./temas/tema1.jpg">Tema 1</option>
-            <option value="./temas/tema2a.jpg">Tema 2</option>
-            <option value="./temas/tema 2-4k.jpg">Tema 3</option>
-            <option value="./temas/tema3.jpg">Tema 4</option>
-            <option value="./temas/tema4.jpg">Tema 5</option>
-            <option value="./temas/tema5.jpg">Tema 6</option>
-            <option value="./temas/tema5.png">Tema 7</option>
-            <option value="./temas/tema6.png">Tema 8</option>
-            <option value="./temas/tema7.png">Tema 9</option>
+
+            <!-- Temas (imagens na pasta ./temas) -->
+            <option value="./temas/abstract-background-glow-black-background-amoled-5k-3840x2160-8054.jpg">abstract background glow black background amoled 5k 3840x2160 8054</option>
+            <option value="./temas/dark-background-abstract-background-network-3d-background-3840x2160-8324.png">dark background abstract background network 3d background 3840x2160 8324</option>
+            <option value="./temas/flowing-fabric-3840x2160-26286.jpg">flowing fabric 3840x2160 26286</option>
+            <option value="./temas/gargantua-black-3840x2160-9621.jpg">gargantua black 3840x2160 9621</option>
+            <option value="./temas/gargantua-black-3840x2160-9659.jpg">gargantua black 3840x2160 9659</option>
+            <option value="./temas/golden-metallic-3840x2160-21510.jpg">golden metallic 3840x2160 21510</option>
+            <option value="./temas/lava-red-coloros-stock-4680x2160-362.jpg">lava red coloros stock 4680x2160 362</option>
+            <option value="./temas/mountain-landscape-3840x2160-24317.jpg">mountain landscape 3840x2160 24317</option>
+            <option value="./temas/network-abstract-background-blue-background-5k-8k-3840x2160-8270.png">network abstract background blue background 5k 8k 3840x2160 8270</option>
+            <option value="./temas/oneplus-8-pro-stock-blue-qhd-2020-3168x1440-503.png">oneplus 8 pro stock blue qhd 2020 3168x1440 503</option>
+            <option value="./temas/oneplus-8-pro-stock-colorful-4200x2160-443.jpg">oneplus 8 pro stock colorful 4200x2160 443</option>
+            <option value="./temas/oneplus-8-pro-stock-purple-qhd-2020-3168x1440-505.png">oneplus 8 pro stock purple qhd 2020 3168x1440 505</option>
+            <option value="./temas/oneplus-8-pro-stock-red-qhd-2020-3168x1440-506.png">oneplus 8 pro stock red qhd 2020 3168x1440 506</option>
+            <option value="./temas/purple-abstract-3840x2160-24770.jpg">purple abstract 3840x2160 24770</option>
+            <option value="./temas/sagittarius-a-black-3840x2160-25401.jpg">sagittarius a black 3840x2160 25401</option>
+            <option value="./temas/spot-lights-blue-dark-background-indoor-5k-3840x2160-2092.jpg">spot lights blue dark background indoor 5k 3840x2160 2092</option>
+            <option value="./temas/tema2a.jpg">tema 2a</option>
+            <option value="./temas/windows-xp-3840x2160-17062.jpg">windows xp 3840x2160 17062</option>
+            <option value="./temas/xiaomi-amoled-stock-3840x2160-25881.jpg">xiaomi amoled stock 3840x2160 25881</option>
+
             <option value="custom">Minha imagem</option>
           </select>
         </div>
